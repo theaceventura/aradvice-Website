@@ -103,7 +103,7 @@
       "legalName": "GEMINA GROUP PTY LTD",
       "description": "Independent board-level advisory for cyber and AI governance oversight",
       "url": "https://aradvice.com.au",
-      "telephone": "+61-xxx-xxx-xxx",
+      "telephone": "+61 425 314 980",
       "email": "hello@aradvice.com.au",
       "address": {
         "@type": "PostalAddress",
@@ -598,7 +598,8 @@
           </p>
 
           <div class="max-w-lg mx-auto bg-navy-rich/80 backdrop-blur-md border border-white/10 p-10 rounded-2xl shadow-2xl">
-            <form class="space-y-4" id="bookingForm">
+            <form class="space-y-4" id="bookingForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+              <input type="hidden" name="_subject" value="Governance Readiness Review Booking">
               <input
                 type="text"
                 name="name"
@@ -632,37 +633,12 @@
                 Book a Review Now
                 <span class="material-symbols-outlined text-3xl">calendar_today</span>
               </button>
+              <div id="bookingFormStatus" class="hidden text-center py-3 px-4 rounded-lg"></div>
             </form>
             <p class="mt-4 text-sm font-bold uppercase tracking-widest opacity-70">
               Or email: hello@aradvice.com.au
             </p>
           </div>
-
-          <script>
-            document.getElementById('bookingForm').addEventListener('submit', function(e) {
-              e.preventDefault();
-              const name = this.name.value;
-              const email = this.email.value;
-              const organisation = this.organisation.value;
-              const message = this.message.value;
-              
-              const subject = 'Governance Readiness Review Booking';
-              const body = `Hi Andrew,
-
-I'd like to book a Governance Readiness Review.
-
-Name: ${name}
-Email: ${email}
-Organisation: ${organisation}
-
-${message ? 'Additional Information:\n' + message : ''}
-
-Thanks,
-${name}`;
-              
-              window.location.href = `mailto:hello@aradvice.com.au?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            });
-          </script>
         </div>
       </section>
     </main>
