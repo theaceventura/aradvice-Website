@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="description" content="Independent board-level advisory for cyber and AI governance oversight. We help Australian boards achieve defensible governance through 48-hour readiness reviews and strategic frameworks." />
+    <meta name="keywords" content="cyber governance, AI governance, board advisory, AICD, governance readiness review, cyber security oversight, AI risk management, Australian boards, director accountability" />
+    <meta name="author" content="Andrew Roberts Advisory" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aradvice.com.au/" />
+    <meta property="og:title" content="Andrew Roberts Advisory | Cyber and AI Governance for Boards" />
+    <meta property="og:description" content="Independent board-level advisory for cyber and AI governance oversight. Helping Australian boards achieve defensible governance." />
+    <meta property="og:image" content="https://aradvice.com.au/og-image.jpg" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://aradvice.com.au/" />
+    <meta property="twitter:title" content="Andrew Roberts Advisory | Cyber and AI Governance for Boards" />
+    <meta property="twitter:description" content="Independent board-level advisory for cyber and AI governance oversight. Helping Australian boards achieve defensible governance." />
+    <meta property="twitter:image" content="https://aradvice.com.au/og-image.jpg" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    
+    <title>Andrew Roberts Advisory | Cyber and AI Governance for Boards</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#00d4ff",
+              "navy-deep": "#050b1a",
+              "navy-rich": "#0a1428",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      @layer base {
+        body {
+          @apply bg-navy-deep text-slate-100 antialiased font-display;
+        }
+      }
+      .hero-stacked-section {
+        @apply relative min-h-screen flex items-center w-full overflow-hidden py-32;
+      }
+      .section-overlay {
+        @apply absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/90 to-transparent z-10;
+      }
+      .section-bg-image {
+        @apply absolute inset-0 w-full h-full object-cover z-0 opacity-40;
+      }
+      .glass-card {
+        @apply bg-navy-rich/80 backdrop-blur-md border border-white/10;
+      }
+      .neon-glow {
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+      .electric-border {
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      }
+      .nav-link {
+        @apply text-sm font-bold tracking-widest uppercase hover:text-primary transition-colors;
+      }
+    </style>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Andrew Roberts Advisory",
+      "legalName": "GEMINA GROUP PTY LTD",
+      "description": "Independent board-level advisory for cyber and AI governance oversight",
+      "url": "https://aradvice.com.au",
+      "telephone": "+61-xxx-xxx-xxx",
+      "email": "hello@aradvice.com.au",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "AU",
+        "addressRegion": "Victoria"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "addressCountry": "AU"
+      },
+      "areaServed": "AU",
+      "priceRange": "$$$$",
+      "serviceType": [
+        "Cyber Governance Advisory",
+        "AI Governance Advisory",
+        "Board-Level Consulting",
+        "Governance Readiness Review"
+      ],
+      "knowsAbout": [
+        "Cyber Security Governance",
+        "AI Governance",
+        "Board Oversight",
+        "Regulatory Compliance",
+        "Risk Management"
+      ],
+      "sameAs": []
+    }
+    </script>
+  </head>
+
+  <body>
+    <header
+      class="fixed top-0 w-full z-50 bg-navy-deep/90 backdrop-blur-xl border-b border-white/5"
+    >
+      <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-4xl neon-glow"
+            >shield_person</span
+          >
+          <span class="text-xl font-black tracking-tighter text-white uppercase"
+            >Andrew Roberts Advisory</span
+          >
+        </div>
+
+        <nav class="hidden xl:flex items-center gap-10">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="readiness-review.html">Readiness Review</a>
+          <a class="nav-link" href="resource-hub.html">Resource Hub</a>
+          <a class="nav-link" href="#services">Services</a>
+          <a class="nav-link" href="#approach">About</a>
+
+          <a
+            href="#book"
+            class="bg-primary text-navy-deep px-8 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all transform hover:-translate-y-1 electric-border inline-flex items-center justify-center"
+          >
+            Book a Review
+          </a>
+        </nav>
+
+        <button id="mobile-menu-button" class="xl:hidden text-white" type="button" aria-label="Open menu">
+          <span class="material-symbols-outlined text-3xl">menu</span>
+        </button>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden xl:hidden bg-navy-deep/95 backdrop-blur-xl border-b border-white/5">
+        <nav class="max-w-[1400px] mx-auto px-8 py-6 flex flex-col gap-4">
+          <a class="nav-link py-3 border-b border-white/10" href="index.html">Home</a>
+          <a class="nav-link py-3 border-b border-white/10" href="readiness-review.html">Readiness Review</a>
+          <a class="nav-link py-3 border-b border-white/10" href="resource-hub.html">Resource Hub</a>
+          <a class="nav-link py-3 border-b border-white/10" href="#services">Services</a>
+          <a class="nav-link py-3 border-b border-white/10" href="#approach">About</a>
+          <a
+            href="#book"
+            class="bg-primary text-navy-deep px-8 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all text-center mt-4"
+          >
+            Book a Review
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="top" class="hero-stacked-section">
+        <img
+          alt="Dynamic data streams"
+          class="section-bg-image"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfcL7uzyT9S9vqu12jecp5voSL0DS-a9Gz5RlvjXY1wHYogBRh1c0C71ClFdMmjsWoIZDnXiu-Ov0QVjGLubavNjS3YKObZPzMhcgoY6TQG9iFUPQFt3f324eBq_-7dJTuPSu8fntyIg3xHrMiUsCBRHJWhemRx_imiZ8QAUrL3S6B5gKXLBJOK4earQqIAq7NMe9IR0Zx7JrqSMImv6F8SgDNHXtatGI-O2sjhOWHhreB-faVA6kacC90IzsaJNoel3XGqUPzAy0"
+        />
+        <div class="section-overlay"></div>
+
+        <div class="relative z-20 max-w-[1400px] mx-auto px-8 w-full">
+          <div class="max-w-4xl space-y-8">
+            <div
+              class="inline-block px-4 py-1 border-l-4 border-primary bg-primary/10 text-primary font-bold tracking-widest uppercase text-xs"
+            >
+              Executive Governance
+            </div>
+
+            <h1
+              class="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-white uppercase"
+            >
+              Cyber and AI <br /><span class="text-primary neon-glow">Governance</span>
+              <br />for Boards
+            </h1>
+
+            <p class="text-2xl md:text-3xl font-light text-slate-300 tracking-tight italic">
+              Defensible oversight. Clear accountability. Board-ready reporting.
+            </p>
+
+            <p class="text-xl leading-relaxed text-slate-400 max-w-2xl">
+              Directors carry personal accountability for cyber and AI risk. Many boards
+              cannot clearly demonstrate who is accountable, how risk is challenged, or
+              whether oversight would withstand regulatory scrutiny. I design governance
+              frameworks that give boards defensible visibility and control.
+            </p>
+
+            <div class="pt-8">
+              <a
+                href="#book"
+                class="bg-primary text-navy-deep px-10 py-5 text-xl font-black uppercase tracking-tighter hover:bg-white transition-all electric-border flex items-center gap-4 w-fit"
+              >
+                Book a Governance Readiness Review
+                <span class="material-symbols-outlined font-bold">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-stacked-section" id="problem">
+        <img
+          alt="Authoritative architectural lines"
+          class="section-bg-image"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgl07gAJDyH7ObRUd8TMdAofSNh0B91IuiXd9kcHegj44KvK5-s6AYJMtH_oYO1oI-UlZfDxfjuD37ExKfYc8-rblM0aZTxsr8Dj4q7srvyvanQmfy6FbLQTE4S9wvIdjdT8Ah6qVG2Wl2H-7t4oozEwCQZxi2eqO2I8WNz2XWtfDMEhPtdWlzl79pU9HYmS0g8LblakxZNuQRt1hHHTEvCyi2UAwrIcqJQcZXUPKPZhHLgLv2q_xFvSFHqyqmudhxP2Ed0sKQLOQ"
+        />
+        <div
+          class="section-overlay !bg-gradient-to-l !from-navy-deep !via-navy-deep/95 !to-transparent"
+        ></div>
+
+        <div class="relative z-20 max-w-[1400px] mx-auto px-8 w-full">
+          <div class="flex flex-col items-end text-right ml-auto max-w-5xl">
+            <h2
+              class="text-5xl md:text-7xl font-black mb-12 uppercase tracking-tighter text-white"
+            >
+              Why Boards Are <span class="text-primary">Exposed</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 w-full">
+              <div class="glass-card p-10 text-left border-l-4 border-primary">
+                <span class="material-symbols-outlined text-primary text-4xl mb-4"
+                  >warning</span
+                >
+                <h3 class="text-2xl font-bold mb-4 uppercase">Director Liability Risk</h3>
+                <p class="text-slate-400 leading-relaxed">
+                  Cyber is no longer just a technical risk; it is a core fiduciary duty.
+                  Unprepared boards risk significant legal and reputational consequences.
+                </p>
+              </div>
+
+              <div class="glass-card p-10 text-left border-l-4 border-primary">
+                <span class="material-symbols-outlined text-primary text-4xl mb-4"
+                  >account_balance</span
+                >
+                <h3 class="text-2xl font-bold mb-4 uppercase">Lack of Clear Accountability</h3>
+                <p class="text-slate-400 leading-relaxed">
+                  Over-reliance on IT teams without a clear governance bridge means boards
+                  often lack the visibility required to make informed decisions.
+                </p>
+              </div>
+
+              <div class="glass-card p-10 text-left border-l-4 border-primary">
+                <span class="material-symbols-outlined text-primary text-4xl mb-4"
+                  >cloud_off</span
+                >
+                <h3 class="text-2xl font-bold mb-4 uppercase">Vendor Over-Reliance</h3>
+                <p class="text-slate-400 leading-relaxed">
+                  Third-party services do not outsource your legal liability. Boards must
+                  understand how to govern risk across their entire supply chain.
+                </p>
+              </div>
+
+              <div class="glass-card p-10 text-left border-l-4 border-primary">
+                <span class="material-symbols-outlined text-primary text-4xl mb-4"
+                  >balance</span
+                >
+                <h3 class="text-2xl font-bold mb-4 uppercase">Regulatory Expectations</h3>
+                <p class="text-slate-400 leading-relaxed">
+                  Regulators now expect boards to demonstrate active oversight and
+                  understanding of digital resilience, not just passive acceptance of
+                  reports.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-stacked-section" id="services">
+        <img
+          alt="Global networking lines"
+          class="section-bg-image"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFssPyMbl5Zht1A7Eb4i7chHE2dMaerbSfR442Ch4az5A4mfH-MBxi_BkjEx2qaDKZBAWtspT9rHYV-LjmPBhxD22YokseuL1bHNtgdqgVqXB1-8ZO2aM9PbC0xCNqEL_La_93u2fLTIU0YGZZkIXfwA4PIVixvGouv4tBcrKk_7ex0RcUzL7a4lVzww2eJEkkLDMVkfAF7ZfSRPzaRc2d9UEgVLPNkl7SOycrXNTf4hk0nd5YwgVvXLmZu9fK_031ulqq9LAG3rM"
+        />
+        <div class="section-overlay"></div>
+
+        <div class="relative z-20 max-w-[1400px] mx-auto px-8 w-full">
+          <div class="max-w-6xl">
+            <h2 class="text-5xl md:text-7xl font-black mb-16 uppercase tracking-tighter text-white">
+              Board-Level <span class="text-primary">Advisory</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-px bg-white/10 border border-white/10">
+              <div class="bg-navy-rich p-12 hover:bg-navy-deep transition-colors group">
+                <div class="flex justify-between items-start mb-8">
+                  <span class="material-symbols-outlined text-primary text-5xl">policy</span>
+                  <span
+                    class="text-6xl font-black text-white/5 group-hover:text-primary/10 transition-colors italic"
+                    >01</span
+                  >
+                </div>
+
+                <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">
+                  Cyber Governance Review
+                </h3>
+
+                <ul class="space-y-4">
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Board-ready reporting dashboard
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Accountability matrix (RACI)
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Gap analysis vs regulatory standards
+                  </li>
+                  <li class="pt-4 text-primary font-bold italic border-t border-white/10 mt-4">
+                    Outcome: A defensible board oversight structure.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-navy-rich p-12 hover:bg-navy-deep transition-colors group">
+                <div class="flex justify-between items-start mb-8">
+                  <span class="material-symbols-outlined text-primary text-5xl"
+                    >psychology</span
+                  >
+                  <span
+                    class="text-6xl font-black text-white/5 group-hover:text-primary/10 transition-colors italic"
+                    >02</span
+                  >
+                </div>
+
+                <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">
+                  AI Governance Framework
+                </h3>
+
+                <ul class="space-y-4">
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Board AI Ethics &amp; Usage Policy
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    AI Risk Assessment Framework
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Emerging tech oversight controls
+                  </li>
+                  <li class="pt-4 text-primary font-bold italic border-t border-white/10 mt-4">
+                    Outcome: Clear AI risk visibility and escalation protocols.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-navy-rich p-12 hover:bg-navy-deep transition-colors group">
+                <div class="flex justify-between items-start mb-8">
+                  <span class="material-symbols-outlined text-primary text-5xl"
+                    >model_training</span
+                  >
+                  <span
+                    class="text-6xl font-black text-white/5 group-hover:text-primary/10 transition-colors italic"
+                    >03</span
+                  >
+                </div>
+
+                <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">
+                  Incident Simulation
+                </h3>
+
+                <ul class="space-y-4">
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Director-level tabletop exercises
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Crisis decision-making protocols
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Post-simulation governance report
+                  </li>
+                  <li class="pt-4 text-primary font-bold italic border-t border-white/10 mt-4">
+                    Outcome: Directors prepared before crisis.
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-navy-rich p-12 hover:bg-navy-deep transition-colors group">
+                <div class="flex justify-between items-start mb-8">
+                  <span class="material-symbols-outlined text-primary text-5xl"
+                    >integration_instructions</span
+                  >
+                  <span
+                    class="text-6xl font-black text-white/5 group-hover:text-primary/10 transition-colors italic"
+                    >04</span
+                  >
+                </div>
+
+                <h3 class="text-3xl font-bold mb-6 uppercase tracking-tighter">
+                  Governance Integration
+                </h3>
+
+                <ul class="space-y-4">
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Committee charter development
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Risk register &amp; appetite alignment
+                  </li>
+                  <li class="flex items-center gap-3 text-slate-300 font-medium">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Executive KPI &amp; reporting review
+                  </li>
+                  <li class="pt-4 text-primary font-bold italic border-t border-white/10 mt-4">
+                    Outcome: Embedded governance within existing structures.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-stacked-section" id="approach">
+        <img
+          alt="Abstract digital highway"
+          class="section-bg-image"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6v0Ep5R45aM05C_Vocr4G2YvTLJjRWa6NKGhl5rlH-jYEHd8wlvR-6DCrqaTzwEFRajlILUwrTw7krbUmRc3TBWZ4QVGo2nYElB5whWuR3iAFw-RIfa2E8DB3N0j8g2XN8IE3hf4Q8xb-PORwR_Sf_6rZQQyQw5Yyp_lgfp7mGR_dgohGyqPv5PSV5jzXGsJkzN8mt18SRcUKo8QOlOu82u6MJntSrVQKzqocGWiFcbHAw88uyRjJvg-qfOKTXSbud9L6Xyn60ak"
+        />
+        <div class="section-overlay !bg-gradient-to-t !from-navy-deep !to-navy-deep/60"></div>
+
+        <div class="relative z-20 max-w-[1400px] mx-auto px-8 w-full">
+          <div class="grid lg:grid-cols-2 gap-20">
+            <div class="space-y-12">
+              <h2
+                class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-white"
+              >
+                Independent <br />Board <span class="text-primary italic underline decoration-4"
+                  >Advisory</span
+                >
+              </h2>
+
+              <div class="space-y-10">
+                <div class="flex gap-6 items-start">
+                  <span class="material-symbols-outlined text-primary text-4xl"
+                    >verified_user</span
+                  >
+                  <div>
+                    <h4 class="text-2xl font-bold uppercase mb-2">No Conflicts of Interest</h4>
+                    <p class="text-slate-400">
+                      I do not sell software. I do not resell vendor solutions. I do not
+                      take commissions. I advise the board exclusively.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-6 items-start">
+                  <span class="material-symbols-outlined text-primary text-4xl">visibility</span>
+                  <div>
+                    <h4 class="text-2xl font-bold uppercase mb-2">Practical, Not Theoretical</h4>
+                    <p class="text-slate-400">
+                      Frameworks are only useful if they can be operationalised. My advice
+                      focuses on achievable outcomes.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-6 items-start">
+                  <span class="material-symbols-outlined text-primary text-4xl"
+                    >history_edu</span
+                  >
+                  <div>
+                    <h4 class="text-2xl font-bold uppercase mb-2">Regulatory Aware &amp; Board-Focused</h4>
+                    <p class="text-slate-400">
+                      I focus exclusively on the board's perspective, ensuring advice is
+                      aligned with Australian corporate governance standards and director
+                      duties.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card p-12 border-t-8 border-primary">
+              <h3 class="text-4xl font-black uppercase tracking-tighter mb-10">Ideal Clients</h3>
+
+              <div class="space-y-8">
+                <div class="pb-8 border-b border-white/10">
+                  <p class="text-2xl font-bold text-white mb-2 uppercase">SME &amp; Mid-Market</p>
+                  <p class="text-slate-400">
+                    Organisations with sophisticated operations but lean governance teams.
+                  </p>
+                </div>
+
+                <div class="pb-8 border-b border-white/10">
+                  <p class="text-2xl font-bold text-white mb-2 uppercase">Not-for-Profits (NFPs)</p>
+                  <p class="text-slate-400">
+                    Managing sensitive community data with high reputational stakes.
+                  </p>
+                </div>
+
+                <div>
+                  <p class="text-2xl font-bold text-white mb-2 uppercase">Regulated Entities</p>
+                  <p class="text-slate-400">
+                    Financial services, health, and infrastructure providers facing strict
+                    audit requirements.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-10 pt-8 border-t border-white/10">
+                <p class="text-sm italic text-slate-500">
+                  Andrew Roberts Advisory is a specialised advisory firm. We do not sell
+                  software, perform penetration testing, or provide managed IT services.
+                  This ensures our advice remains independent and conflict-free.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resources" class="py-24 bg-white text-navy-deep relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] select-none pointer-events-none">
+          <span class="text-[20rem] font-black uppercase tracking-tighter">RESOURCES</span>
+        </div>
+
+        <div class="max-w-[1400px] mx-auto px-8 relative z-10 text-center">
+          <h3 class="text-sm font-black uppercase tracking-[0.4em] mb-16 text-slate-500">
+            Grounded in Established Governance Principles
+          </h3>
+
+          <div class="flex flex-wrap justify-between gap-12 items-center">
+            <div class="flex flex-col items-center">
+              <span class="text-4xl font-black italic tracking-tighter">AICD</span>
+              <span class="text-xs font-bold uppercase mt-2 tracking-widest text-slate-500">Cyber Principles</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-4xl font-black italic tracking-tighter">ASIC</span>
+              <span class="text-xs font-bold uppercase mt-2 tracking-widest text-slate-500">Director Duties</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-4xl font-black italic tracking-tighter">ISO/IEC</span>
+              <span class="text-xs font-bold uppercase mt-2 tracking-widest text-slate-500">38500 Governance</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <span class="text-4xl font-black italic tracking-tighter">NIST</span>
+              <span class="text-xs font-bold uppercase mt-2 tracking-widest text-slate-500">CSF 2.0</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="book" class="py-40 bg-primary text-navy-deep relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+
+        <div class="max-w-[1400px] mx-auto px-8 text-center relative z-10">
+          <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-8 leading-[0.85]">
+            Ready to fortify <br />your board's oversight?
+          </h2>
+
+          <p class="text-2xl md:text-3xl font-bold mb-12 max-w-3xl mx-auto uppercase tracking-tighter opacity-80">
+            Start with a Governance Readiness Review to identify gaps in your current structure and reporting.
+          </p>
+
+          <div class="max-w-lg mx-auto bg-navy-rich/80 backdrop-blur-md border border-white/10 p-10 rounded-2xl shadow-2xl">
+            <form class="space-y-4" id="bookingForm">
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                required
+                class="w-full px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-all"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                required
+                class="w-full px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-all"
+              />
+              <input
+                type="text"
+                name="organisation"
+                placeholder="Organisation"
+                class="w-full px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-all"
+              />
+              <textarea
+                name="message"
+                placeholder="Tell us about your governance priorities (optional)"
+                rows="3"
+                class="w-full px-6 py-4 bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent transition-all resize-none"
+              ></textarea>
+              <button
+                type="submit"
+                class="w-full bg-navy-deep text-white px-16 py-6 text-xl font-black uppercase tracking-tighter hover:bg-navy-rich transition-all transform hover:scale-105 shadow-2xl flex items-center justify-center gap-4 rounded-lg"
+              >
+                Book a Review Now
+                <span class="material-symbols-outlined text-3xl">calendar_today</span>
+              </button>
+            </form>
+            <p class="mt-4 text-sm font-bold uppercase tracking-widest opacity-70">
+              Or email: hello@aradvice.com.au
+            </p>
+          </div>
+
+          <script>
+            document.getElementById('bookingForm').addEventListener('submit', function(e) {
+              e.preventDefault();
+              const name = this.name.value;
+              const email = this.email.value;
+              const organisation = this.organisation.value;
+              const message = this.message.value;
+              
+              const subject = 'Governance Readiness Review Booking';
+              const body = `Hi Andrew,
+
+I'd like to book a Governance Readiness Review.
+
+Name: ${name}
+Email: ${email}
+Organisation: ${organisation}
+
+${message ? 'Additional Information:\n' + message : ''}
+
+Thanks,
+${name}`;
+              
+              window.location.href = `mailto:hello@aradvice.com.au?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            });
+          </script>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-navy-rich border-t border-white/5 py-24">
+      <div class="max-w-[1400px] mx-auto px-8">
+        <div class="grid md:grid-cols-4 gap-20 mb-20">
+          <div class="col-span-2">
+            <div class="flex items-center gap-3 mb-8">
+              <span class="material-symbols-outlined text-primary text-3xl">shield_person</span>
+              <span class="text-xl font-black tracking-tighter text-white uppercase">Andrew Roberts Advisory</span>
+            </div>
+            <p class="text-slate-400 max-w-md text-lg leading-relaxed">
+              Independent board-level advisory for cyber and AI governance oversight.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-white font-black uppercase tracking-widest mb-8 text-sm border-b-2 border-primary w-fit pb-1">
+              Resources
+            </h4>
+            <ul class="space-y-4 text-slate-400 font-bold uppercase text-sm">
+              <li><a class="hover:text-primary transition-colors" href="resource-hub.html">AICD Cyber Principles</a></li>
+              <li><a class="hover:text-primary transition-colors" href="resource-hub.html">ASIC Director Duties</a></li>
+              <li><a class="hover:text-primary transition-colors" href="resource-hub.html">ISO/IEC 38500</a></li>
+              <li><a class="hover:text-primary transition-colors" href="resource-hub.html">NIST CSF 2.0</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-white font-black uppercase tracking-widest mb-8 text-sm border-b-2 border-primary w-fit pb-1">
+              Advisory
+            </h4>
+            <ul class="space-y-4 text-slate-400 font-bold uppercase text-sm">
+              <li><a class="hover:text-primary transition-colors" href="#services">Governance Reviews</a></li>
+              <li><a class="hover:text-primary transition-colors" href="#services">AI Frameworks</a></li>
+              <li><a class="hover:text-primary transition-colors" href="#services">Board Simulations</a></li>
+              <li><a class="hover:text-primary transition-colors" href="#approach">Independence</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          class="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-xs font-bold uppercase tracking-widest text-slate-600"
+        >
+          <p>© 2026 Andrew Roberts Advisory. All rights reserved.</p>
+          <div class="flex gap-10">
+            <a class="hover:text-white" href="privacy-policy.html">Privacy Policy</a>
+            <a class="hover:text-white" href="terms-of-service.html">Terms of Service</a>
+            <a class="hover:text-white" href="liability-disclaimer.html">Liability Disclaimer</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuIcon = mobileMenuButton.querySelector('.material-symbols-outlined');
+      
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuIcon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
+      });
+      
+      // Close mobile menu when clicking on  a link
+      const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+      mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          mobileMenu.classList.add('hidden');
+          mobileMenuIcon.textContent = 'menu';
+        });
+      });
+    </script>
+  </body>
+</html>
