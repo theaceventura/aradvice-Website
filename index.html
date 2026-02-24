@@ -714,5 +714,46 @@
         });
       });
     </script>
+
+    <!-- Form Submission Handler -->
+    <script>
+      const bookingForm = document.getElementById('bookingForm');
+      const statusDiv = document.getElementById('bookingFormStatus');
+      
+      bookingForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitButton = bookingForm.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.innerHTML;
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Sending...';
+        
+        try {
+          const response = await fetch(bookingForm.action, {
+            method: 'POST',
+            body: new FormData(bookingForm),
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (response.ok) {
+            statusDiv.textContent = '✓ Thank you! We\'ll be in touch within 24 hours.';
+            statusDiv.className = 'text-center py-3 px-4 rounded-lg bg-green-500/20 text-green-300 border border-green-500/30';
+            statusDiv.classList.remove('hidden');
+            bookingForm.reset();
+          } else {
+            throw new Error('Form submission failed');
+          }
+        } catch (error) {
+          statusDiv.textContent = '⚠ Something went wrong. Please email hello@aradvice.com.au directly.';
+          statusDiv.className = 'text-center py-3 px-4 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30';
+          statusDiv.classList.remove('hidden');
+        } finally {
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        }
+      });
+    </script>
   </body>
 </html>

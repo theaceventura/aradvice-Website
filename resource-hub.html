@@ -346,4 +346,45 @@ Send Enquiry
     });
   }
 </script>
+
+<!-- Form Submission Handler -->
+<script>
+  const resourceHubForm = document.getElementById('resourceHubForm');
+  const statusDiv = document.getElementById('resourceFormStatus');
+  
+  resourceHubForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const submitButton = resourceHubForm.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending...';
+    
+    try {
+      const response = await fetch(resourceHubForm.action, {
+        method: 'POST',
+        body: new FormData(resourceHubForm),
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        statusDiv.textContent = '✓ Thank you! We\'ll be in touch within 24 hours.';
+        statusDiv.className = 'text-center py-3 px-4 rounded-lg bg-green-500/20 text-green-300 border border-green-500/30';
+        statusDiv.classList.remove('hidden');
+        resourceHubForm.reset();
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      statusDiv.textContent = '⚠ Something went wrong. Please email hello@aradvice.com.au directly.';
+      statusDiv.className = 'text-center py-3 px-4 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30';
+      statusDiv.classList.remove('hidden');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalButtonText;
+    }
+  });
+</script>
 </body></html>
