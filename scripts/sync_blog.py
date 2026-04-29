@@ -25,6 +25,26 @@ HEADERS = {
     "Referer": FEED_URL,
 }
 
+LOCAL_HEADER_HTML = """
+<header class="sticky top-0 z-50 bg-navy-deep/90 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-4xl neon-glow">shield_person</span>
+            <span class="text-xl font-black tracking-tighter text-white uppercase">Andrew Roberts Advisory</span>
+        </div>
+
+        <nav class="hidden xl:flex items-center gap-10">
+            <a class="nav-link" href="/index.html">Home</a>
+            <a class="nav-link" href="/readiness-review.html">Readiness Review</a>
+            <a class="nav-link" href="/resource-hub.html">Resource Hub</a>
+            <a class="nav-link" href="/blog.html">Blog</a>
+            <a class="nav-link" href="/index.html#services">Services</a>
+            <a class="nav-link" href="/index.html#approach">About</a>
+        </nav>
+    </div>
+</header>
+""".strip()
+
 
 @dataclass
 class FeedItem:
@@ -83,13 +103,18 @@ def rewrite_domains(html: str) -> str:
     return html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
 
 
+def replace_host_header(html: str) -> str:
+    return re.sub(r"<header\b.*?</header>", LOCAL_HEADER_HTML, html, count=1, flags=re.DOTALL | re.IGNORECASE)
+
+
 def article_page_path(slug: str) -> Path:
     return ROOT / "post" / slug / "index.html"
 
 
 def write_page(path: Path, html: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(rewrite_domains(html), encoding="utf-8")
+    rewritten = rewrite_domains(html)
+    path.write_text(replace_host_header(rewritten), encoding="utf-8")
 
 
 def item_datetime(pub_date: str) -> datetime:
