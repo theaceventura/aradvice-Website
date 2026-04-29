@@ -99,31 +99,6 @@
   </header>
 
   <main class="pt-32">
-    <section class="relative overflow-hidden py-24">
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,212,255,0.18),transparent_35%),linear-gradient(180deg,#050b1a_0%,#0a1428_100%)]"></div>
-      <div class="relative z-10 max-w-[1400px] mx-auto px-8">
-        <div class="max-w-4xl space-y-8">
-          <div class="inline-flex items-center gap-2 px-4 py-2 border-l-4 border-primary bg-primary/10 text-primary font-bold tracking-widest uppercase text-xs">
-            Insights and commentary
-          </div>
-          <h1 class="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter text-white uppercase">
-            Blog <br /><span class="text-primary neon-glow">Now on</span> the Main Site
-          </h1>
-          <p class="text-xl md:text-2xl text-slate-300 max-w-3xl leading-relaxed">
-            The blog content now lives inside this site, so the page keeps the same look and feel without relying on a live feed fetch.
-          </p>
-          <div class="flex flex-wrap gap-4 pt-4">
-            <a href="resource-hub.html" class="bg-primary text-navy-deep px-8 py-4 font-black uppercase tracking-tighter hover:bg-white transition-all">
-              Visit Resource Hub
-            </a>
-            <a href="readiness-review.html" class="border border-white/20 text-white px-8 py-4 font-black uppercase tracking-tighter hover:border-primary hover:text-primary transition-all">
-              Book a Review
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section id="full-article" class="pb-20">
       <div class="max-w-4xl mx-auto px-8 space-y-10">
         <article class="glass-card p-8 md:p-10 space-y-8 leading-relaxed text-slate-300">
@@ -293,154 +268,99 @@
 
         <template id="fallbackArticleTemplate">
           <article class="glass-card p-8 md:p-10 border border-white/10">
-            <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
-              <span class="px-3 py-1 rounded-full bg-primary/10 text-primary">Cyber Governance</span>
-              <span>8 min read</span>
-              <span>29 April 2026</span>
-            </div>
-            <h3 class="text-3xl md:text-4xl font-black leading-tight tracking-tighter text-white uppercase mb-4">
-              <a href="#full-article" class="hover:text-primary transition-colors">
-                Cyber Governance for Boards in Australia: Moving Beyond Technical Metrics to Defensible Oversight
-              </a>
-            </h3>
-            <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
-              Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?
-            </p>
-            <div class="flex flex-wrap gap-4">
-              <a href="#full-article" class="bg-primary text-navy-deep px-6 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all">
-                Read Article
-              </a>
-              <a href="resource-hub.html" class="border border-white/20 text-white px-6 py-3 font-black uppercase tracking-tighter hover:border-primary hover:text-primary transition-all">
-                Related Resources
-              </a>
-            </div>
-          </article>
-        </template>
-      </div>
-    </section>
+            <main class="pt-32">
+              <section class="py-12">
+                <div class="max-w-4xl mx-auto px-8">
+                  <nav class="flex items-center gap-2 mb-8 text-sm font-medium text-slate-400">
+                    <a class="hover:text-primary" href="index.html">Home</a>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <a class="hover:text-primary" href="blog.html">Blog</a>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <span class="text-slate-100">Article</span>
+                  </nav>
 
-  </main>
+                  <div class="inline-flex items-center gap-2 px-4 py-2 border-l-4 border-primary bg-primary/10 text-primary font-bold tracking-widest uppercase text-xs mb-6">
+                    Cyber Governance
+                  </div>
+                  <h1 class="text-4xl md:text-6xl font-black leading-[0.95] tracking-tighter text-white uppercase mb-6">
+                    Cyber Governance for Boards in Australia: Moving Beyond Technical Metrics to Defensible Oversight
+                  </h1>
+                  <p class="text-xl md:text-2xl text-slate-300 leading-relaxed max-w-3xl mb-10">
+                    Boards are often shown dashboards that look reassuring but still fail the real test: can the board explain, evidence, and defend its oversight after a serious incident?
+                  </p>
 
-  <footer class="border-t border-white/5 bg-navy-rich py-12">
-    <div class="max-w-[1400px] mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-      <p class="text-sm text-slate-400">© 2026 Andrew Roberts Advisory. Independent board-level advisory for cyber and AI governance oversight.</p>
-      <div class="flex flex-wrap gap-6 text-xs font-bold uppercase tracking-widest text-slate-500">
-        <a class="hover:text-primary transition-colors" href="index.html">Home</a>
-        <a class="hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
-        <a class="hover:text-primary transition-colors" href="readiness-review.html">Readiness Review</a>
-      </div>
-    </div>
-  </footer>
+                  <div class="flex flex-wrap items-center gap-4 text-xs font-bold uppercase tracking-widest text-slate-400 mb-12">
+                    <span class="px-3 py-1 rounded-full bg-primary/10 text-primary">8 min read</span>
+                    <span>29 April 2026</span>
+                    <span>Andrew Roberts Advisory</span>
+                  </div>
+                </div>
+              </section>
 
-  <script>
-    const articleFeed = document.getElementById('articleFeed');
-    const feedArticleTemplate = document.getElementById('feedArticleTemplate');
-    const fallbackArticleTemplate = document.getElementById('fallbackArticleTemplate');
-    const localArticles = [
-      {
-        title: 'Cyber Governance for Boards in Australia: Moving Beyond Technical Metrics to Defensible Oversight',
-        link: '#full-article',
-        summary: 'Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?',
-        content: 'Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?',
-        pubDate: 'Wed, 29 Apr 2026 12:00:00 +0000',
-        category: 'Cyber Governance',
-        author: 'Andrew Roberts Advisory'
-      }
-    ];
+              <section class="pb-20">
+                <div class="max-w-4xl mx-auto px-8 space-y-10">
+                  <article class="glass-card p-8 md:p-10 space-y-8 leading-relaxed text-slate-300">
+                    <section class="space-y-4">
+                      <h2 class="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">The problem with technical comfort</h2>
+                      <p>
+                        In many organisations, cyber reporting still centres on patch rates, vulnerability counts, uptime, and the status of technical controls. Those metrics have value, but they are not the same as governance. A board that receives green dashboards without a clear narrative about risk ownership, escalation, and residual exposure may be looking at comfort rather than control.
+                      </p>
+                      <p>
+                        For Australian directors, that gap matters. Regulators, auditors, and stakeholders do not ask whether the endpoint tool was installed. They ask whether the board understood the risk, challenged management, and maintained a defensible oversight process.
+                      </p>
+                    </section>
 
-    function stripHtml(html) {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = html;
-      return (wrapper.textContent || wrapper.innerText || '').trim();
-    }
+                    <section class="space-y-4">
+                      <h2 class="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">What boards should be asking instead</h2>
+                      <ul class="space-y-3">
+                        <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[20px] mt-1">check_circle</span>Who owns each material cyber risk at executive and board level?</li>
+                        <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[20px] mt-1">check_circle</span>What evidence supports the stated control effectiveness?</li>
+                        <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[20px] mt-1">check_circle</span>How quickly would the board be informed if the control failed?</li>
+                        <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[20px] mt-1">check_circle</span>Can the organisation demonstrate a pattern of challenge and follow-up in board papers?</li>
+                      </ul>
+                    </section>
 
-    function parseDate(value) {
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) {
-        return '';
-      }
-      return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-    }
+                    <section class="space-y-4">
+                      <h2 class="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">Translate metrics into governance</h2>
+                      <p>
+                        A useful board paper does not stop at numbers. It interprets the numbers in governance terms: what changed, why it matters, what remains unresolved, and what decision the board needs to make. That means linking technical reporting to risk appetite, accountability, incident readiness, and strategic priorities.
+                      </p>
+                      <p>
+                        The practical shift is simple but powerful. Instead of asking whether a control is deployed, ask whether the board can defend the oversight model behind that control. That is the difference between technical assurance and defensible governance.
+                      </p>
+                    </section>
 
-    function estimateReadingTime(text) {
-      const words = stripHtml(text).split(/\s+/).filter(Boolean).length;
-      return `${Math.max(1, Math.round(words / 220))} min read`;
-    }
+                    <section class="space-y-4">
+                      <h2 class="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">A concise board test</h2>
+                      <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-white/5 border border-white/10 p-4 rounded-lg">
+                          <p class="text-xs uppercase tracking-widest text-primary font-bold mb-2">Evidence</p>
+                          <p>What proof do we have beyond a dashboard?</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 p-4 rounded-lg">
+                          <p class="text-xs uppercase tracking-widest text-primary font-bold mb-2">Challenge</p>
+                          <p>Where did the board push back or seek clarification?</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 p-4 rounded-lg">
+                          <p class="text-xs uppercase tracking-widest text-primary font-bold mb-2">Escalation</p>
+                          <p>How would this be escalated if the control failed tomorrow?</p>
+                        </div>
+                      </div>
+                    </section>
+                  </article>
 
-    function normaliseLink(link) {
-      if (!link) {
-        return '#';
-      }
-
-      if (!/^https?:\/\//i.test(link)) {
-        return link;
-      }
-
-      try {
-        return new URL(link, window.location.origin).toString();
-      } catch {
-        return link;
-      }
-    }
-
-    function renderFallbackArticle() {
-      articleFeed.replaceChildren(fallbackArticleTemplate.content.cloneNode(true));
-    }
-
-    function renderArticles(items) {
+                  <div class="glass-card p-8 md:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div>
+                      <p class="text-xs uppercase tracking-widest text-primary font-bold mb-2">Next step</p>
+                      <h2 class="text-2xl font-black uppercase tracking-tighter text-white">Strengthen the board's oversight model</h2>
+                      <p class="text-slate-300 mt-2 max-w-2xl">If your reporting is still dominated by technical metrics, a readiness review can identify the governance gaps that matter most.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-4">
+                      <a href="readiness-review.html" class="bg-primary text-navy-deep px-6 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all">Book a Review</a>
+                      <a href="blog.html" class="border border-white/20 text-white px-6 py-3 font-black uppercase tracking-tighter hover:border-primary hover:text-primary transition-all">Back to Blog</a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
       articleFeed.innerHTML = '';
-
-      items.forEach((item) => {
-        const fragment = feedArticleTemplate.content.cloneNode(true);
-        const category = item.category || 'Article';
-        const title = item.title || 'Untitled post';
-        const link = normaliseLink(item.link);
-        const summary = item.summary || item.description || stripHtml(item.content || '');
-        const date = parseDate(item.pubDate || item.date || item.published || item.updated);
-        const previewNotes = [
-          summary || 'Read the full article for more detail.',
-          item.author ? `By ${item.author}` : null,
-          date ? `Published ${date}` : null
-        ].filter(Boolean);
-
-        fragment.querySelector('[data-role="category"]').textContent = category;
-        fragment.querySelector('[data-role="reading-time"]').textContent = estimateReadingTime(item.content || summary || title);
-        fragment.querySelector('[data-role="date"]').textContent = date;
-        const titleLink = fragment.querySelector('[data-role="title-link"]');
-        titleLink.href = link;
-        titleLink.textContent = title;
-        fragment.querySelector('[data-role="summary"]').textContent = summary || 'Read the full article for more detail.';
-        const readLink = fragment.querySelector('[data-role="read-link"]');
-        readLink.href = link;
-        fragment.querySelector('[data-role="preview-title"]').textContent = title;
-
-        const previewBody = fragment.querySelector('[data-role="preview-body"]');
-        previewNotes.forEach((note) => {
-          const row = document.createElement('div');
-          row.className = 'flex items-start gap-3';
-          row.innerHTML = '<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>';
-          const text = document.createElement('div');
-          text.textContent = note;
-          row.appendChild(text);
-          previewBody.appendChild(row);
-        });
-
-        articleFeed.appendChild(fragment);
-      });
-    }
-
-    function initBlogFeed() {
-      if (!articleFeed || !feedArticleTemplate || !fallbackArticleTemplate) {
-        return;
-      }
-
-      renderArticles(localArticles);
-      if (!window.location.hash && document.getElementById('full-article')) {
-        window.location.hash = 'full-article';
-      }
-    }
-
-    initBlogFeed();
-  </script>
-</body>
-</html>
