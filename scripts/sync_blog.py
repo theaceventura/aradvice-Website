@@ -25,23 +25,25 @@ HEADERS = {
     "Referer": FEED_URL,
 }
 
-def read_local_head_and_header() -> tuple[str, str, str]:
-    """Extract the local site's <html> opening tag, <head>, and first <header>.
+def read_local_head_and_header() -> tuple[str, str, str, str]:
+    """Extract the local site's <html>, <body>, <head>, and first <header>.
 
-    Returns a tuple of (head_html, header_html, html_tag). Missing parts
+    Returns a tuple of (head_html, header_html, html_tag, body_tag). Missing parts
     return empty strings.
     """
     index_path = ROOT / "index.html"
     if not index_path.exists():
-        return "", "", ""
+        return "", "", "", ""
     content = index_path.read_text(encoding="utf-8")
     head_match = re.search(r"<head\b.*?>(.*?)</head>", content, flags=re.DOTALL | re.IGNORECASE)
     header_match = re.search(r"<header\b.*?</header>", content, flags=re.DOTALL | re.IGNORECASE)
     html_match = re.search(r"(<html\b.*?>)", content, flags=re.IGNORECASE)
+    body_match = re.search(r"(<body\b.*?>)", content, flags=re.IGNORECASE)
     head_html = f"<head>{head_match.group(1)}</head>" if head_match else ""
     header_html = header_match.group(0) if header_match else ""
     html_tag = html_match.group(1) if html_match else ""
-    return head_html, header_html, html_tag
+    body_tag = body_match.group(1) if body_match else ""
+    return head_html, header_html, html_tag, body_tag
 
 
 @dataclass
@@ -101,15 +103,34 @@ def rewrite_domains(html: str) -> str:
     return html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
 
 
-def replace_host_head_and_header(html: str, local_head: str, local_header: str, local_html: str) -> str:
+def replace_host_head_and_header(
+    html: str,
+    local_head: str,
+    local_header: str,
+    local_html: str,
+    local_body: str,
+) -> str:
     out = html
     # Replace the opening <html> tag to carry site-level attributes (e.g., class)
     if local_html:
         out = re.sub(r"<html\b.*?>", local_html, out, count=1, flags=re.IGNORECASE)
+    # Replace the opening <body> tag to carry site-level base styling.
+    if local_body:
+        out = re.sub(r"<body\b.*?>", local_body, out, count=1, flags=re.IGNORECASE)
     if local_head:
         out = re.sub(r"<head\b.*?</head>", local_head, out, count=1, flags=re.DOTALL | re.IGNORECASE)
     if local_header:
         out = re.sub(r"<header\b.*?</header>", local_header, out, count=1, flags=re.DOTALL | re.IGNORECASE)
+    # Ensure content starts below fixed header.
+    out = re.sub(r'<main class="flex-1">', '<main class="flex-1 pt-28">', out, count=1, flags=re.IGNORECASE)
+    # Keep mirrored article readable while preserving site shell aesthetics.
+    out = re.sub(
+        r'<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">',
+        '<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-white rounded-2xl shadow-xl border border-slate-200">',
+        out,
+        count=1,
+        flags=re.IGNORECASE,
+    )
     # Ensure Google Fonts and Material Symbols are present; inject if missing.
     if 'fonts.googleapis' not in out:
         font_links = (
@@ -136,8 +157,11 @@ def article_page_path(slug: str) -> Path:
 def write_page(path: Path, html: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = rewrite_domains(html)
-    local_head, local_header, local_html = read_local_head_and_header()
-    path.write_text(replace_host_head_and_header(rewritten, local_head, local_header, local_html), encoding="utf-8")
+    local_head, local_header, local_html, local_body = read_local_head_and_header()
+    path.write_text(
+        replace_host_head_and_header(rewritten, local_head, local_header, local_html, local_body),
+        encoding="utf-8",
+    )
 
 
 def item_datetime(pub_date: str) -> datetime:
