@@ -110,7 +110,7 @@
             Blog <br /><span class="text-primary neon-glow">Now on</span> the Main Site
           </h1>
           <p class="text-xl md:text-2xl text-slate-300 max-w-3xl leading-relaxed">
-            The hosted blog publishes the posts, and this page renders them in Andrew Roberts Advisory styling through the RSS feed.
+            The blog content now lives inside this site, so the page keeps the same look and feel without relying on a live feed fetch.
           </p>
           <div class="flex flex-wrap gap-4 pt-4">
             <a href="resource-hub.html" class="bg-primary text-navy-deep px-8 py-4 font-black uppercase tracking-tighter hover:bg-white transition-all">
@@ -126,7 +126,6 @@
 
     <section class="py-20">
       <div class="max-w-[1400px] mx-auto px-8">
-        <div id="feedStatus" class="hidden mb-8 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300"></div>
         <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
           <article class="glass-card p-8">
             <span class="material-symbols-outlined text-primary text-4xl mb-6">shield_person</span>
@@ -184,7 +183,7 @@
             <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white">Featured Post</h2>
           </div>
           <p class="hidden md:block text-slate-400 max-w-xl text-right">
-            The page renders posts from the hosted blog feed, with a styled fallback if the feed is unavailable.
+            The page renders the featured post from local site content, with the same visual treatment as the rest of the site.
           </p>
         </div>
 
@@ -269,23 +268,19 @@
   </footer>
 
   <script>
-    const feedStatus = document.getElementById('feedStatus');
     const articleFeed = document.getElementById('articleFeed');
     const feedArticleTemplate = document.getElementById('feedArticleTemplate');
     const fallbackArticleTemplate = document.getElementById('fallbackArticleTemplate');
     const localArticles = [
       {
         title: 'Cyber Governance for Boards in Australia: Moving Beyond Technical Metrics to Defensible Oversight',
-        link: 'https://blog.aradvice.com.au/post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight',
+        link: 'post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/',
         summary: 'Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?',
         content: 'Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?',
         pubDate: 'Wed, 29 Apr 2026 12:00:00 +0000',
         category: 'Cyber Governance',
         author: 'Andrew Roberts Advisory'
       }
-    ];
-    const feedUrls = [
-      'https://blog.aradvice.com.au/feed.xml'
     ];
 
     function stripHtml(html) {
@@ -310,6 +305,10 @@
     function normaliseLink(link) {
       if (!link) {
         return '#';
+      }
+
+      if (!/^https?:\/\//i.test(link)) {
+        return link;
       }
 
       try {
@@ -365,75 +364,12 @@
       });
     }
 
-    async function fetchFeed(url) {
-      const response = await fetch(url, {
-        headers: {
-          Accept: 'application/rss+xml, application/xml, text/xml'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Feed request failed: ${response.status}`);
-      }
-
-      const xml = await response.text();
-      const documentNode = new DOMParser().parseFromString(xml, 'text/xml');
-
-      if (documentNode.querySelector('parsererror')) {
-        throw new Error('Invalid feed XML');
-      }
-
-      const rssItems = Array.from(documentNode.querySelectorAll('item')).map((item) => ({
-        title: item.querySelector('title')?.textContent?.trim(),
-        link: item.querySelector('link')?.textContent?.trim(),
-        summary: stripHtml(item.querySelector('description')?.textContent || ''),
-        content: item.querySelector('content\\:encoded')?.textContent || item.querySelector('encoded')?.textContent || '',
-        pubDate: item.querySelector('pubDate')?.textContent?.trim(),
-        category: item.querySelector('category')?.textContent?.trim(),
-        author: item.querySelector('author')?.textContent?.trim()
-      }));
-
-      if (rssItems.length > 0) {
-        return rssItems;
-      }
-
-      return Array.from(documentNode.querySelectorAll('entry')).map((entry) => ({
-        title: entry.querySelector('title')?.textContent?.trim(),
-        link: entry.querySelector('link')?.getAttribute('href')?.trim() || entry.querySelector('link')?.textContent?.trim(),
-        summary: stripHtml(entry.querySelector('summary')?.textContent || entry.querySelector('content')?.textContent || ''),
-        content: entry.querySelector('content')?.textContent || '',
-        pubDate: entry.querySelector('updated')?.textContent?.trim() || entry.querySelector('published')?.textContent?.trim(),
-        category: entry.querySelector('category')?.getAttribute('term')?.trim() || 'Article',
-        author: entry.querySelector('author name')?.textContent?.trim()
-      }));
-    }
-
-    async function initBlogFeed() {
+    function initBlogFeed() {
       if (!articleFeed || !feedArticleTemplate || !fallbackArticleTemplate) {
         return;
       }
 
       renderArticles(localArticles);
-      if (feedStatus) {
-        feedStatus.textContent = 'Showing the latest featured post while the RSS feed loads.';
-        feedStatus.classList.remove('hidden');
-      }
-
-      for (const feedUrl of feedUrls) {
-        try {
-          const items = await fetchFeed(feedUrl);
-          if (items.length > 0) {
-            renderArticles(items.slice(0, 6));
-            if (feedStatus) {
-              feedStatus.textContent = `Showing the latest posts from ${new URL(feedUrl).hostname}.`;
-              feedStatus.classList.remove('hidden');
-            }
-            return;
-          }
-        } catch (error) {
-          continue;
-        }
-      }
     }
 
     initBlogFeed();
