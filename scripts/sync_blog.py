@@ -116,7 +116,7 @@ def replace_host_head_and_header(
     # Use a dedicated blog shell so mirrored articles stay visually consistent.
     out = re.sub(
         r"<body\b.*?>",
-        '<body class="blog-shell bg-slate-50 text-slate-900 min-h-screen flex flex-col">',
+        '<body class="blog-shell bg-navy-deep text-slate-100 min-h-screen flex flex-col">',
         out,
         count=1,
         flags=re.IGNORECASE,
