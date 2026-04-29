@@ -27,6 +27,7 @@
   <meta name="twitter:title" content="Blog | Andrew Roberts Advisory" />
   <meta name="twitter:description" content="Insights on cyber governance, AI governance, and board oversight." />
   <meta name="twitter:image" content="https://aradvice.com.au/og-image.jpg" />
+  <link rel="alternate" type="application/rss+xml" title="Andrew Roberts Advisory Blog RSS" href="https://blog.aradvice.com.au/rss.xml" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -74,6 +75,9 @@
     .nav-link {
       @apply text-sm font-bold tracking-widest uppercase hover:text-primary transition-colors;
     }
+    .article-body p + p {
+      @apply mt-3;
+    }
   </style>
 </head>
 <body>
@@ -106,7 +110,7 @@
             Blog <br /><span class="text-primary neon-glow">Now on</span> the Main Site
           </h1>
           <p class="text-xl md:text-2xl text-slate-300 max-w-3xl leading-relaxed">
-            blog.aradvice.com.au has been consolidated into aradvice.com.au/blog.html so published insights and board-level commentary now sit alongside the rest of the advisory site.
+            The hosted blog publishes the posts, and this page renders them in Andrew Roberts Advisory styling through the RSS feed.
           </p>
           <div class="flex flex-wrap gap-4 pt-4">
             <a href="resource-hub.html" class="bg-primary text-navy-deep px-8 py-4 font-black uppercase tracking-tighter hover:bg-white transition-all">
@@ -122,6 +126,7 @@
 
     <section class="py-20">
       <div class="max-w-[1400px] mx-auto px-8">
+        <div id="feedStatus" class="hidden mb-8 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300"></div>
         <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
           <article class="glass-card p-8">
             <span class="material-symbols-outlined text-primary text-4xl mb-6">shield_person</span>
@@ -152,7 +157,7 @@
         <div class="space-y-6 max-w-2xl">
           <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white">What to expect here</h2>
           <p class="text-lg text-slate-300 leading-relaxed">
-            This page is the new canonical home for commentary and articles. As new material is published, it will live under the main domain rather than a separate blog subdomain.
+            This page is the canonical home for commentary and articles. As new material is published, it will render here in your site style.
           </p>
         </div>
         <div class="glass-card p-8 md:p-10">
@@ -179,53 +184,75 @@
             <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white">Featured Post</h2>
           </div>
           <p class="hidden md:block text-slate-400 max-w-xl text-right">
-            The article feed is now available on the main site and will expand as new posts are published.
+            The page renders posts from the hosted blog feed, with a styled fallback if the feed is unavailable.
           </p>
         </div>
 
-        <article class="glass-card overflow-hidden border border-white/10">
-          <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-0">
-            <div class="p-8 md:p-10 lg:p-12 space-y-6">
-              <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-widest text-slate-400">
-                <span class="px-3 py-1 rounded-full bg-primary/10 text-primary">Cyber Governance</span>
-                <span>8 min read</span>
-                <span>29 April 2026</span>
+        <div id="articleFeed" class="grid gap-6"></div>
+
+        <template id="feedArticleTemplate">
+          <article class="glass-card overflow-hidden border border-white/10">
+            <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-0">
+              <div class="p-8 md:p-10 lg:p-12 space-y-6">
+                <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-widest text-slate-400">
+                  <span class="px-3 py-1 rounded-full bg-primary/10 text-primary" data-role="category"></span>
+                  <span data-role="reading-time"></span>
+                  <span data-role="date"></span>
+                </div>
+                <h3 class="text-3xl md:text-4xl font-black leading-tight tracking-tighter text-white uppercase">
+                  <a data-role="title-link" class="hover:text-primary transition-colors"></a>
+                </h3>
+                <p class="text-slate-300 text-lg leading-relaxed max-w-3xl" data-role="summary"></p>
+                <div class="flex flex-wrap gap-4">
+                  <a data-role="read-link" class="bg-primary text-navy-deep px-6 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all">
+                    Read Article
+                  </a>
+                  <a href="resource-hub.html" class="border border-white/20 text-white px-6 py-3 font-black uppercase tracking-tighter hover:border-primary hover:text-primary transition-all">
+                    Related Resources
+                  </a>
+                </div>
               </div>
-              <h3 class="text-3xl md:text-4xl font-black leading-tight tracking-tighter text-white uppercase">
-                <a href="post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/" class="hover:text-primary transition-colors">
-                  Cyber Governance for Boards in Australia: Moving Beyond Technical Metrics to Defensible Oversight
-                </a>
-              </h3>
-              <p class="text-slate-300 text-lg leading-relaxed max-w-3xl">
-                Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?
-              </p>
-              <div class="flex flex-wrap gap-4">
-                <a href="post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/" class="bg-primary text-navy-deep px-6 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all">
-                  Read Article
-                </a>
-                <a href="resource-hub.html" class="border border-white/20 text-white px-6 py-3 font-black uppercase tracking-tighter hover:border-primary hover:text-primary transition-all">
-                  Related Resources
-                </a>
-              </div>
-            </div>
-            <div class="relative min-h-[320px] border-t lg:border-t-0 lg:border-l border-white/10 bg-[radial-gradient(circle_at_top,rgba(0,212,255,0.20),transparent_55%),linear-gradient(180deg,#0a1428_0%,#050b1a_100%)] flex items-center justify-center p-10">
-              <div class="max-w-sm space-y-6">
-                <div class="flex items-center gap-4">
-                  <span class="material-symbols-outlined text-primary text-5xl neon-glow">article</span>
-                  <div>
-                    <p class="text-xs uppercase tracking-[0.3em] text-slate-400 font-bold">Article preview</p>
-                    <p class="text-lg font-bold text-white">Defensible governance over technical comfort</p>
+              <div class="relative min-h-[320px] border-t lg:border-t-0 lg:border-l border-white/10 bg-[radial-gradient(circle_at_top,rgba(0,212,255,0.20),transparent_55%),linear-gradient(180deg,#0a1428_0%,#050b1a_100%)] flex items-center justify-center p-10">
+                <div class="max-w-sm space-y-6">
+                  <div class="flex items-center gap-4">
+                    <span class="material-symbols-outlined text-primary text-5xl neon-glow">article</span>
+                    <div>
+                      <p class="text-xs uppercase tracking-[0.3em] text-slate-400 font-bold">Article preview</p>
+                      <p class="text-lg font-bold text-white" data-role="preview-title"></p>
+                    </div>
                   </div>
-                </div>
-                <div class="grid gap-3 text-sm text-slate-300">
-                  <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>Board reporting that goes beyond uptime and patch status</div>
-                  <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>Questions directors should ask about evidence and escalation</div>
-                  <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>How to frame cyber risk in a way that stands up under scrutiny</div>
+                  <div class="grid gap-3 text-sm text-slate-300 article-body" data-role="preview-body"></div>
                 </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
+        </template>
+
+        <template id="fallbackArticleTemplate">
+          <article class="glass-card p-8 md:p-10 border border-white/10">
+            <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
+              <span class="px-3 py-1 rounded-full bg-primary/10 text-primary">Cyber Governance</span>
+              <span>8 min read</span>
+              <span>29 April 2026</span>
+            </div>
+            <h3 class="text-3xl md:text-4xl font-black leading-tight tracking-tighter text-white uppercase mb-4">
+              <a href="post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/" class="hover:text-primary transition-colors">
+                Cyber Governance for Boards in Australia: Moving Beyond Technical Metrics to Defensible Oversight
+              </a>
+            </h3>
+            <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+              Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?
+            </p>
+            <div class="flex flex-wrap gap-4">
+              <a href="post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/" class="bg-primary text-navy-deep px-6 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all">
+                Read Article
+              </a>
+              <a href="resource-hub.html" class="border border-white/20 text-white px-6 py-3 font-black uppercase tracking-tighter hover:border-primary hover:text-primary transition-all">
+                Related Resources
+              </a>
+            </div>
+          </article>
+        </template>
       </div>
     </section>
   </main>
@@ -240,5 +267,168 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    const feedStatus = document.getElementById('feedStatus');
+    const articleFeed = document.getElementById('articleFeed');
+    const feedArticleTemplate = document.getElementById('feedArticleTemplate');
+    const fallbackArticleTemplate = document.getElementById('fallbackArticleTemplate');
+    const feedUrls = [
+      'https://blog.aradvice.com.au/rss.xml',
+      'https://blog.aradvice.com.au/feed.xml',
+      'https://blog.aradvice.com.au/feed',
+      'https://blog.aradvice.com.au/rss'
+    ];
+
+    function stripHtml(html) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = html;
+      return (wrapper.textContent || wrapper.innerText || '').trim();
+    }
+
+    function parseDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return '';
+      }
+      return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function estimateReadingTime(text) {
+      const words = stripHtml(text).split(/\s+/).filter(Boolean).length;
+      return `${Math.max(1, Math.round(words / 220))} min read`;
+    }
+
+    function normaliseLink(link) {
+      if (!link) {
+        return '#';
+      }
+
+      try {
+        return new URL(link, window.location.origin).toString();
+      } catch {
+        return link;
+      }
+    }
+
+    function renderFallbackArticle() {
+      articleFeed.replaceChildren(fallbackArticleTemplate.content.cloneNode(true));
+    }
+
+    function renderArticles(items) {
+      articleFeed.innerHTML = '';
+
+      items.forEach((item) => {
+        const fragment = feedArticleTemplate.content.cloneNode(true);
+        const category = item.category || 'Article';
+        const title = item.title || 'Untitled post';
+        const link = normaliseLink(item.link);
+        const summary = item.summary || item.description || stripHtml(item.content || '');
+        const date = parseDate(item.pubDate || item.date || item.published || item.updated);
+        const previewNotes = [
+          summary || 'Read the full article for more detail.',
+          item.author ? `By ${item.author}` : null,
+          date ? `Published ${date}` : null
+        ].filter(Boolean);
+
+        fragment.querySelector('[data-role="category"]').textContent = category;
+        fragment.querySelector('[data-role="reading-time"]').textContent = estimateReadingTime(item.content || summary || title);
+        fragment.querySelector('[data-role="date"]').textContent = date;
+        const titleLink = fragment.querySelector('[data-role="title-link"]');
+        titleLink.href = link;
+        titleLink.textContent = title;
+        fragment.querySelector('[data-role="summary"]').textContent = summary || 'Read the full article for more detail.';
+        const readLink = fragment.querySelector('[data-role="read-link"]');
+        readLink.href = link;
+        fragment.querySelector('[data-role="preview-title"]').textContent = title;
+
+        const previewBody = fragment.querySelector('[data-role="preview-body"]');
+        previewNotes.forEach((note) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-start gap-3';
+          row.innerHTML = '<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>';
+          const text = document.createElement('div');
+          text.textContent = note;
+          row.appendChild(text);
+          previewBody.appendChild(row);
+        });
+
+        articleFeed.appendChild(fragment);
+      });
+    }
+
+    async function fetchFeed(url) {
+      const response = await fetch(url, {
+        headers: {
+          Accept: 'application/rss+xml, application/xml, text/xml'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Feed request failed: ${response.status}`);
+      }
+
+      const xml = await response.text();
+      const documentNode = new DOMParser().parseFromString(xml, 'text/xml');
+
+      if (documentNode.querySelector('parsererror')) {
+        throw new Error('Invalid feed XML');
+      }
+
+      const rssItems = Array.from(documentNode.querySelectorAll('item')).map((item) => ({
+        title: item.querySelector('title')?.textContent?.trim(),
+        link: item.querySelector('link')?.textContent?.trim(),
+        summary: stripHtml(item.querySelector('description')?.textContent || ''),
+        content: item.querySelector('content\\:encoded')?.textContent || item.querySelector('encoded')?.textContent || '',
+        pubDate: item.querySelector('pubDate')?.textContent?.trim(),
+        category: item.querySelector('category')?.textContent?.trim(),
+        author: item.querySelector('author')?.textContent?.trim()
+      }));
+
+      if (rssItems.length > 0) {
+        return rssItems;
+      }
+
+      return Array.from(documentNode.querySelectorAll('entry')).map((entry) => ({
+        title: entry.querySelector('title')?.textContent?.trim(),
+        link: entry.querySelector('link')?.getAttribute('href')?.trim() || entry.querySelector('link')?.textContent?.trim(),
+        summary: stripHtml(entry.querySelector('summary')?.textContent || entry.querySelector('content')?.textContent || ''),
+        content: entry.querySelector('content')?.textContent || '',
+        pubDate: entry.querySelector('updated')?.textContent?.trim() || entry.querySelector('published')?.textContent?.trim(),
+        category: entry.querySelector('category')?.getAttribute('term')?.trim() || 'Article',
+        author: entry.querySelector('author name')?.textContent?.trim()
+      }));
+    }
+
+    async function initBlogFeed() {
+      if (!articleFeed || !feedArticleTemplate || !fallbackArticleTemplate) {
+        return;
+      }
+
+      for (const feedUrl of feedUrls) {
+        try {
+          const items = await fetchFeed(feedUrl);
+          if (items.length > 0) {
+            renderArticles(items.slice(0, 6));
+            if (feedStatus) {
+              feedStatus.textContent = `Showing the latest posts from ${new URL(feedUrl).hostname}.`;
+              feedStatus.classList.remove('hidden');
+            }
+            return;
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+
+      renderFallbackArticle();
+      if (feedStatus) {
+        feedStatus.textContent = 'RSS feed not reachable yet, so the fallback featured post is showing.';
+        feedStatus.classList.remove('hidden');
+      }
+    }
+
+    initBlogFeed();
+  </script>
 </body>
 </html>
