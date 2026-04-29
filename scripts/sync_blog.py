@@ -105,6 +105,13 @@ def replace_host_head_and_header(html: str, local_head: str, local_header: str) 
         out = re.sub(r"<head\b.*?</head>", local_head, out, count=1, flags=re.DOTALL | re.IGNORECASE)
     if local_header:
         out = re.sub(r"<header\b.*?</header>", local_header, out, count=1, flags=re.DOTALL | re.IGNORECASE)
+    # Ensure Google Fonts and Material Symbols are present; inject if missing.
+    if 'fonts.googleapis' not in out:
+        font_links = (
+            '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />'
+            '<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />'
+        )
+        out = re.sub(r"</head>", font_links + "</head>", out, count=1, flags=re.IGNORECASE)
     return out
 
 
