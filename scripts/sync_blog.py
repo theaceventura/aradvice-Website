@@ -112,6 +112,15 @@ def replace_host_head_and_header(html: str, local_head: str, local_header: str) 
             '<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />'
         )
         out = re.sub(r"</head>", font_links + "</head>", out, count=1, flags=re.IGNORECASE)
+    # Add inline fallback CSS so typography looks correct if fonts are blocked.
+    if 'font-family: Inter' not in out and 'fonts.googleapis' not in out:
+        fallback_css = (
+            '<style>\n'
+            '  :root{--accent-color:#2563eb} body, .article-content{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:#111827;}\n'
+            '  .material-symbols-outlined{font-variation-settings: "FILL" 0, "wght" 400;}\n'
+            '</style>'
+        )
+        out = re.sub(r"</head>", fallback_css + "</head>", out, count=1, flags=re.IGNORECASE)
     return out
 
 
