@@ -273,6 +273,17 @@
     const articleFeed = document.getElementById('articleFeed');
     const feedArticleTemplate = document.getElementById('feedArticleTemplate');
     const fallbackArticleTemplate = document.getElementById('fallbackArticleTemplate');
+    const localArticles = [
+      {
+        title: 'Cyber Governance for Boards in Australia: Moving Beyond Technical Metrics to Defensible Oversight',
+        link: 'https://blog.aradvice.com.au/post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight',
+        summary: 'Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?',
+        content: 'Why board papers built on uptime, patch counts, and control dashboards often miss the governance question that matters: can the board defend its oversight if an incident reaches regulators, auditors, or the media?',
+        pubDate: 'Wed, 29 Apr 2026 12:00:00 +0000',
+        category: 'Cyber Governance',
+        author: 'Andrew Roberts Advisory'
+      }
+    ];
     const feedUrls = [
       'https://blog.aradvice.com.au/feed.xml'
     ];
@@ -402,6 +413,12 @@
         return;
       }
 
+      renderArticles(localArticles);
+      if (feedStatus) {
+        feedStatus.textContent = 'Showing the latest featured post while the RSS feed loads.';
+        feedStatus.classList.remove('hidden');
+      }
+
       for (const feedUrl of feedUrls) {
         try {
           const items = await fetchFeed(feedUrl);
@@ -416,12 +433,6 @@
         } catch (error) {
           continue;
         }
-      }
-
-      renderFallbackArticle();
-      if (feedStatus) {
-        feedStatus.textContent = 'RSS feed not reachable yet, so the fallback featured post is showing.';
-        feedStatus.classList.remove('hidden');
       }
     }
 
