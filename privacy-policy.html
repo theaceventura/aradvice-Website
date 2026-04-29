@@ -3,6 +3,18 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <script>
+      (function () {
+        if (window.location.hostname === 'blog.aradvice.com.au') {
+          const target = new URL(window.location.href);
+          target.hostname = 'aradvice.com.au';
+          if (target.pathname === '/' || target.pathname === '') {
+            target.pathname = '/blog.html';
+          }
+          window.location.replace(target.toString());
+        }
+      })();
+    </script>
     <meta name="description" content="Privacy Policy for Andrew Roberts Advisory. Compliant with Privacy Act 1988 (Cth) and Australian Privacy Principles. Information collection, usage disclosure, data security, and user rights." />
     <meta name="robots" content="noindex, nofollow" />
     
@@ -72,6 +84,7 @@ document.head.appendChild(o)}initApollo();</script>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="index.html">Home</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="readiness-review.html">Readiness Review</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
+<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="blog.html">Blog</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="index.html#services">Services</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="index.html#approach">About</a>
 </nav>
@@ -91,6 +104,7 @@ Book a Review
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="index.html">Home</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="readiness-review.html">Readiness Review</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="resource-hub.html">Resource Hub</a>
+<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="blog.html">Blog</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="index.html#services">Services</a>
 <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="index.html#approach">About</a>
 <a href="readiness-review.html#cta" class="bg-primary text-navy-dark px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all text-center mt-4">

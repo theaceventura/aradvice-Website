@@ -4,6 +4,18 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script>
+      (function () {
+        if (window.location.hostname === 'blog.aradvice.com.au') {
+          const target = new URL(window.location.href);
+          target.hostname = 'aradvice.com.au';
+          if (target.pathname === '/' || target.pathname === '') {
+            target.pathname = '/blog.html';
+          }
+          window.location.replace(target.toString());
+        }
+      })();
+    </script>
     <meta name="description" content="Independent board-level advisory for cyber and AI governance oversight. We help Australian boards achieve defensible governance through 48-hour readiness reviews and strategic frameworks." />
     <meta name="keywords" content="cyber governance, AI governance, board advisory, AICD, governance readiness review, cyber security oversight, AI risk management, Australian boards, director accountability, Essential Eight, Essential 8, ACSC, SME boards, council governance, NFP boards, cyber consultant Australia, ASX listed companies, ASX governance, cyber security emergency, cyber incident response, data breach response, cyber crisis management, ransomware response" />
     <meta name="author" content="Andrew Roberts Advisory" />
@@ -158,6 +170,7 @@ document.head.appendChild(o)}initApollo();</script>
           <a class="nav-link" href="index.html">Home</a>
           <a class="nav-link" href="readiness-review.html">Readiness Review</a>
           <a class="nav-link" href="resource-hub.html">Resource Hub</a>
+          <a class="nav-link" href="blog.html">Blog</a>
           <a class="nav-link" href="#services">Services</a>
           <a class="nav-link" href="#approach">About</a>
 
@@ -180,6 +193,7 @@ document.head.appendChild(o)}initApollo();</script>
           <a class="nav-link py-3 border-b border-white/10" href="index.html">Home</a>
           <a class="nav-link py-3 border-b border-white/10" href="readiness-review.html">Readiness Review</a>
           <a class="nav-link py-3 border-b border-white/10" href="resource-hub.html">Resource Hub</a>
+          <a class="nav-link py-3 border-b border-white/10" href="blog.html">Blog</a>
           <a class="nav-link py-3 border-b border-white/10" href="#services">Services</a>
           <a class="nav-link py-3 border-b border-white/10" href="#approach">About</a>
           <a
@@ -692,7 +706,7 @@ document.head.appendChild(o)}initApollo();</script>
           </p>
 
           <div class="max-w-lg mx-auto bg-navy-rich/80 backdrop-blur-md border border-white/10 p-10 rounded-2xl shadow-2xl">
-            <form class="space-y-4" id="bookingForm" action="https://formspree.io/f/mykdlggv" method="POST">
+            <form class="space-y-4" id="bookingForm" action="https://formspree.io/f/mykdlggv" method="POST" data-backup-action="">
               <input type="hidden" name="_subject" value="Governance Readiness Review Booking">
               <input
                 type="text"
@@ -780,6 +794,7 @@ document.head.appendChild(o)}initApollo();</script>
         >
           <p>© 2026 Andrew Roberts Advisory. All rights reserved.</p>
           <div class="flex gap-10">
+            <a class="hover:text-white" href="blog.html">Blog</a>
             <a class="hover:text-white" href="privacy-policy.html">Privacy Policy</a>
             <a class="hover:text-white" href="terms-of-service.html">Terms of Service</a>
             <a class="hover:text-white" href="liability-disclaimer.html">Liability Disclaimer</a>
@@ -812,42 +827,67 @@ document.head.appendChild(o)}initApollo();</script>
     <!-- Form Submission Handler -->
     <script>
       const bookingForm = document.getElementById('bookingForm');
-      const statusDiv = document.getElementById('bookingFormStatus');
-      
-      bookingForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const submitButton = bookingForm.querySelector('button[type="submit"]');
-        const originalButtonText = submitButton.innerHTML;
-        submitButton.disabled = true;
-        submitButton.innerHTML = 'Sending...';
-        
-        try {
-          const response = await fetch(bookingForm.action, {
-            method: 'POST',
-            body: new FormData(bookingForm),
-            headers: {
-              'Accept': 'application/json'
-            }
-          });
-          
-          if (response.ok) {
-            statusDiv.textContent = '✓ Thank you! We\'ll be in touch within 24 hours.';
-            statusDiv.className = 'text-center py-3 px-4 rounded-lg bg-green-500/20 text-green-300 border border-green-500/30';
-            statusDiv.classList.remove('hidden');
-            bookingForm.reset();
-          } else {
-            throw new Error('Form submission failed');
+      const bookingFormStatus = document.getElementById('bookingFormStatus');
+
+      function buildFormData(dataObj) {
+        const formData = new FormData();
+        Object.entries(dataObj).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        return formData;
+      }
+
+      async function postToEndpoint(actionUrl, dataObj) {
+        return fetch(actionUrl, {
+          method: 'POST',
+          body: buildFormData(dataObj),
+          headers: {
+            'Accept': 'application/json'
           }
-        } catch (error) {
-          statusDiv.textContent = '⚠ Something went wrong. Please email hello@aradvice.com.au directly.';
-          statusDiv.className = 'text-center py-3 px-4 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30';
-          statusDiv.classList.remove('hidden');
-        } finally {
-          submitButton.disabled = false;
-          submitButton.innerHTML = originalButtonText;
-        }
-      });
+        });
+      }
+
+      if (bookingForm && bookingFormStatus) {
+        bookingForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+
+          const submitButton = bookingForm.querySelector('button[type="submit"]');
+          const originalButtonText = submitButton.innerHTML;
+          submitButton.disabled = true;
+          submitButton.innerHTML = 'Sending...';
+
+          try {
+            const submissionData = Object.fromEntries(new FormData(bookingForm).entries());
+            const response = await postToEndpoint(bookingForm.action, submissionData);
+
+            const backupAction = bookingForm.dataset.backupAction;
+            if (response.ok && backupAction && backupAction !== bookingForm.action) {
+              // Best-effort backup notification path (for example, a second Formspree endpoint).
+              try {
+                await postToEndpoint(backupAction, submissionData);
+              } catch (backupError) {
+                console.warn('Backup submission failed:', backupError);
+              }
+            }
+
+            if (response.ok) {
+              bookingFormStatus.textContent = '✓ Thank you! We\'ll be in touch within 24 hours.';
+              bookingFormStatus.className = 'text-center py-3 px-4 rounded-lg bg-green-500/20 text-green-300 border border-green-500/30';
+              bookingFormStatus.classList.remove('hidden');
+              bookingForm.reset();
+            } else {
+              throw new Error('Form submission failed');
+            }
+          } catch (error) {
+            bookingFormStatus.textContent = '⚠ Something went wrong. Please email hello@aradvice.com.au directly.';
+            bookingFormStatus.className = 'text-center py-3 px-4 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30';
+            bookingFormStatus.classList.remove('hidden');
+          } finally {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+          }
+        });
+      }
     </script>
   </body>
 </html>

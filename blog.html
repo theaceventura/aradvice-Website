@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <script>
+    (function () {
+      if (window.location.hostname === 'blog.aradvice.com.au') {
+        const target = new URL(window.location.href);
+        target.hostname = 'aradvice.com.au';
+        if (target.pathname === '/' || target.pathname === '') {
+          target.pathname = '/blog.html';
+        }
+        window.location.replace(target.toString());
+      }
+    })();
+  </script>
+  <meta name="description" content="Insights from Andrew Roberts Advisory on cyber governance, AI governance, and board oversight." />
+  <meta name="author" content="Andrew Roberts Advisory" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://aradvice.com.au/blog.html" />
+  <meta property="og:title" content="Blog | Andrew Roberts Advisory" />
+  <meta property="og:description" content="Insights on cyber governance, AI governance, and board oversight." />
+  <meta property="og:image" content="https://aradvice.com.au/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://aradvice.com.au/blog.html" />
+  <meta name="twitter:title" content="Blog | Andrew Roberts Advisory" />
+  <meta name="twitter:description" content="Insights on cyber governance, AI governance, and board oversight." />
+  <meta name="twitter:image" content="https://aradvice.com.au/og-image.jpg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <title>Blog | Andrew Roberts Advisory</title>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7RHEMMY2W4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7RHEMMY2W4');
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00d4ff',
+            'navy-deep': '#050b1a',
+            'navy-rich': '#0a1428'
+          },
+          fontFamily: {
+            display: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply bg-navy-deep text-slate-100 antialiased font-display;
+      }
+    }
+    .glass-card {
+      @apply bg-navy-rich/80 backdrop-blur-md border border-white/10;
+    }
+    .neon-glow {
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    }
+    .nav-link {
+      @apply text-sm font-bold tracking-widest uppercase hover:text-primary transition-colors;
+    }
+  </style>
+</head>
+<body>
+  <header class="fixed top-0 w-full z-50 bg-navy-deep/90 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-[1400px] mx-auto px-8 py-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <a class="flex items-center gap-3" href="index.html">
+        <span class="material-symbols-outlined text-primary text-4xl neon-glow">shield_person</span>
+        <span class="text-xl font-black tracking-tighter text-white uppercase">Andrew Roberts Advisory</span>
+      </a>
+      <nav class="flex flex-wrap items-center gap-6 lg:gap-10">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="readiness-review.html">Readiness Review</a>
+        <a class="nav-link" href="resource-hub.html">Resource Hub</a>
+        <a class="nav-link text-primary" href="blog.html">Blog</a>
+        <a class="nav-link" href="index.html#services">Services</a>
+        <a class="nav-link" href="index.html#approach">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pt-32">
+    <section class="relative overflow-hidden py-24">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,212,255,0.18),transparent_35%),linear-gradient(180deg,#050b1a_0%,#0a1428_100%)]"></div>
+      <div class="relative z-10 max-w-[1400px] mx-auto px-8">
+        <div class="max-w-4xl space-y-8">
+          <div class="inline-flex items-center gap-2 px-4 py-2 border-l-4 border-primary bg-primary/10 text-primary font-bold tracking-widest uppercase text-xs">
+            Insights and commentary
+          </div>
+          <h1 class="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter text-white uppercase">
+            Blog <br /><span class="text-primary neon-glow">Now on</span> the Main Site
+          </h1>
+          <p class="text-xl md:text-2xl text-slate-300 max-w-3xl leading-relaxed">
+            blog.aradvice.com.au has been consolidated into aradvice.com.au/blog.html so published insights and board-level commentary now sit alongside the rest of the advisory site.
+          </p>
+          <div class="flex flex-wrap gap-4 pt-4">
+            <a href="resource-hub.html" class="bg-primary text-navy-deep px-8 py-4 font-black uppercase tracking-tighter hover:bg-white transition-all">
+              Visit Resource Hub
+            </a>
+            <a href="readiness-review.html" class="border border-white/20 text-white px-8 py-4 font-black uppercase tracking-tighter hover:border-primary hover:text-primary transition-all">
+              Book a Review
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20">
+      <div class="max-w-[1400px] mx-auto px-8">
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <article class="glass-card p-8">
+            <span class="material-symbols-outlined text-primary text-4xl mb-6">shield_person</span>
+            <h2 class="text-2xl font-bold mb-3 uppercase tracking-tighter">Board Oversight</h2>
+            <p class="text-slate-300 leading-relaxed">Practical guidance for directors who need clear accountability, reporting, and escalation structures.</p>
+          </article>
+          <article class="glass-card p-8">
+            <span class="material-symbols-outlined text-primary text-4xl mb-6">psychology</span>
+            <h2 class="text-2xl font-bold mb-3 uppercase tracking-tighter">AI Governance</h2>
+            <p class="text-slate-300 leading-relaxed">Board-level commentary on responsible AI use, risk management, and emerging control expectations.</p>
+          </article>
+          <article class="glass-card p-8">
+            <span class="material-symbols-outlined text-primary text-4xl mb-6">security</span>
+            <h2 class="text-2xl font-bold mb-3 uppercase tracking-tighter">Cyber Governance</h2>
+            <p class="text-slate-300 leading-relaxed">Insights on defensible cyber oversight, incident readiness, and director liability considerations.</p>
+          </article>
+          <article class="glass-card p-8">
+            <span class="material-symbols-outlined text-primary text-4xl mb-6">fact_check</span>
+            <h2 class="text-2xl font-bold mb-3 uppercase tracking-tighter">Practical Tools</h2>
+            <p class="text-slate-300 leading-relaxed">Checklists, templates, and concise references that can be used in board papers and reviews.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-24 border-y border-white/5 bg-navy-rich/60">
+      <div class="max-w-[1400px] mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6 max-w-2xl">
+          <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white">What to expect here</h2>
+          <p class="text-lg text-slate-300 leading-relaxed">
+            This page is the new canonical home for commentary and articles. As new material is published, it will live under the main domain rather than a separate blog subdomain.
+          </p>
+        </div>
+        <div class="glass-card p-8 md:p-10">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="material-symbols-outlined text-primary text-3xl">rss_feed</span>
+            <h3 class="text-2xl font-bold uppercase tracking-tighter">Publishing focus</h3>
+          </div>
+          <ul class="space-y-4 text-slate-300">
+            <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[20px] mt-1">check_circle</span>Cyber and AI governance commentary for Australian boards</li>
+            <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[20px] mt-1">check_circle</span>Short-form analysis that supports board reporting and decision-making</li>
+            <li class="flex items-start gap-3"><span class="material-symbols-outlined text-primary text-[20px] mt-1">check_circle</span>Reusable tools and governance checklists where practical</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/5 bg-navy-rich py-12">
+    <div class="max-w-[1400px] mx-auto px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <p class="text-sm text-slate-400">© 2026 Andrew Roberts Advisory. Independent board-level advisory for cyber and AI governance oversight.</p>
+      <div class="flex flex-wrap gap-6 text-xs font-bold uppercase tracking-widest text-slate-500">
+        <a class="hover:text-primary transition-colors" href="index.html">Home</a>
+        <a class="hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
+        <a class="hover:text-primary transition-colors" href="readiness-review.html">Readiness Review</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
