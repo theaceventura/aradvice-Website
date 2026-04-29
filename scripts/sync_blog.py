@@ -25,25 +25,21 @@ HEADERS = {
     "Referer": FEED_URL,
 }
 
-LOCAL_HEADER_HTML = """
-<header class="sticky top-0 z-50 bg-navy-deep/90 backdrop-blur-xl border-b border-white/5">
-    <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary text-4xl neon-glow">shield_person</span>
-            <span class="text-xl font-black tracking-tighter text-white uppercase">Andrew Roberts Advisory</span>
-        </div>
+def read_local_head_and_header() -> tuple[str, str]:
+        """Extract the local site's <head> and first <header> from index.html.
 
-        <nav class="hidden xl:flex items-center gap-10">
-            <a class="nav-link" href="/index.html">Home</a>
-            <a class="nav-link" href="/readiness-review.html">Readiness Review</a>
-            <a class="nav-link" href="/resource-hub.html">Resource Hub</a>
-            <a class="nav-link" href="/blog.html">Blog</a>
-            <a class="nav-link" href="/index.html#services">Services</a>
-            <a class="nav-link" href="/index.html#approach">About</a>
-        </nav>
-    </div>
-</header>
-""".strip()
+        Returns a tuple of (head_html, header_html). If parts are missing, empty
+        strings are returned for the missing parts.
+        """
+        index_path = ROOT / "index.html"
+        if not index_path.exists():
+                return "", ""
+        content = index_path.read_text(encoding="utf-8")
+        head_match = re.search(r"<head\b.*?>(.*?)</head>", content, flags=re.DOTALL | re.IGNORECASE)
+        header_match = re.search(r"<header\b.*?</header>", content, flags=re.DOTALL | re.IGNORECASE)
+        head_html = f"<head>{head_match.group(1)}</head>" if head_match else ""
+        header_html = header_match.group(0) if header_match else ""
+        return head_html, header_html
 
 
 @dataclass
@@ -103,8 +99,13 @@ def rewrite_domains(html: str) -> str:
     return html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
 
 
-def replace_host_header(html: str) -> str:
-    return re.sub(r"<header\b.*?</header>", LOCAL_HEADER_HTML, html, count=1, flags=re.DOTALL | re.IGNORECASE)
+def replace_host_head_and_header(html: str, local_head: str, local_header: str) -> str:
+    out = html
+    if local_head:
+        out = re.sub(r"<head\b.*?</head>", local_head, out, count=1, flags=re.DOTALL | re.IGNORECASE)
+    if local_header:
+        out = re.sub(r"<header\b.*?</header>", local_header, out, count=1, flags=re.DOTALL | re.IGNORECASE)
+    return out
 
 
 def article_page_path(slug: str) -> Path:
@@ -114,7 +115,8 @@ def article_page_path(slug: str) -> Path:
 def write_page(path: Path, html: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = rewrite_domains(html)
-    path.write_text(replace_host_header(rewritten), encoding="utf-8")
+    local_head, local_header = read_local_head_and_header()
+    path.write_text(replace_host_head_and_header(rewritten, local_head, local_header), encoding="utf-8")
 
 
 def item_datetime(pub_date: str) -> datetime:
