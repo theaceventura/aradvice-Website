@@ -108,25 +108,29 @@ def replace_host_head_and_header(
     local_head: str,
     local_header: str,
     local_html: str,
-    local_body: str,
 ) -> str:
     out = html
     # Replace the opening <html> tag to carry site-level attributes (e.g., class)
     if local_html:
         out = re.sub(r"<html\b.*?>", local_html, out, count=1, flags=re.IGNORECASE)
-    # Replace the opening <body> tag to carry site-level base styling.
-    if local_body:
-        out = re.sub(r"<body\b.*?>", local_body, out, count=1, flags=re.IGNORECASE)
+    # Use a dedicated blog shell so mirrored articles stay visually consistent.
+    out = re.sub(
+        r"<body\b.*?>",
+        '<body class="blog-shell bg-slate-50 text-slate-900 min-h-screen flex flex-col">',
+        out,
+        count=1,
+        flags=re.IGNORECASE,
+    )
     if local_head:
         out = re.sub(r"<head\b.*?</head>", local_head, out, count=1, flags=re.DOTALL | re.IGNORECASE)
     if local_header:
         out = re.sub(r"<header\b.*?</header>", local_header, out, count=1, flags=re.DOTALL | re.IGNORECASE)
     # Ensure content starts below fixed header.
-    out = re.sub(r'<main class="flex-1">', '<main class="flex-1 pt-28">', out, count=1, flags=re.IGNORECASE)
+    out = re.sub(r'<main class="flex-1">', '<main class="flex-1 pt-36 md:pt-40">', out, count=1, flags=re.IGNORECASE)
     # Keep mirrored article readable while preserving site shell aesthetics.
     out = re.sub(
         r'<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">',
-        '<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-white rounded-2xl shadow-xl border border-slate-200">',
+        '<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white rounded-[2rem] shadow-[0_24px_70px_rgba(15,23,42,0.08)] border border-slate-200">',
         out,
         count=1,
         flags=re.IGNORECASE,
@@ -157,9 +161,9 @@ def article_page_path(slug: str) -> Path:
 def write_page(path: Path, html: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = rewrite_domains(html)
-    local_head, local_header, local_html, local_body = read_local_head_and_header()
+    local_head, local_header, local_html, _local_body = read_local_head_and_header()
     path.write_text(
-        replace_host_head_and_header(rewritten, local_head, local_header, local_html, local_body),
+        replace_host_head_and_header(rewritten, local_head, local_header, local_html),
         encoding="utf-8",
     )
 
