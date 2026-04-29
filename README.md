@@ -124,7 +124,29 @@ These appear in the contact sections at the bottom of each legal page.
 
 Find and replace `hello@aradvice.com.au` with your actual email address throughout the site.
 
-### 3. Change Brand Colors
+### 3. Configure Backup Form Notifications
+
+Each main form now supports an optional backup endpoint using the `data-backup-action` attribute.
+
+Update these forms:
+
+- `index.html` form with id `bookingForm`
+- `readiness-review.html` form with id `reviewBookingForm`
+- `resource-hub.html` form with id `resourceHubForm`
+
+Set `data-backup-action` to a secondary endpoint (for example, a second Formspree form):
+
+```html
+<form action="https://formspree.io/f/mykdlggv" data-backup-action="https://formspree.io/f/yourbackupid" ...>
+```
+
+How it works:
+
+- Primary submission goes to `action` as normal.
+- If primary succeeds, the same payload is also posted to `data-backup-action`.
+- Backup submission is best-effort and will not block the user confirmation state.
+
+### 4. Change Brand Colors
 
 In the `<script id="tailwind-config">` section at the top of index.html:
 
@@ -136,7 +158,7 @@ colors: {
 }
 ```
 
-### 4. Replace Background Images
+### 5. Replace Background Images
 
 The site uses Google-hosted images. To use your own:
 1. Create an `images/` folder
@@ -148,14 +170,14 @@ Example:
 <img src="images/hero-background.jpg" alt="Description" />
 ```
 
-### 5. Update Content
+### 6. Update Content
 
 All text content is directly in the HTML. Search for:
 - **Company name**: "Andrew Roberts Advisory"
 - **Services**: The 4 service cards in the `#services` section
 - **Taglines**: Update the hero headline and subheadlines
 
-### 6. Add Mobile Menu Functionality
+### 7. Add Mobile Menu Functionality
 
 The mobile menu button exists but needs JavaScript. Add smooth scroll after the closing `</footer>` tag:
 
