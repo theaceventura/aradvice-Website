@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aradvice.com.au/sitemap.xml
