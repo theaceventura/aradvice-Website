@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from html import escape
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -212,6 +213,45 @@ def build_sitemap(items: list[FeedItem]) -> str:
     )
 
 
+def render_recent_articles(items: list[FeedItem]) -> str:
+    rows: list[str] = []
+    for item in items:
+        published = item_datetime(item.pub_date).strftime("%d %b %Y")
+        rows.append(
+            "<li class=\"py-3 border-b border-slate-700/60 last:border-0\">"
+            f"<a class=\"text-cyan-300 hover:text-cyan-200 no-underline\" href=\"/post/{escape(item.slug)}/\">"
+            f"{escape(item.title)}</a>"
+            f"<div class=\"mt-1 text-xs text-slate-400\">{escape(published)}</div>"
+            "</li>"
+        )
+
+    return (
+        '<section class="recent-articles mb-10 rounded-2xl border border-slate-700/60 bg-slate-900/65 p-6">'
+        '<h2 class="text-sm font-semibold uppercase tracking-wide text-slate-300 mb-4">Recent Articles</h2>'
+        '<ul class="m-0 list-none p-0">'
+        + "".join(rows)
+        + "</ul>"
+        "</section>"
+    )
+
+
+def inject_recent_articles(html: str, items: list[FeedItem]) -> str:
+    if not items:
+        return html
+
+    block = render_recent_articles(items)
+    injected = re.sub(
+        r'(<div class="article-content\b[^>]*>)',
+        block + r"\1",
+        html,
+        count=1,
+        flags=re.IGNORECASE,
+    )
+    if injected != html:
+        return injected
+    return html.replace("</article>", block + "</article>", 1)
+
+
 def main() -> int:
     feed_xml = fetch_text(FEED_URL, "application/rss+xml, application/xml, text/xml")
     feed_items = parse_feed(feed_xml)
@@ -236,7 +276,8 @@ def main() -> int:
         )
 
     latest_item = generated_items[0]
-    write_page(ROOT / "blog.html", latest_item.html)
+    latest_with_listing = inject_recent_articles(latest_item.html, generated_items)
+    write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(generated_items), encoding="utf-8")
 
     print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
