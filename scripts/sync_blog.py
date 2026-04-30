@@ -106,6 +106,29 @@ def rewrite_domains(html: str) -> str:
     return html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
 
 
+def normalize_internal_links(html: str) -> str:
+    replacements = {
+        'href="index.html"': 'href="/"',
+        "href='index.html'": "href='/'",
+        'href="blog.html"': 'href="/blog.html"',
+        "href='blog.html'": "href='/blog.html'",
+        'href="readiness-review.html"': 'href="/readiness-review.html"',
+        "href='readiness-review.html'": "href='/readiness-review.html'",
+        'href="resource-hub.html"': 'href="/resource-hub.html"',
+        "href='resource-hub.html'": "href='/resource-hub.html'",
+        'href="privacy-policy.html"': 'href="/privacy-policy.html"',
+        "href='privacy-policy.html'": "href='/privacy-policy.html'",
+        'href="terms-of-service.html"': 'href="/terms-of-service.html"',
+        "href='terms-of-service.html'": "href='/terms-of-service.html'",
+        'href="liability-disclaimer.html"': 'href="/liability-disclaimer.html"',
+        "href='liability-disclaimer.html'": "href='/liability-disclaimer.html'",
+    }
+    out = html
+    for old, new in replacements.items():
+        out = out.replace(old, new)
+    return out
+
+
 def replace_host_head_and_header(
     html: str,
     local_head: str,
@@ -154,7 +177,7 @@ def replace_host_head_and_header(
             '</style>'
         )
         out = re.sub(r"</head>", fallback_css + "</head>", out, count=1, flags=re.IGNORECASE)
-    return out
+    return normalize_internal_links(out)
 
 
 def article_page_path(slug: str) -> Path:
@@ -163,7 +186,7 @@ def article_page_path(slug: str) -> Path:
 
 def write_page(path: Path, html: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    rewritten = rewrite_domains(html)
+    rewritten = normalize_internal_links(rewrite_domains(html))
     local_head, local_header, local_html, _local_body = read_local_head_and_header()
     path.write_text(
         replace_host_head_and_header(rewritten, local_head, local_header, local_html),
