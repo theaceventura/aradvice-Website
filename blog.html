@@ -179,13 +179,27 @@
 
       body.blog-shell article .article-content a {
         color: #67e8f9 !important;
+        -webkit-text-fill-color: #67e8f9 !important;
         text-decoration: underline;
         text-decoration-thickness: 1px;
         text-underline-offset: 0.2em;
       }
 
+      body.blog-shell article .article-content a:visited,
+      body.blog-shell article .article-content a:active,
+      body.blog-shell article .article-content a:focus,
+      body.blog-shell article .article-content a[style],
+      body.blog-shell article .table-of-contents a,
+      body.blog-shell article .table-of-contents a:visited,
+      body.blog-shell article .key-takeaways a,
+      body.blog-shell article .key-takeaways a:visited {
+        color: #67e8f9 !important;
+        -webkit-text-fill-color: #67e8f9 !important;
+      }
+
       body.blog-shell article .article-content a:hover {
         color: #a5f3fc !important;
+        -webkit-text-fill-color: #a5f3fc !important;
       }
 
       body.blog-shell article .article-content blockquote {
@@ -226,6 +240,7 @@
       body.blog-shell article .table-of-contents a,
       body.blog-shell article .key-takeaways a {
         color: #67e8f9 !important;
+        -webkit-text-fill-color: #67e8f9 !important;
       }
 
       /* Override all light backgrounds in blog articles */
