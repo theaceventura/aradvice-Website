@@ -228,6 +228,31 @@
       body.blog-shell article .key-takeaways a {
         color: #67e8f9 !important;
       }
+
+      /* Override all light backgrounds in blog articles */
+      body.blog-shell article [class*="bg-white"],
+      body.blog-shell article [class*="bg-gray-50"],
+      body.blog-shell article [class*="bg-gray-100"],
+      body.blog-shell article [class*="bg-slate-50"] {
+        background: rgba(15, 23, 42, 0.72) !important;
+      }
+
+      /* Override light text colors in blog articles */
+      body.blog-shell article .text-gray-900,
+      body.blog-shell article .text-slate-900 {
+        color: #ffffff !important;
+      }
+
+      body.blog-shell article .text-gray-700,
+      body.blog-shell article .text-slate-700 {
+        color: #cbd5e1 !important;
+      }
+
+      /* Override light borders */
+      body.blog-shell article [class*="border-gray-200"],
+      body.blog-shell article [class*="border-slate-200"] {
+        border-color: rgba(148, 163, 184, 0.18) !important;
+      }
     </style>
     
     <!-- Structured Data -->
