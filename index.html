@@ -253,6 +253,43 @@
       body.blog-shell article [class*="border-slate-200"] {
         border-color: rgba(148, 163, 184, 0.18) !important;
       }
+
+      /* Override inline light backgrounds and any remaining white sections */
+      body.blog-shell article [style*="background:#f9fafb"],
+      body.blog-shell article [style*="background: #f9fafb"],
+      body.blog-shell article [style*="background:#fff"],
+      body.blog-shell article [style*="background: #fff"],
+      body.blog-shell article [style*="background:#ffffff"],
+      body.blog-shell article [style*="background: #ffffff"],
+      body.blog-shell article div[style*="background"],
+      body.blog-shell article section[style*="background"] {
+        background: rgba(15, 23, 42, 0.72) !important;
+      }
+
+      /* Override inline light text colors */
+      body.blog-shell article [style*="color:#111827"],
+      body.blog-shell article [style*="color: #111827"],
+      body.blog-shell article [style*="color:#1f2937"],
+      body.blog-shell article [style*="color: #1f2937"],
+      body.blog-shell article p[style*="color"],
+      body.blog-shell article h2[style*="color"],
+      body.blog-shell article h3[style*="color"] {
+        color: #ffffff !important;
+      }
+
+      /* Override inline light gray text */
+      body.blog-shell article [style*="color:#6b7280"],
+      body.blog-shell article [style*="color: #6b7280"],
+      body.blog-shell article [style*="color:#9ca3af"],
+      body.blog-shell article [style*="color: #9ca3af"] {
+        color: #cbd5e1 !important;
+      }
+
+      /* Override inline light borders */
+      body.blog-shell article [style*="border:1px solid #e5e7eb"],
+      body.blog-shell article [style*="border: 1px solid #e5e7eb"] {
+        border-color: rgba(148, 163, 184, 0.18) !important;
+      }
     </style>
     
     <!-- Structured Data -->
