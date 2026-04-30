@@ -54,6 +54,8 @@ class FeedItem:
     slug: str
     pub_date: str
     html: str
+    image_url: str
+    read_time: str
 
 
 def fetch_text(url: str, accept: str) -> str:
@@ -178,6 +180,87 @@ def item_datetime(pub_date: str) -> datetime:
         return datetime.now(timezone.utc)
 
 
+def extract_hero_image(html: str) -> str:
+    for pattern in (
+        r'<meta\s+property="og:image"\s+content="([^"]+)"',
+        r'<img[^>]+src="([^"]+)"',
+    ):
+        match = re.search(pattern, html, flags=re.IGNORECASE)
+        if match:
+            return match.group(1)
+    return ""
+
+
+def extract_read_time(html: str) -> str:
+    match = re.search(r"(\d+\s*min\s*read)", html, flags=re.IGNORECASE)
+    if not match:
+        return ""
+    return re.sub(r"\s+", " ", match.group(1)).strip()
+
+
+def is_new_article(pub_date: str, days: int = 7) -> bool:
+    published = item_datetime(pub_date)
+    if published.tzinfo is None:
+        published = published.replace(tzinfo=timezone.utc)
+    age = datetime.now(timezone.utc) - published.astimezone(timezone.utc)
+    return age.days <= days
+
+
+def render_more_articles_section(items: list[FeedItem]) -> str:
+    cards: list[str] = []
+    for item in items:
+        published = item_datetime(item.pub_date).strftime("%b %d, %Y")
+        new_badge = (
+            '<span class="ml-2 inline-flex items-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300">New</span>'
+            if is_new_article(item.pub_date)
+            else ""
+        )
+        image_html = ""
+        if item.image_url:
+            image_html = (
+                '<div class="aspect-[16/9] overflow-hidden bg-slate-900">'
+                f'<img src="{escape(item.image_url)}" alt="{escape(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">'
+                "</div>"
+            )
+
+        meta = published
+        if item.read_time:
+            meta += f" &middot; {escape(item.read_time)}"
+
+        cards.append(
+            f'<a href="/post/{escape(item.slug)}/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 overflow-hidden hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;">'
+            + image_html
+            + '<div class="p-5">'
+            + f'<h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">{escape(item.title)}{new_badge}</h3>'
+            + f'<div class="text-sm text-slate-400">{meta}</div>'
+            + "</div>"
+            + "</a>"
+        )
+
+    return (
+        '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
+        '<h2 class="text-3xl font-bold text-slate-100 mb-8">More Articles</h2>'
+        '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
+        + "".join(cards)
+        + "</div>"
+        "</section>"
+    )
+
+
+def inject_more_articles(html: str, items: list[FeedItem]) -> str:
+    section_html = render_more_articles_section(items)
+    replaced = re.sub(
+        r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>More Articles</h2>.*?</section>',
+        section_html,
+        html,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if replaced != html:
+        return replaced
+    return html.replace("</main>", section_html + "\n    </main>", 1)
+
+
 def build_sitemap(items: list[FeedItem]) -> str:
     entries = [
         (f"{MAIN_DOMAIN}/", datetime.now(timezone.utc)),
@@ -263,8 +346,6 @@ def main() -> int:
     for raw_item in feed_items:
         slug = item_slug(raw_item["link"], raw_item["title"])
         article_html = fetch_text(raw_item["link"], "text/html,application/xhtml+xml")
-        page_path = article_page_path(slug)
-        write_page(page_path, article_html)
         generated_items.append(
             FeedItem(
                 title=raw_item["title"],
@@ -272,11 +353,21 @@ def main() -> int:
                 slug=slug,
                 pub_date=raw_item["pub_date"],
                 html=article_html,
+                image_url=extract_hero_image(article_html),
+                read_time=extract_read_time(article_html),
             )
         )
 
+    generated_items.sort(key=lambda item: item_datetime(item.pub_date), reverse=True)
+
+    for item in generated_items:
+        page_path = article_page_path(item.slug)
+        page_html = inject_more_articles(item.html, generated_items)
+        write_page(page_path, page_html)
+
     latest_item = generated_items[0]
     latest_with_listing = inject_recent_articles(latest_item.html, generated_items)
+    latest_with_listing = inject_more_articles(latest_with_listing, generated_items)
     write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(generated_items), encoding="utf-8")
 
