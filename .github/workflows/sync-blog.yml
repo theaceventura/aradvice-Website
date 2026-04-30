@@ -8,6 +8,8 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -15,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,7 +32,7 @@ jobs:
 
       - name: Commit changes
         run: |
-          if git diff --quiet; then
+          if git diff --quiet -- blog.html post sitemap.xml; then
             echo "No changes to commit."
             exit 0
           fi
@@ -39,5 +41,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add blog.html post sitemap.xml
           git commit -m "Sync blog content from feed"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push
+          git push origin main
