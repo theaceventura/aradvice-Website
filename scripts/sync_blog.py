@@ -261,6 +261,27 @@ def inject_more_articles(html: str, items: list[FeedItem]) -> str:
     return html.replace("</main>", section_html + "\n    </main>", 1)
 
 
+def render_blog_landing_article(items: list[FeedItem]) -> str:
+    return (
+        '<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-slate-900/70 rounded-[2rem] shadow-[0_24px_70px_rgba(2,6,23,0.45)] border border-slate-700/70">'
+        '<h1 class="text-4xl sm:text-5xl font-bold text-white leading-tight mb-4">Blog</h1>'
+        '<p class="text-lg text-slate-300 mb-8">Select an article to read the full post.</p>'
+        + render_recent_articles(items)
+        + "</article>"
+    )
+
+
+def inject_blog_landing_view(html: str, items: list[FeedItem]) -> str:
+    landing_article = render_blog_landing_article(items)
+    return re.sub(
+        r"<article\b.*?</article>",
+        landing_article,
+        html,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+
+
 def build_sitemap(items: list[FeedItem]) -> str:
     entries = [
         (f"{MAIN_DOMAIN}/", datetime.now(timezone.utc)),
@@ -366,8 +387,8 @@ def main() -> int:
         write_page(page_path, page_html)
 
     latest_item = generated_items[0]
-    latest_with_listing = inject_recent_articles(latest_item.html, generated_items)
-    latest_with_listing = inject_more_articles(latest_with_listing, generated_items)
+    latest_with_listing = inject_more_articles(latest_item.html, generated_items)
+    latest_with_listing = inject_blog_landing_view(latest_with_listing, generated_items)
     write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(generated_items), encoding="utf-8")
 
