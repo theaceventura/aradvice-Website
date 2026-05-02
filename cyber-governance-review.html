@@ -58,7 +58,7 @@
           position: absolute;
           top: 100%;
           left: 0;
-          min-width: 280px;
+          min-width: 300px;
           width: auto;
           white-space: nowrap;
           background: #0a1428;
@@ -306,53 +306,34 @@ Independent board review
   }
 </script>
 <script>
-  (function() {
-    function initDropdown() {
-      const dropdown = document.querySelector('.nav-dropdown');
-      const menu = document.querySelector('.dropdown-menu');
-      if (!dropdown || !menu) return;
+(function () {
+  var dd = document.querySelector('.nav-dropdown');
+  var menu = document.querySelector('.dropdown-menu');
+  if (!dd || !menu) return;
+  var timer = null;
 
-      let closeTimer = null;
+  function show() {
+    clearTimeout(timer);
+    menu.style.display = 'block';
+  }
 
-      function openMenu() {
-        if (closeTimer) {
-          clearTimeout(closeTimer);
-          closeTimer = null;
-        }
-        menu.style.display = 'block';
-      }
+  function hide() {
+    timer = setTimeout(function () {
+      menu.style.display = 'none';
+    }, 200);
+  }
 
-      function closeMenu() {
-        closeTimer = setTimeout(function() {
-          menu.style.display = 'none';
-        }, 150);
-      }
+  dd.addEventListener('mouseenter', show);
+  dd.addEventListener('mouseleave', hide);
+  menu.addEventListener('mouseenter', show);
+  menu.addEventListener('mouseleave', hide);
 
-      dropdown.addEventListener('mouseenter', openMenu);
-      dropdown.addEventListener('mouseleave', closeMenu);
-
-      menu.addEventListener('mouseenter', openMenu);
-      menu.addEventListener('mouseleave', closeMenu);
-
-      menu.querySelectorAll('a').forEach(function(link) {
-        link.addEventListener('click', function() {
-          menu.style.display = 'none';
-        });
-      });
-
-      document.addEventListener('click', function(e) {
-        if (!dropdown.contains(e.target) && !menu.contains(e.target)) {
-          menu.style.display = 'none';
-        }
-      });
+  document.addEventListener('click', function (e) {
+    if (!dd.contains(e.target)) {
+      menu.style.display = 'none';
     }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initDropdown);
-    } else {
-      initDropdown();
-    }
-  })();
+  });
+}());
 </script>
 </body>
 </html>
