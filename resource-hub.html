@@ -77,36 +77,47 @@
         .neon-glow {
             filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
         }
-        .nav-dropdown { position: relative; }
-        .nav-dropdown:hover .dropdown-menu { display: block; }
+        .nav-dropdown { position: relative; padding-bottom: 8px; cursor: pointer; }
         .dropdown-menu {
           display: none;
           position: absolute;
           top: 100%;
           left: 0;
-          min-width: 220px;
+          min-width: 280px;
+          width: auto;
+          white-space: nowrap;
           background: #0a1428;
           border: 1px solid rgba(255, 255, 255, 0.1);
           z-index: 1000;
           border-radius: 0.5rem;
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-          margin-top: 0.5rem;
+          margin-top: 0;
+          padding-top: 8px;
         }
         .dropdown-menu a {
           display: block;
-          padding: 0.75rem 1.25rem;
-          color: white;
-          text-decoration: none;
-          font-size: 0.75rem;
+          padding: 0.875rem 1.5rem;
+          white-space: nowrap;
+          font-size: 0.8rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
+          text-decoration: none;
+          color: white;
           font-weight: 700;
-          transition: color 0.2s;
+          transition: color 0.15s ease, background 0.15s ease;
         }
         .dropdown-menu a:hover,
         .dropdown-menu a:focus {
-          color: #00d4ff;
-        }    </style>
+          color: var(--primary, #00bcd4);
+          background: rgba(255, 255, 255, 0.05);
+        }
+        .dropdown-menu a:first-child {
+          padding-top: 1rem;
+        }
+        .dropdown-menu a:last-child {
+          padding-bottom: 1rem;
+        }
+    </style>
 
 <!-- Structured Data -->
 <script type="application/ld+json">
@@ -484,5 +495,55 @@ Send Enquiry
       }
     });
   }
+</script>
+
+<script>
+  (function() {
+    function initDropdown() {
+      const dropdown = document.querySelector('.nav-dropdown');
+      const menu = document.querySelector('.dropdown-menu');
+      if (!dropdown || !menu) return;
+
+      let closeTimer = null;
+
+      function openMenu() {
+        if (closeTimer) {
+          clearTimeout(closeTimer);
+          closeTimer = null;
+        }
+        menu.style.display = 'block';
+      }
+
+      function closeMenu() {
+        closeTimer = setTimeout(function() {
+          menu.style.display = 'none';
+        }, 150);
+      }
+
+      dropdown.addEventListener('mouseenter', openMenu);
+      dropdown.addEventListener('mouseleave', closeMenu);
+
+      menu.addEventListener('mouseenter', openMenu);
+      menu.addEventListener('mouseleave', closeMenu);
+
+      menu.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          menu.style.display = 'none';
+        });
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target) && !menu.contains(e.target)) {
+          menu.style.display = 'none';
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDropdown);
+    } else {
+      initDropdown();
+    }
+  })();
 </script>
 </body></html>
