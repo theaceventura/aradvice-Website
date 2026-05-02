@@ -54,6 +54,36 @@
       .hero-wash {
         background: radial-gradient(circle at top right, rgba(0, 212, 255, 0.2), transparent 38%), radial-gradient(circle at 15% 20%, rgba(0, 212, 255, 0.08), transparent 30%);
       }
+      .nav-dropdown { position: relative; }
+      .nav-dropdown:hover .dropdown-menu { display: block; }
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 220px;
+        background: #0a1428;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
+      }
+      .dropdown-menu a {
+        display: block;
+        padding: 0.75rem 1.25rem;
+        color: white;
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+        transition: color 0.2s;
+      }
+      .dropdown-menu a:hover,
+      .dropdown-menu a:focus {
+        color: #00d4ff;
+      }
     </style>
     <script type="application/ld+json">
     {
@@ -94,15 +124,20 @@
   <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
     <a class="flex items-center gap-3 hover:opacity-80 transition-opacity" href="index.html">
       <span class="material-symbols-outlined text-primary text-4xl neon-glow">shield_person</span>
-      <span class="text-xl font-black tracking-tighter text-white uppercase">Andrew Roberts Advisory</span>
+      <span class="text-xl font-black tracking-tighter text-white uppercase" style="white-space: nowrap; font-size: clamp(0.75rem, 1.2vw, 1rem);">Andrew Roberts Advisory</span>
     </a>
-    <nav class="hidden md:flex items-center gap-8">
+    <nav class="hidden md:flex items-center gap-4" style="font-size: clamp(0.7rem, 0.9vw, 0.875rem); letter-spacing: 0.05em;">
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="index.html">Home</a>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="for-directors.html">For Directors</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-primary" href="founder-advisory.html">Founder Advisory</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="readiness-review.html">Readiness Review</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="ai-governance-review.html">AI Review</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="cyber-governance-review.html">Cyber Review</a>
+      <div class="nav-dropdown">
+        <button class="text-sm font-bold tracking-widest uppercase text-primary" style="border: none; background: none; cursor: pointer; padding: 0; height: auto; display: flex; align-items: center; gap: 0.25rem;">Our Reviews <span style="font-size: 0.7em;">▾</span></button>
+        <div class="dropdown-menu">
+          <a href="founder-advisory.html">Founder Advisory Session</a>
+          <a href="readiness-review.html">Governance Readiness Review</a>
+          <a href="ai-governance-review.html">AI Governance Review</a>
+          <a href="cyber-governance-review.html">Cyber Governance Review</a>
+        </div>
+      </div>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="blog.html">Blog</a>
     </nav>
@@ -117,10 +152,10 @@
     <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="index.html">Home</a>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="for-directors.html">For Directors</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-primary py-3 border-b border-white/10" href="founder-advisory.html">Founder Advisory</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="readiness-review.html">Readiness Review</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="ai-governance-review.html">AI Review</a>
-      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="cyber-governance-review.html">Cyber Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-primary py-3 border-b border-white/10" href="founder-advisory.html">Founder Advisory Session</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="readiness-review.html">Governance Readiness Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="ai-governance-review.html">AI Governance Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="cyber-governance-review.html">Cyber Governance Review</a>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="resource-hub.html">Resource Hub</a>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="blog.html">Blog</a>
       <a href="mailto:hello@aradvice.com.au" class="bg-primary text-navy-dark px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all text-center mt-4">Enquire Now</a>

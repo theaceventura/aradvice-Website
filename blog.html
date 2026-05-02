@@ -103,6 +103,40 @@
       .nav-link {
         @apply text-sm text-white/90 font-bold tracking-widest uppercase hover:text-primary transition-colors;
       }
+      .nav-dropdown {
+        position: relative;
+      }
+      .nav-dropdown:hover .dropdown-menu {
+        display: block;
+      }
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 220px;
+        background: #0a1428;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
+      }
+      .dropdown-menu a {
+        display: block;
+        padding: 0.75rem 1.25rem;
+        color: white;
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 700;
+        transition: color 0.2s;
+      }
+      .dropdown-menu a:hover,
+      .dropdown-menu a:focus {
+        color: #00d4ff;
+      }
     </style>
     <style>
       body.blog-shell {
@@ -369,18 +403,23 @@ document.head.appendChild(o)}initApollo();</script>
           <span class="material-symbols-outlined text-primary text-4xl neon-glow"
             >shield_person</span
           >
-          <span class="text-xl font-black tracking-tighter text-white uppercase"
+          <span class="text-xl font-black tracking-tighter text-white uppercase" style="white-space: nowrap; font-size: clamp(0.75rem, 1.2vw, 1rem);"
             >Andrew Roberts Advisory</span
           >
         </div>
 
-        <nav class="hidden xl:flex items-center gap-10">
+        <nav class="hidden xl:flex items-center gap-4" style="font-size: clamp(0.7rem, 0.9vw, 0.875rem); letter-spacing: 0.05em;">
           <a class="nav-link" href="/index.html">Home</a>
           <a class="nav-link" href="/for-directors.html">For Directors</a>
-          <a class="nav-link" href="/founder-advisory.html">Founder Advisory</a>
-          <a class="nav-link" href="/readiness-review.html">Readiness Review</a>
-          <a class="nav-link" href="/ai-governance-review.html">AI Review</a>
-          <a class="nav-link" href="/cyber-governance-review.html">Cyber Review</a>
+          <div class="nav-dropdown">
+            <button class="nav-link" style="border: none; background: none; cursor: pointer; padding: 0; height: auto;" id="nav-reviews">Our Reviews <span style="font-size: 0.7em; margin-left: 0.25rem;">▾</span></button>
+            <div class="dropdown-menu">
+              <a href="/founder-advisory.html">Founder Advisory Session</a>
+              <a href="/readiness-review.html">Governance Readiness Review</a>
+              <a href="/ai-governance-review.html">AI Governance Review</a>
+              <a href="/cyber-governance-review.html">Cyber Governance Review</a>
+            </div>
+          </div>
           <a class="nav-link" href="/resource-hub.html">Resource Hub</a>
           <a class="nav-link" href="/blog.html">Blog</a>
 
@@ -402,10 +441,10 @@ document.head.appendChild(o)}initApollo();</script>
         <nav class="max-w-[1400px] mx-auto px-8 py-6 flex flex-col gap-4">
           <a class="nav-link py-3 border-b border-white/10" href="/index.html">Home</a>
           <a class="nav-link py-3 border-b border-white/10" href="/for-directors.html">For Directors</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/founder-advisory.html">Founder Advisory</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/readiness-review.html">Readiness Review</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/ai-governance-review.html">AI Review</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/cyber-governance-review.html">Cyber Review</a>
+          <a class="nav-link py-3 border-b border-white/10" href="/founder-advisory.html">Founder Advisory Session</a>
+          <a class="nav-link py-3 border-b border-white/10" href="/readiness-review.html">Governance Readiness Review</a>
+          <a class="nav-link py-3 border-b border-white/10" href="/ai-governance-review.html">AI Governance Review</a>
+          <a class="nav-link py-3 border-b border-white/10" href="/cyber-governance-review.html">Cyber Governance Review</a>
           <a class="nav-link py-3 border-b border-white/10" href="/resource-hub.html">Resource Hub</a>
           <a class="nav-link py-3 border-b border-white/10" href="/blog.html">Blog</a>
           <a
