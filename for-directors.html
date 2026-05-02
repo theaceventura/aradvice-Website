@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="description" content="Independent governance products for directors who need a defensible record of oversight, delivered as formal board-ready outputs." />
+    <meta name="description" content="Confidential advisory engagements for directors who need a clear, defensible governance position." />
     <meta name="robots" content="index, follow" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -21,34 +21,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#00d4ff",
-                        "background-light": "#ffffff",
-                        "background-dark": "#0a1428",
-                        "navy-dark": "#050a14",
-                        "navy-rich": "#0a1428"
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"]
-                    }
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00d4ff",
+              "background-light": "#ffffff",
+              "background-dark": "#0a1428",
+              "navy-dark": "#050a14",
+              "navy-rich": "#0a1428"
             },
-        }
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            }
+          },
+        },
+      }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .neon-glow {
-            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
-        }
-        .hero-orb {
-            background: radial-gradient(circle at center, rgba(0, 212, 255, 0.22), rgba(0, 212, 255, 0.02) 70%, transparent 72%);
-        }
+      body { font-family: 'Inter', sans-serif; }
+      .neon-glow { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6)); }
+      .hero-orb { background: radial-gradient(circle at center, rgba(0, 212, 255, 0.22), rgba(0, 212, 255, 0.02) 70%, transparent 72%); }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display selection:bg-primary/30 dark">
@@ -65,148 +59,190 @@
   })();
 </script>
 <header class="fixed top-0 w-full z-50 bg-navy-dark/90 backdrop-blur-xl border-b border-white/5">
-<div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
-<a class="flex items-center gap-3 hover:opacity-80 transition-opacity" href="index.html">
-<span class="material-symbols-outlined text-primary text-4xl neon-glow">shield_person</span>
-<span class="text-xl font-black tracking-tighter text-white uppercase">Andrew Roberts Advisory</span>
-</a>
-<nav class="hidden md:flex items-center gap-10">
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="index.html">Home</a>
-<a class="text-sm font-bold tracking-widest uppercase text-primary" href="for-directors.html">For Directors</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="ai-governance-review.html">AI Review</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="cyber-governance-review.html">Cyber Review</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="blog.html">Blog</a>
-</nav>
-<div class="flex items-center gap-4">
-<button id="mobile-menu-button" class="md:hidden text-white" type="button" aria-label="Open menu">
-<span class="material-symbols-outlined text-3xl">menu</span>
-</button>
-<a href="mailto:hello@aradvice.com.au?subject=Director%20Enquiry" class="hidden md:flex bg-primary hover:bg-white text-navy-dark px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all transform hover:-translate-y-1 shadow-lg">
-Enquire Now
-</a>
-</div>
-</div>
-<div id="mobile-menu" class="hidden md:hidden bg-navy-dark/95 backdrop-blur-xl border-b border-white/5">
-<nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="index.html">Home</a>
-<a class="text-sm font-bold tracking-widest uppercase text-primary py-3 border-b border-white/10" href="for-directors.html">For Directors</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="ai-governance-review.html">AI Review</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="cyber-governance-review.html">Cyber Review</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="resource-hub.html">Resource Hub</a>
-<a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="blog.html">Blog</a>
-<a href="mailto:hello@aradvice.com.au?subject=Director%20Enquiry" class="bg-primary text-navy-dark px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all text-center mt-4">
-Enquire Now
-</a>
-</nav>
-</div>
+  <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+    <a class="flex items-center gap-3 hover:opacity-80 transition-opacity" href="index.html">
+      <span class="material-symbols-outlined text-primary text-4xl neon-glow">shield_person</span>
+      <span class="text-xl font-black tracking-tighter text-white uppercase">Andrew Roberts Advisory</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="index.html">Home</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-primary" href="for-directors.html">For Directors</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="founder-advisory.html">Founder Advisory</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="readiness-review.html">Readiness Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="ai-governance-review.html">AI Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="cyber-governance-review.html">Cyber Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="blog.html">Blog</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <button id="mobile-menu-button" class="md:hidden text-white" type="button" aria-label="Open menu">
+        <span class="material-symbols-outlined text-3xl">menu</span>
+      </button>
+      <a href="mailto:hello@aradvice.com.au" class="hidden md:flex bg-primary hover:bg-white text-navy-dark px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all transform hover:-translate-y-1 shadow-lg">Enquire Now</a>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden md:hidden bg-navy-dark/95 backdrop-blur-xl border-b border-white/5">
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="index.html">Home</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-primary py-3 border-b border-white/10" href="for-directors.html">For Directors</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="founder-advisory.html">Founder Advisory</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="readiness-review.html">Readiness Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="ai-governance-review.html">AI Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="cyber-governance-review.html">Cyber Review</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="resource-hub.html">Resource Hub</a>
+      <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="blog.html">Blog</a>
+      <a href="mailto:hello@aradvice.com.au" class="bg-primary text-navy-dark px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all text-center mt-4">Enquire Now</a>
+    </nav>
+  </div>
 </header>
 
 <main class="pt-24">
-<section class="relative overflow-hidden py-20 lg:py-28">
-<div class="absolute inset-0 hero-orb"></div>
-<div class="absolute top-10 right-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
-<div class="max-w-7xl mx-auto px-6 relative z-10">
-<div class="max-w-3xl space-y-8">
-<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest">
-<span class="material-symbols-outlined text-sm">gavel</span>
-Independent director offerings
-</div>
-<h1 class="text-5xl lg:text-7xl font-black tracking-tighter leading-[1.05] text-slate-900 dark:text-white">For Directors</h1>
-<p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">Independent governance products for directors who need a defensible record of oversight, delivered as formal board-ready outputs.</p>
-<div class="flex flex-col sm:flex-row gap-4 pt-2">
-<a href="mailto:hello@aradvice.com.au?subject=Director%20Enquiry" class="inline-flex items-center justify-center h-14 px-8 bg-primary text-white font-bold text-lg hover:scale-[1.02] transition-transform shadow-lg shadow-primary/30">Enquire Now</a>
-<div class="inline-flex items-center justify-center h-14 px-8 border-2 border-primary text-primary rounded-xl font-bold text-lg">Fixed fee: $15,000 AUD</div>
-</div>
-</div>
-</div>
-</section>
+  <section class="relative overflow-hidden py-20 lg:py-28">
+    <div class="absolute inset-0 hero-orb"></div>
+    <div class="absolute top-10 right-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      <div class="max-w-3xl space-y-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest">
+          <span class="material-symbols-outlined text-sm">gavel</span>
+          Independent Director Advisory
+        </div>
+        <h1 class="text-5xl lg:text-7xl font-black tracking-tighter leading-[1.05] text-slate-900 dark:text-white">For Directors</h1>
+        <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">Personal accountability cannot be delegated. I work with individual directors — confidentially — to understand their obligations, identify their gaps, and strengthen their governance position.</p>
+        <div class="space-y-3">
+          <a href="mailto:hello@aradvice.com.au?subject=Director%20Enquiry" class="inline-flex items-center justify-center h-14 px-8 bg-primary text-white font-bold text-lg hover:scale-[1.02] transition-transform shadow-lg shadow-primary/30">Start a Confidential Conversation</a>
+          <p class="text-sm text-slate-400 border-t border-white/10 pt-3">Strictly confidential. Fixed fee. Delivered as a formal written report.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section class="pb-24">
-<div class="max-w-7xl mx-auto px-6">
-<div class="grid lg:grid-cols-2 gap-8">
-<article class="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0d1830] p-8 lg:p-10 shadow-2xl">
-<div class="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 blur-3xl rounded-full"></div>
-<div class="relative space-y-6">
-<div class="flex items-start justify-between gap-6">
-<div>
-<p class="text-sm uppercase tracking-[0.3em] text-primary font-bold mb-3">Product 1</p>
-<h2 class="text-3xl lg:text-4xl font-black tracking-tight text-white">Director Readiness Assessment &amp; Personal Briefing</h2>
-</div>
-<div class="text-right shrink-0">
-<p class="text-sm uppercase tracking-widest text-slate-400">Price</p>
-<p class="text-2xl font-black text-primary">$15,000 AUD</p>
-</div>
-</div>
-<p class="text-lg text-slate-300 leading-relaxed">An independent assessment of your personal governance position — delivered as a formal briefing report and one-on-one debrief.</p>
-<p class="text-slate-400 leading-relaxed">Designed for directors who want to understand exactly what they are personally obligated to know, where their current position falls short, and what to do about it. Conducted confidentially. Delivered as a formal written report.</p>
-<div class="grid gap-3 pt-2">
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Personal Obligation Summary — what you are specifically required to know and do</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Knowledge Gap Assessment — where your current understanding needs strengthening</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Board-Ready Question Bank — questions to demonstrate active oversight at any board meeting</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Red Flag Guide — what to look for in management cyber and AI reports</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Personal 90-Day Action Plan — five specific actions to strengthen your governance position</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Director Declaration of Oversight — a template to maintain your own due diligence record</span></div>
-</div>
-<a href="mailto:hello@aradvice.com.au?subject=Director%20Readiness%20Assessment%20Enquiry" class="inline-flex items-center justify-center h-12 px-6 bg-primary text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-[1.02]">Enquire About This Engagement</a>
-</div>
-</article>
+  <section class="pb-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="text-sm uppercase tracking-[0.3em] text-primary font-bold mb-4">The Director's Dilemma</p>
+      <h2 class="text-4xl font-black text-white mb-4">Three Questions Every Director Should Be Able to Answer</h2>
+      <p class="text-lg text-slate-300 mb-10">If any of these give you pause, that pause is worth addressing.</p>
+      <div class="grid md:grid-cols-3 gap-6">
+        <article class="rounded-2xl border border-white/10 bg-[#0d1830] p-8"><p class="text-primary text-4xl font-black mb-6">01</p><p class="text-slate-200 text-lg leading-relaxed">Can you articulate your board's cyber risk appetite in plain English — right now, without referring to a document?</p></article>
+        <article class="rounded-2xl border border-white/10 bg-[#0d1830] p-8"><p class="text-primary text-4xl font-black mb-6">02</p><p class="text-slate-200 text-lg leading-relaxed">If a breach occurred tomorrow, could you demonstrate to ASIC that you exercised due diligence — and point to the evidence?</p></article>
+        <article class="rounded-2xl border border-white/10 bg-[#0d1830] p-8"><p class="text-primary text-4xl font-black mb-6">03</p><p class="text-slate-200 text-lg leading-relaxed">Do you know which AI tools your organisation is currently using — and who approved them?</p></article>
+      </div>
+    </div>
+  </section>
 
-<article class="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0d1830] p-8 lg:p-10 shadow-2xl">
-<div class="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 blur-3xl rounded-full"></div>
-<div class="relative space-y-6">
-<div class="flex items-start justify-between gap-6">
-<div>
-<p class="text-sm uppercase tracking-[0.3em] text-primary font-bold mb-3">Product 2</p>
-<h2 class="text-3xl lg:text-4xl font-black tracking-tight text-white">Director Cyber &amp; AI Masterclass (Private, Bespoke)</h2>
-</div>
-<div class="text-right shrink-0">
-<p class="text-sm uppercase tracking-widest text-slate-400">Price</p>
-<p class="text-2xl font-black text-primary">$15,000 AUD</p>
-<p class="text-xs uppercase tracking-widest text-slate-400">up to 4 directors</p>
-</div>
-</div>
-<p class="text-lg text-slate-300 leading-relaxed">A private advisory session built entirely around your board, your sector, and your real governance gaps — not a generic training course.</p>
-<p class="text-slate-400 leading-relaxed">Prepared specifically for your context. Delivered privately to you and up to three fellow directors. Covers personal liability, how to read and challenge board reporting, AI governance obligations, and live crisis scenario work. Everything is tailored — no generic content.</p>
-<div class="grid gap-3 pt-2">
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Session Summary Report — findings and governance implications</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Bespoke Question Library — 30+ questions tailored to your board and sector</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Director Reference Card — a concise one-page reference for every board meeting</span></div>
-<div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Post-Session Structural Recommendations — specific changes your board should consider</span></div>
-</div>
-<a href="mailto:hello@aradvice.com.au?subject=Director%20Masterclass%20Enquiry" class="inline-flex items-center justify-center h-12 px-6 bg-primary text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-[1.02]">Enquire About This Engagement</a>
-</div>
-</article>
-</div>
-</div>
-</section>
+  <section class="pb-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="text-sm uppercase tracking-[0.3em] text-primary font-bold mb-4">Your Obligations</p>
+      <h2 class="text-4xl font-black text-white mb-4">Personal Accountability — Not Just Organisational</h2>
+      <p class="text-lg text-slate-300 max-w-5xl mb-10">Under the Corporations Act s180, directors owe a duty of care and diligence. ASIC has made clear that cyber risk sits within that duty. The question is not whether you are obligated — you are. The question is whether you can demonstrate that you have discharged those obligations.</p>
+      <div class="grid md:grid-cols-3 gap-6">
+        <article class="rounded-2xl border border-white/10 bg-[#0d1830] p-7"><span class="material-symbols-outlined text-primary text-3xl mb-4">gavel</span><h3 class="text-2xl font-bold text-white mb-3">Duty of Care &amp; Diligence</h3><p class="text-slate-300">Section 180 of the Corporations Act requires directors to exercise the care and diligence that a reasonable person in their position would exercise. Cyber and AI risk fall squarely within this duty.</p></article>
+        <article class="rounded-2xl border border-white/10 bg-[#0d1830] p-7"><span class="material-symbols-outlined text-primary text-3xl mb-4">visibility</span><h3 class="text-2xl font-bold text-white mb-3">Active Oversight — Not Passive Acceptance</h3><p class="text-slate-300">Regulators expect directors to actively challenge management reporting on cyber risk — not simply receive and accept it. Passive acceptance of a green dashboard is not sufficient.</p></article>
+        <article class="rounded-2xl border border-white/10 bg-[#0d1830] p-7"><span class="material-symbols-outlined text-primary text-3xl mb-4">balance</span><h3 class="text-2xl font-bold text-white mb-3">Personal Liability — Not Just Organisational</h3><p class="text-slate-300">In a serious breach scenario, ASIC can pursue individual directors, not just the organisation. Your personal conduct at the board table is what comes under scrutiny.</p></article>
+      </div>
+    </div>
+  </section>
 
-<section class="pb-20">
-<div class="max-w-5xl mx-auto px-6">
-<div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-8 text-sm text-slate-300 leading-relaxed">
-Andrew Roberts Advisory does not sell software, resell vendor solutions, or take commissions. This review serves one interest: yours.
-</div>
-</div>
-</section>
+  <section class="pb-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-8">
+        <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0d1830] p-8 lg:p-10 shadow-2xl">
+          <div class="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 blur-3xl rounded-full"></div>
+          <div class="relative space-y-6">
+            <div class="flex items-start justify-between gap-6">
+              <div>
+                <p class="text-sm uppercase tracking-[0.3em] text-primary font-bold mb-3">Product 1</p>
+                <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-white">Director Readiness Assessment &amp; Personal Briefing</h2>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-sm uppercase tracking-widest text-slate-400">Price</p>
+                <p class="text-2xl font-black text-primary">$15,000 AUD</p>
+              </div>
+            </div>
+            <p class="text-lg text-slate-300 leading-relaxed">An independent assessment of your personal governance position — delivered as a formal briefing report and one-on-one debrief.</p>
+            <p class="text-slate-400 leading-relaxed">Designed for directors who want to understand exactly what they are personally obligated to know, where their current position falls short, and what to do about it. Conducted confidentially. Delivered as a formal written report.</p>
+            <div class="grid gap-3 pt-2">
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Personal Obligation Summary — what you are specifically required to know and do</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Knowledge Gap Assessment — where your current understanding needs strengthening</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Board-Ready Question Bank — questions to demonstrate active oversight at any board meeting</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Red Flag Guide — what to look for in management cyber and AI reports</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Personal 90-Day Action Plan — five specific actions to strengthen your governance position</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Director Declaration of Oversight — a template to maintain your own due diligence record</span></div>
+            </div>
+            <a href="mailto:hello@aradvice.com.au?subject=Director%20Readiness%20Assessment%20Enquiry" class="inline-flex items-center justify-center h-12 px-6 bg-primary text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-[1.02]">Enquire About This Engagement</a>
+          </div>
+        </article>
+
+        <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0d1830] p-8 lg:p-10 shadow-2xl">
+          <div class="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 blur-3xl rounded-full"></div>
+          <div class="relative space-y-6">
+            <div class="flex items-start justify-between gap-6">
+              <div>
+                <p class="text-sm uppercase tracking-[0.3em] text-primary font-bold mb-3">Product 2</p>
+                <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-white">Director Cyber &amp; AI Masterclass (Private, Bespoke)</h2>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-sm uppercase tracking-widest text-slate-400">Price</p>
+                <p class="text-2xl font-black text-primary">$15,000 AUD</p>
+                <p class="text-xs uppercase tracking-widest text-slate-400">up to 4 directors</p>
+              </div>
+            </div>
+            <p class="text-lg text-slate-300 leading-relaxed">A private advisory session built entirely around your board, your sector, and your real governance gaps — not a generic training course.</p>
+            <p class="text-slate-400 leading-relaxed">Prepared specifically for your context. Delivered privately to you and up to three fellow directors. Covers personal liability, how to read and challenge board reporting, AI governance obligations, and live crisis scenario work. Everything is tailored — no generic content.</p>
+            <div class="grid gap-3 pt-2">
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Session Summary Report — findings and governance implications</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Bespoke Question Library — 30+ questions tailored to your board and sector</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Director Reference Card — a concise one-page reference for every board meeting</span></div>
+              <div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary mt-0.5">check_circle</span><span class="text-slate-200">Post-Session Structural Recommendations — specific changes your board should consider</span></div>
+            </div>
+            <a href="mailto:hello@aradvice.com.au?subject=Director%20Masterclass%20Enquiry" class="inline-flex items-center justify-center h-12 px-6 bg-primary text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-[1.02]">Enquire About This Engagement</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="text-sm uppercase tracking-[0.3em] text-primary font-bold mb-4">Our Commitment</p>
+      <h2 class="text-4xl font-black text-white mb-10">Why Independence Matters</h2>
+      <div class="space-y-6">
+        <div class="flex items-start gap-4"><span class="material-symbols-outlined text-primary text-3xl">verified_user</span><p class="text-slate-300">No vendor relationships. No referral arrangements. My advice serves your interests — not a product, not a platform.</p></div>
+        <div class="flex items-start gap-4"><span class="material-symbols-outlined text-primary text-3xl">lock</span><p class="text-slate-300">Every engagement is conducted under a formal NDA. What you share remains strictly between us.</p></div>
+        <div class="flex items-start gap-4"><span class="material-symbols-outlined text-primary text-3xl">person</span><p class="text-slate-300">I advise from the director's seat — not the IT department's. The framing, the language, and the output are designed for the boardroom, not the server room.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-20">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-4xl font-black text-white mb-4">Ready to Understand Your Position?</h2>
+      <p class="text-lg text-slate-300 mb-8">Every engagement begins with a confidential conversation. Obligation-free and on your terms.</p>
+      <a href="mailto:hello@aradvice.com.au?subject=Director%20Advisory%20Enquiry" class="inline-flex items-center justify-center h-12 px-8 bg-primary text-white font-bold uppercase tracking-widest text-xs transition-all hover:scale-[1.02]">Start a Confidential Conversation</a>
+      <p class="mt-6 text-sm text-slate-400">Or email: hello@aradvice.com.au</p>
+    </div>
+  </section>
 </main>
 
 <footer class="border-t border-slate-200 dark:border-slate-800 bg-navy-rich py-12">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div class="flex flex-col md:flex-row justify-between items-center gap-8">
-<div class="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
-<a class="flex items-center gap-3" href="index.html">
-<span class="material-symbols-outlined text-primary text-3xl">shield_person</span>
-<span class="font-bold tracking-tight uppercase text-white">Andrew Roberts Advisory</span>
-</a>
-</div>
-<p class="text-sm text-slate-400">© 2026 Andrew Roberts Advisory. Independent board-level advisory for cyber and AI governance oversight.</p>
-<div class="flex gap-6">
-<a class="text-slate-400 hover:text-primary transition-colors" href="blog.html">Blog</a>
-<a class="text-slate-400 hover:text-primary transition-colors" href="privacy-policy.html">Privacy Policy</a>
-<a class="text-slate-400 hover:text-primary transition-colors" href="terms-of-service.html">Terms of Service</a>
-</div>
-</div>
-</div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-6 items-center text-center">
+      <div class="flex flex-wrap justify-center gap-5 text-sm text-slate-300">
+        <a class="hover:text-primary transition-colors" href="index.html">Home</a>
+        <a class="hover:text-primary transition-colors" href="for-directors.html">For Directors</a>
+        <a class="hover:text-primary transition-colors" href="founder-advisory.html">Founder Advisory</a>
+        <a class="hover:text-primary transition-colors" href="readiness-review.html">Readiness Review</a>
+        <a class="hover:text-primary transition-colors" href="ai-governance-review.html">AI Review</a>
+        <a class="hover:text-primary transition-colors" href="cyber-governance-review.html">Cyber Review</a>
+        <a class="hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
+        <a class="hover:text-primary transition-colors" href="blog.html">Blog</a>
+        <a class="hover:text-primary transition-colors" href="privacy-policy.html">Privacy Policy</a>
+        <a class="hover:text-primary transition-colors" href="terms-of-service.html">Terms of Service</a>
+        <a class="hover:text-primary transition-colors" href="liability-disclaimer.html">Liability Disclaimer</a>
+      </div>
+      <p class="text-sm text-slate-400">Independent board-level advisory for cyber and AI governance. All engagements conducted under strict non-disclosure.</p>
+      <p class="text-sm text-slate-400">© 2026 Andrew Roberts Advisory. All rights reserved.</p>
+    </div>
+  </div>
 </footer>
 
 <script>
