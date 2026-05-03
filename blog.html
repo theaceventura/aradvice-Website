@@ -155,6 +155,9 @@
       .dropdown-menu a:last-child {
         padding-bottom: 1rem;
       }
+      .nav-active {
+        color: #00d4ff !important;
+      }
     </style>
     <style>
       body.blog-shell {
@@ -421,23 +424,23 @@ document.head.appendChild(o)}initApollo();</script>
           <span class="material-symbols-outlined text-primary text-4xl neon-glow"
             >shield_person</span
           >
-          <span class="text-xl font-black tracking-tighter text-white uppercase" style="white-space: nowrap; font-size: clamp(0.75rem, 1.2vw, 1rem);"
+          <span class="text-xl font-black tracking-tighter text-white uppercase" style="white-space: nowrap; font-size: clamp(0.75rem, 1vw, 0.9rem);"
             >Andrew Roberts Advisory</span
           >
         </div>
 
         <nav class="hidden xl:flex items-center gap-4" style="font-size: clamp(0.7rem, 0.9vw, 0.875rem); letter-spacing: 0.05em;">
-          <a class="nav-link" href="/index.html">Home</a>
-          <a class="nav-link" href="/for-directors.html">For Directors</a>
+          <a class="nav-link" href="/" id="nav-home">Home</a>
+          <a class="nav-link" href="for-directors.html">For Directors</a>
           <div class="nav-dropdown">
             <button class="nav-link" style="border: none; background: none; cursor: pointer; padding: 0; height: auto;" id="nav-reviews">Our Products <span style="font-size: 0.7em; margin-left: 0.25rem;">▾</span></button>
             <div class="dropdown-menu">
-              <a href="/products.html">All Products →</a>
-              <a href="/founder-advisory.html">Founder Advisory Session</a>
-              <a href="/readiness-review.html">Governance Readiness Review</a>
-              <a href="/for-directors.html">Director Readiness Assessment</a>
-              <a href="/ai-governance-review.html">AI Governance Board Review</a>
-              <a href="/cyber-governance-review.html">Cyber Governance Deep Review</a>
+              <a href="products.html">All Products →</a>
+              <a href="founder-advisory.html" id="nav-founder">Founder Advisory Session</a>
+              <a href="/readiness-review.html" id="nav-readiness">Governance Readiness Review</a>
+              <a href="for-directors.html">Director Readiness Assessment</a>
+              <a href="ai-governance-review.html" id="nav-ai">AI Governance Board Review</a>
+              <a href="cyber-governance-review.html" id="nav-cyber">Cyber Governance Deep Review</a>
             </div>
           </div>
           <a class="nav-link" href="/resource-hub.html">Resource Hub</a>
@@ -459,14 +462,14 @@ document.head.appendChild(o)}initApollo();</script>
       <!-- Mobile Menu -->
       <div id="mobile-menu" class="hidden xl:hidden bg-navy-deep/95 backdrop-blur-xl border-b border-white/5">
         <nav class="max-w-[1400px] mx-auto px-8 py-6 flex flex-col gap-4">
-          <a class="nav-link py-3 border-b border-white/10" href="/index.html">Home</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/for-directors.html">For Directors</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/products.html">All Products →</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/founder-advisory.html">Founder Advisory Session</a>
+          <a class="nav-link py-3 border-b border-white/10" href="/">Home</a>
+          <a class="nav-link py-3 border-b border-white/10" href="for-directors.html">For Directors</a>
+          <a class="nav-link py-3 border-b border-white/10" href="products.html">All Products →</a>
+          <a class="nav-link py-3 border-b border-white/10" href="founder-advisory.html">Founder Advisory Session</a>
           <a class="nav-link py-3 border-b border-white/10" href="/readiness-review.html">Governance Readiness Review</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/for-directors.html">Director Readiness Assessment</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/ai-governance-review.html">AI Governance Board Review</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/cyber-governance-review.html">Cyber Governance Deep Review</a>
+          <a class="nav-link py-3 border-b border-white/10" href="for-directors.html">Director Readiness Assessment</a>
+          <a class="nav-link py-3 border-b border-white/10" href="ai-governance-review.html">AI Governance Board Review</a>
+          <a class="nav-link py-3 border-b border-white/10" href="cyber-governance-review.html">Cyber Governance Deep Review</a>
           <a class="nav-link py-3 border-b border-white/10" href="/resource-hub.html">Resource Hub</a>
           <a class="nav-link py-3 border-b border-white/10" href="/blog.html">Blog</a>
           <a
@@ -484,63 +487,18 @@ document.head.appendChild(o)}initApollo();</script>
         <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-slate-900/70 rounded-[2rem] shadow-[0_24px_70px_rgba(2,6,23,0.45)] border border-slate-700/70"><h1 class="text-4xl sm:text-5xl font-bold text-white leading-tight mb-4">Blog</h1><p class="text-lg text-slate-300">Select an article below to read the full post.</p></article>
 
 
-    <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70"><h2 class="text-3xl font-bold text-slate-100 mb-8">More Articles</h2><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"><a href="/post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 overflow-hidden hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;"><div class="aspect-[16/9] overflow-hidden bg-slate-900"><img src="https://getautoseo.com/storage/hero_images/article_1421582_1777433467.jpg" alt="What is a Technology Consultant? A Director’s Guide to Strategic Advisory in 2026" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"></div><div class="p-5"><h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">What is a Technology Consultant? A Director’s Guide to Strategic Advisory in 2026<span class="ml-2 inline-flex items-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300">New</span></h3><div class="text-sm text-slate-400">Apr 30, 2026 &middot; 14 min read</div></div></a><a href="/post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 overflow-hidden hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;"><div class="aspect-[16/9] overflow-hidden bg-slate-900"><img src="https://getautoseo.com/storage/hero_images/article_1421581_1777433430.jpg" alt="Cyber Governance for Boards Australia: Moving Beyond Technical Metrics to Defensible Oversight" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"></div><div class="p-5"><h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">Cyber Governance for Boards Australia: Moving Beyond Technical Metrics to Defensible Oversight<span class="ml-2 inline-flex items-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300">New</span></h3><div class="text-sm text-slate-400">Apr 29, 2026 &middot; 14 min read</div></div></a></div></section>
+    <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70"><h2 class="text-3xl font-bold text-slate-100 mb-8">More Articles</h2><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"><a href="/post/what-is-an-it-audit-a-directors-guide-to-defensible-oversight/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 overflow-hidden hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;"><div class="aspect-[16/9] overflow-hidden bg-slate-900"><img src="https://getautoseo.com/storage/hero_images/article_1421583_1777433397.jpg" alt="What is an IT Audit? A Director&#x27;s Guide to Defensible Oversight" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"></div><div class="p-5"><h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">What is an IT Audit? A Director&#x27;s Guide to Defensible Oversight<span class="ml-2 inline-flex items-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300">New</span></h3><div class="text-sm text-slate-400">May 03, 2026 &middot; 15 min read</div></div></a><a href="/post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 overflow-hidden hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;"><div class="aspect-[16/9] overflow-hidden bg-slate-900"><img src="https://getautoseo.com/storage/hero_images/article_1421582_1777433467.jpg" alt="What is a Technology Consultant? A Director’s Guide to Strategic Advisory in 2026" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"></div><div class="p-5"><h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">What is a Technology Consultant? A Director’s Guide to Strategic Advisory in 2026<span class="ml-2 inline-flex items-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300">New</span></h3><div class="text-sm text-slate-400">Apr 30, 2026 &middot; 14 min read</div></div></a><a href="/post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 overflow-hidden hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;"><div class="aspect-[16/9] overflow-hidden bg-slate-900"><img src="https://getautoseo.com/storage/hero_images/article_1421581_1777433430.jpg" alt="Cyber Governance for Boards Australia: Moving Beyond Technical Metrics to Defensible Oversight" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy"></div><div class="p-5"><h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">Cyber Governance for Boards Australia: Moving Beyond Technical Metrics to Defensible Oversight<span class="ml-2 inline-flex items-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300">New</span></h3><div class="text-sm text-slate-400">Apr 29, 2026 &middot; 15 min read</div></div></a></div></section>
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-200 dark:border-slate-800 bg-navy-rich py-12 mt-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col gap-6 items-center text-center">
-          <div class="flex flex-wrap justify-center gap-5 text-sm text-slate-300">
-            <a class="hover:text-primary transition-colors" href="/index.html">Home</a>
-            <a class="hover:text-primary transition-colors" href="/for-directors.html">For Directors</a>
-            <a class="hover:text-primary transition-colors" href="/founder-advisory.html">Founder Advisory</a>
-            <a class="hover:text-primary transition-colors" href="/readiness-review.html">Readiness Review</a>
-            <a class="hover:text-primary transition-colors" href="/ai-governance-review.html">AI Review</a>
-            <a class="hover:text-primary transition-colors" href="/cyber-governance-review.html">Cyber Review</a>
-            <a class="hover:text-primary transition-colors" href="/resource-hub.html">Resource Hub</a>
-            <a class="hover:text-primary transition-colors" href="/blog.html">Blog</a>
-            <a class="hover:text-primary transition-colors" href="/privacy-policy.html">Privacy Policy</a>
-            <a class="hover:text-primary transition-colors" href="/terms-of-service.html">Terms of Service</a>
-            <a class="hover:text-primary transition-colors" href="/liability-disclaimer.html">Liability Disclaimer</a>
-          </div>
-          <p class="text-sm text-slate-400">Independent board-level advisory for cyber and AI governance. All engagements conducted under strict non-disclosure.</p>
-          <p class="text-sm text-slate-400">© 2026 Andrew Roberts Advisory. All rights reserved.</p>
+    <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-center">
+                <p class="text-sm text-gray-500">
+                    &copy; 2026 Andrew Roberts Advisory. All rights reserved.
+                </p>
+            </div>
         </div>
-      </div>
     </footer>
-    <script>
-      (function () {
-        var dd = document.querySelector('.nav-dropdown');
-        var menu = document.querySelector('.dropdown-menu');
-        if (!dd || !menu) return;
-        var timer = null;
-
-        function show() {
-          clearTimeout(timer);
-          menu.style.display = 'block';
-        }
-
-        function hide() {
-          timer = setTimeout(function () {
-            menu.style.display = 'none';
-          }, 200);
-        }
-
-        dd.addEventListener('mouseenter', show);
-        dd.addEventListener('mouseleave', hide);
-        menu.addEventListener('mouseenter', show);
-        menu.addEventListener('mouseleave', hide);
-
-        document.addEventListener('click', function (e) {
-          if (!dd.contains(e.target)) {
-            menu.style.display = 'none';
-          }
-        });
-      }());
-    </script>
-<script>
-(function(){var d=document.querySelector('.nav-dropdown'),m=document.querySelector('.dropdown-menu');if(!d||!m)return;var t=null;function show(){clearTimeout(t);m.style.display='block';}function hide(){t=setTimeout(function(){m.style.display='none';},200);}d.addEventListener('mouseenter',show);d.addEventListener('mouseleave',hide);m.addEventListener('mouseenter',show);m.addEventListener('mouseleave',hide);document.addEventListener('click',function(e){if(!d.contains(e.target))m.style.display='none';});}());
-</script>
 </body>
 </html>

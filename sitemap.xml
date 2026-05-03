@@ -1,67 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
+  <url>
+    <loc>https://aradvice.com.au/</loc>
+    <lastmod>2026-05-03</lastmod>
+  </url>
   <url>
     <loc>https://aradvice.com.au/index.html</loc>
     <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
   </url>
-
-  <url>
-    <loc>https://aradvice.com.au/for-directors.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://aradvice.com.au/founder-advisory.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
   <url>
     <loc>https://aradvice.com.au/readiness-review.html</loc>
     <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
   </url>
-
-  <url>
-    <loc>https://aradvice.com.au/ai-governance-review.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://aradvice.com.au/cyber-governance-review.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://aradvice.com.au/products.html</loc>
-    <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
   <url>
     <loc>https://aradvice.com.au/resource-hub.html</loc>
     <lastmod>2026-05-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://aradvice.com.au/blog.html</loc>
     <lastmod>2026-05-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
   </url>
-
+  <url>
+    <loc>https://aradvice.com.au/privacy-policy.html</loc>
+    <lastmod>2026-05-03</lastmod>
+  </url>
+  <url>
+    <loc>https://aradvice.com.au/terms-of-service.html</loc>
+    <lastmod>2026-05-03</lastmod>
+  </url>
+  <url>
+    <loc>https://aradvice.com.au/liability-disclaimer.html</loc>
+    <lastmod>2026-05-03</lastmod>
+  </url>
+  <url>
+    <loc>https://aradvice.com.au/post/what-is-an-it-audit-a-directors-guide-to-defensible-oversight/</loc>
+    <lastmod>2026-05-03</lastmod>
+  </url>
+  <url>
+    <loc>https://aradvice.com.au/post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/</loc>
+    <lastmod>2026-04-30</lastmod>
+  </url>
+  <url>
+    <loc>https://aradvice.com.au/post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/</loc>
+    <lastmod>2026-04-29</lastmod>
+  </url>
 </urlset>
