@@ -44,4 +44,9 @@
     <loc>https://aradvice.com.au/post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/</loc>
     <lastmod>2026-04-29</lastmod>
   </url>
+  <url>
+    <loc>https://aradvice.com.au/contact.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
