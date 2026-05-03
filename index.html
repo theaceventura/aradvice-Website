@@ -106,8 +106,16 @@
       }
       .nav-dropdown {
         position: relative;
-        padding-bottom: 8px;
         cursor: pointer;
+      }
+      .nav-dropdown::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        height: 12px;
+        background: transparent;
       }
       .dropdown-menu {
         display: none;
@@ -1126,5 +1134,8 @@ document.head.appendChild(o)}initApollo();</script>
       }());
     </script>
 
+<script>
+(function(){var d=document.querySelector('.nav-dropdown'),m=document.querySelector('.dropdown-menu');if(!d||!m)return;var t=null;function show(){clearTimeout(t);m.style.display='block';}function hide(){t=setTimeout(function(){m.style.display='none';},200);}d.addEventListener('mouseenter',show);d.addEventListener('mouseleave',hide);m.addEventListener('mouseenter',show);m.addEventListener('mouseleave',hide);document.addEventListener('click',function(e){if(!d.contains(e.target))m.style.display='none';});}());
+</script>
   </body>
 </html>
