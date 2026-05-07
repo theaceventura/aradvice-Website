@@ -251,7 +251,6 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> No
     except (ValueError, IndexError):
         pass
     post_title = feed_item.title if feed_item else ""
-    post_description = feed_item.html  # will be extracted below
     # Extract plain-text description from feed item description field (strip HTML tags)
     raw_desc = ""
     if feed_item:
