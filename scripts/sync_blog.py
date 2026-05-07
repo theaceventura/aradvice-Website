@@ -147,6 +147,10 @@ def replace_host_head_and_header(
     local_header: str,
     local_html: str,
     post_slug: str = "",
+    post_title: str = "",
+    post_description: str = "",
+    post_url: str = "",
+    post_image: str = "",
 ) -> str:
     out = html
     # Replace the opening <html> tag to carry site-level attributes (e.g., class)
@@ -162,14 +166,43 @@ def replace_host_head_and_header(
     )
     if local_head:
         out = re.sub(r"<head\b.*?</head>", local_head, out, count=1, flags=re.DOTALL | re.IGNORECASE)
-    # Inject post-specific canonical tag if slug provided (overrides local_head's root canonical)
+    # Inject post-specific meta tags if post data provided
     if post_slug:
-        canonical_url = f"{MAIN_DOMAIN}/post/{post_slug}/"
-        # Remove any existing canonical tag
+        canonical_url = post_url or f"{MAIN_DOMAIN}/post/{post_slug}/"
+        title = post_title or "Andrew Roberts Advisory"
+        description = post_description or ""
+        image = post_image or f"{MAIN_DOMAIN}/og-image.jpg"
+        escaped_title = escape(title)
+        escaped_description = escape(description)
+        escaped_url = escape(canonical_url)
+        escaped_image = escape(image)
+        # Remove existing tags we are replacing
         out = re.sub(r'<link[^>]*rel=["\']canonical["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
-        # Inject post-specific canonical before </head>
-        canonical_tag = f'<link rel="canonical" href="{canonical_url}" />\n    '
-        out = re.sub(r"</head>", canonical_tag + "</head>", out, count=1, flags=re.IGNORECASE)
+        out = re.sub(r'<title>[^<]*</title>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*name=["\']description["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']og:title["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']og:description["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']og:url["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']og:image["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']twitter:title["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']twitter:description["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']twitter:url["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*property=["\']twitter:image["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        # Build and inject post-specific tags before </head>
+        injected = (
+            f'<title>{escaped_title} | Andrew Roberts Advisory</title>\n    '
+            f'<meta name="description" content="{escaped_description}" />\n    '
+            f'<link rel="canonical" href="{escaped_url}" />\n    '
+            f'<meta property="og:title" content="{escaped_title}" />\n    '
+            f'<meta property="og:description" content="{escaped_description}" />\n    '
+            f'<meta property="og:url" content="{escaped_url}" />\n    '
+            f'<meta property="og:image" content="{escaped_image}" />\n    '
+            f'<meta property="twitter:title" content="{escaped_title}" />\n    '
+            f'<meta property="twitter:description" content="{escaped_description}" />\n    '
+            f'<meta property="twitter:url" content="{escaped_url}" />\n    '
+            f'<meta property="twitter:image" content="{escaped_image}" />\n    '
+        )
+        out = re.sub(r"</head>", injected + "</head>", out, count=1, flags=re.IGNORECASE)
     if local_header:
         out = re.sub(r"<header\b.*?</header>", local_header, out, count=1, flags=re.DOTALL | re.IGNORECASE)
     # Ensure content starts below fixed header.
@@ -205,7 +238,7 @@ def article_page_path(slug: str) -> Path:
     return ROOT / "post" / slug / "index.html"
 
 
-def write_page(path: Path, html: str) -> None:
+def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(rewrite_domains(html))
     local_head, local_header, local_html, _local_body = read_local_head_and_header()
@@ -217,8 +250,25 @@ def write_page(path: Path, html: str) -> None:
             post_slug = relative.parts[1]
     except (ValueError, IndexError):
         pass
+    post_title = feed_item.title if feed_item else ""
+    post_description = feed_item.html  # will be extracted below
+    # Extract plain-text description from feed item description field (strip HTML tags)
+    raw_desc = ""
+    if feed_item:
+        # Use a short excerpt: strip HTML tags from description, truncate to 160 chars
+        raw_desc = re.sub(r"<[^>]+>", "", feed_item.html[:2000])
+        raw_desc = re.sub(r"\s+", " ", raw_desc).strip()[:160]
+    post_url = f"{MAIN_DOMAIN}/post/{post_slug}/" if post_slug else ""
+    post_image = feed_item.image_url if feed_item and feed_item.image_url else ""
     path.write_text(
-        replace_host_head_and_header(rewritten, local_head, local_header, local_html, post_slug),
+        replace_host_head_and_header(
+            rewritten, local_head, local_header, local_html,
+            post_slug=post_slug,
+            post_title=post_title,
+            post_description=raw_desc,
+            post_url=post_url,
+            post_image=post_image,
+        ),
         encoding="utf-8",
     )
 
@@ -437,7 +487,7 @@ def main() -> int:
     for item in generated_items:
         page_path = article_page_path(item.slug)
         page_html = inject_more_articles(item.html, generated_items)
-        write_page(page_path, page_html)
+        write_page(page_path, page_html, feed_item=item)
 
     latest_item = generated_items[0]
     latest_with_listing = inject_more_articles(latest_item.html, generated_items)
