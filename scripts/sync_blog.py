@@ -146,6 +146,7 @@ def replace_host_head_and_header(
     local_head: str,
     local_header: str,
     local_html: str,
+    post_slug: str = "",
 ) -> str:
     out = html
     # Replace the opening <html> tag to carry site-level attributes (e.g., class)
@@ -161,6 +162,14 @@ def replace_host_head_and_header(
     )
     if local_head:
         out = re.sub(r"<head\b.*?</head>", local_head, out, count=1, flags=re.DOTALL | re.IGNORECASE)
+    # Inject post-specific canonical tag if slug provided (overrides local_head's root canonical)
+    if post_slug:
+        canonical_url = f"{MAIN_DOMAIN}/post/{post_slug}/"
+        # Remove any existing canonical tag
+        out = re.sub(r'<link[^>]*rel=["\']canonical["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        # Inject post-specific canonical before </head>
+        canonical_tag = f'<link rel="canonical" href="{canonical_url}" />\n    '
+        out = re.sub(r"</head>", canonical_tag + "</head>", out, count=1, flags=re.IGNORECASE)
     if local_header:
         out = re.sub(r"<header\b.*?</header>", local_header, out, count=1, flags=re.DOTALL | re.IGNORECASE)
     # Ensure content starts below fixed header.
@@ -200,8 +209,16 @@ def write_page(path: Path, html: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(rewrite_domains(html))
     local_head, local_header, local_html, _local_body = read_local_head_and_header()
+    # Extract post slug from path: /post/{slug}/index.html
+    post_slug = ""
+    try:
+        relative = path.relative_to(ROOT)
+        if relative.parts[0] == "post" and relative.name == "index.html" and len(relative.parts) >= 3:
+            post_slug = relative.parts[1]
+    except (ValueError, IndexError):
+        pass
     path.write_text(
-        replace_host_head_and_header(rewritten, local_head, local_header, local_html),
+        replace_host_head_and_header(rewritten, local_head, local_header, local_html, post_slug),
         encoding="utf-8",
     )
 
