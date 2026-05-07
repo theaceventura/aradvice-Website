@@ -337,12 +337,14 @@ def build_sitemap(items: list[FeedItem]) -> str:
     entries = [
         (f"{MAIN_DOMAIN}/", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/index.html", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/readiness-review.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/products.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/for-directors.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/founder-advisory.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/ai-governance-review.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/cyber-governance-review.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/contact.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/resource-hub.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/blog.html", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/privacy-policy.html", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/terms-of-service.html", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/liability-disclaimer.html", datetime.now(timezone.utc)),
     ]
     for item in items:
         entries.append((f"{MAIN_DOMAIN}/post/{item.slug}/", item_datetime(item.pub_date)))
