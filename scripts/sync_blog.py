@@ -151,6 +151,10 @@ def replace_host_head_and_header(
     post_description: str = "",
     post_url: str = "",
     post_image: str = "",
+    page_title: str = "",
+    page_description: str = "",
+    page_url: str = "",
+    page_image: str = "",
 ) -> str:
     out = html
     # Replace the opening <html> tag to carry site-level attributes (e.g., class)
@@ -166,12 +170,23 @@ def replace_host_head_and_header(
     )
     if local_head:
         out = re.sub(r"<head\b.*?</head>", local_head, out, count=1, flags=re.DOTALL | re.IGNORECASE)
-    # Inject post-specific meta tags if post data provided
+    # Inject page-specific meta tags so generated pages do not inherit homepage canonicals.
+    canonical_url = ""
+    title = ""
+    description = ""
+    image = ""
     if post_slug:
         canonical_url = post_url or f"{MAIN_DOMAIN}/post/{post_slug}/"
         title = post_title or "Andrew Roberts Advisory"
         description = post_description or ""
         image = post_image or f"{MAIN_DOMAIN}/og-image.jpg"
+    elif page_url:
+        canonical_url = page_url
+        title = page_title or "Andrew Roberts Advisory"
+        description = page_description or ""
+        image = page_image or f"{MAIN_DOMAIN}/og-image.jpg"
+
+    if canonical_url:
         escaped_title = escape(title)
         escaped_description = escape(description)
         escaped_url = escape(canonical_url)
@@ -259,6 +274,15 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> No
         raw_desc = re.sub(r"\s+", " ", raw_desc).strip()[:160]
     post_url = f"{MAIN_DOMAIN}/post/{post_slug}/" if post_slug else ""
     post_image = feed_item.image_url if feed_item and feed_item.image_url else ""
+    page_title = ""
+    page_description = ""
+    page_url = ""
+    page_image = ""
+    if path == ROOT / "blog.html":
+        page_title = "Blog"
+        page_description = "Board-level insights on cyber governance, AI governance, technology oversight, and defensible decision-making for Australian directors."
+        page_url = f"{MAIN_DOMAIN}/blog.html"
+        page_image = f"{MAIN_DOMAIN}/og-image.jpg"
     path.write_text(
         replace_host_head_and_header(
             rewritten, local_head, local_header, local_html,
@@ -267,6 +291,10 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> No
             post_description=raw_desc,
             post_url=post_url,
             post_image=post_image,
+            page_title=page_title,
+            page_description=page_description,
+            page_url=page_url,
+            page_image=page_image,
         ),
         encoding="utf-8",
     )
@@ -385,7 +413,6 @@ def inject_blog_landing_view(html: str, items: list[FeedItem]) -> str:
 def build_sitemap(items: list[FeedItem]) -> str:
     entries = [
         (f"{MAIN_DOMAIN}/", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/index.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/products.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/for-directors.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/founder-advisory.html", datetime.now(timezone.utc)),
@@ -395,9 +422,6 @@ def build_sitemap(items: list[FeedItem]) -> str:
         (f"{MAIN_DOMAIN}/contact.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/resource-hub.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/blog.html", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/liability-disclaimer.html", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/privacy-policy.html", datetime.now(timezone.utc)),
-        (f"{MAIN_DOMAIN}/terms-of-service.html", datetime.now(timezone.utc)),
     ]
     for item in items:
         entries.append((f"{MAIN_DOMAIN}/post/{item.slug}/", item_datetime(item.pub_date)))
