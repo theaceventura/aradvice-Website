@@ -432,21 +432,21 @@ document.head.appendChild(o)}initApollo();</script>
     <header
       class="fixed top-0 w-full z-50 bg-navy-deep/90 backdrop-blur-xl border-b border-white/5"
     >
-      <div class="max-w-[1400px] mx-auto px-8 h-24 flex items-center justify-between">
-        <div class="flex items-center gap-3">
+      <div class="max-w-7xl mx-auto px-6 h-28 flex items-center justify-between">
+        <a class="flex items-center gap-3 hover:opacity-80 transition-opacity" href="/">
           <span class="material-symbols-outlined text-primary text-4xl neon-glow"
             >shield_person</span
           >
-          <span class="text-xl font-black tracking-tighter text-white uppercase" style="white-space: nowrap; font-size: clamp(0.75rem, 1vw, 0.9rem);"
+          <span class="text-xl font-black tracking-tighter text-white uppercase" style="white-space: nowrap; font-size: clamp(0.95rem, 1.45vw, 1.3rem);"
             >Andrew Roberts Advisory</span
           >
-        </div>
+        </a>
 
-        <nav class="hidden xl:flex items-center gap-4" style="font-size: clamp(0.7rem, 0.9vw, 0.875rem); letter-spacing: 0.05em;">
-          <a class="nav-link" href="/" id="nav-home">Home</a>
-          <a class="nav-link" href="/for-directors.html">For Directors</a>
+        <nav class="hidden md:flex items-center gap-8 [&>a]:inline-flex [&>a]:items-center [&>a]:h-10 [&>a]:text-[0.95rem] [&>a]:tracking-[0.12em]" style="font-size: clamp(0.82rem, 0.98vw, 1rem); letter-spacing: 0.07em;">
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="/" id="nav-home">Home</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="/for-directors.html">For Directors</a>
           <div class="nav-dropdown">
-            <button class="nav-link" style="border: none; background: none; cursor: pointer; padding: 0; height: auto;" id="nav-reviews">Our Products <span style="font-size: 0.7em; margin-left: 0.25rem;">▾</span></button>
+            <button class="text-[0.95rem] font-bold tracking-[0.12em] uppercase text-slate-300 hover:text-primary inline-flex items-center h-10" style="border: none; background: none; cursor: pointer; padding: 0; gap: 0.35rem; line-height: 1;" id="nav-reviews">Our Products <span style="font-size: 0.7em;">▾</span></button>
             <div class="dropdown-menu">
               <a href="/products.html">All Products →</a>
               <a href="/founder-advisory.html" id="nav-founder">Founder Advisory Session</a>
@@ -455,37 +455,30 @@ document.head.appendChild(o)}initApollo();</script>
               <a href="/cyber-governance-review.html" id="nav-cyber">Cyber Governance Deep Review</a>
             </div>
           </div>
-          <a class="nav-link" href="/resource-hub.html">Resource Hub</a>
-          <a class="nav-link" href="/blog.html">Blog</a>
-
-          <a
-            href="/contact.html"
-            class="bg-primary text-navy-deep px-8 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all transform hover:-translate-y-1 electric-border inline-flex items-center justify-center"
-          >
-            Contact
-          </a>
-          <span class="material-symbols-outlined text-3xl">menu</span>
-        </button>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="/resource-hub.html">Resource Hub</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="/blog.html">Blog</a>
+        </nav>
+        <div class="flex items-center gap-4">
+          <button id="mobile-menu-button" class="md:hidden text-white" type="button" aria-label="Open menu">
+            <span class="material-symbols-outlined text-3xl">menu</span>
+          </button>
+          <a href="/contact.html" class="hidden md:inline-flex items-center justify-center bg-primary hover:bg-white text-navy-deep px-9 h-14 text-sm font-bold uppercase tracking-[0.12em] transition-all transform hover:-translate-y-1 shadow-lg">Contact</a>
+        </div>
       </div>
-      
+
       <!-- Mobile Menu -->
-      <div id="mobile-menu" class="hidden xl:hidden bg-navy-deep/95 backdrop-blur-xl border-b border-white/5">
-        <nav class="max-w-[1400px] mx-auto px-8 py-6 flex flex-col gap-4">
-          <a class="nav-link py-3 border-b border-white/10" href="/">Home</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/for-directors.html">For Directors</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/products.html">All Products →</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/founder-advisory.html">Founder Advisory Session</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/for-directors.html">Director Readiness Assessment</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/ai-governance-review.html">AI Governance Board Review</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/cyber-governance-review.html">Cyber Governance Deep Review</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/resource-hub.html">Resource Hub</a>
-          <a class="nav-link py-3 border-b border-white/10" href="/blog.html">Blog</a>
-          <a
-            href="/contact.html"
-            class="bg-primary text-navy-deep px-8 py-3 font-black uppercase tracking-tighter hover:bg-white transition-all text-center mt-4"
-          >
-            Contact
-          </a>
+      <div id="mobile-menu" class="hidden md:hidden bg-navy-deep/95 backdrop-blur-xl border-b border-white/5">
+        <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/">Home</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/for-directors.html">For Directors</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/products.html">All Products →</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/founder-advisory.html">Founder Advisory Session</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/for-directors.html">Director Readiness Assessment</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/ai-governance-review.html">AI Governance Board Review</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/cyber-governance-review.html">Cyber Governance Deep Review</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/resource-hub.html">Resource Hub</a>
+          <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors py-3 border-b border-white/10" href="/blog.html">Blog</a>
+          <a href="/contact.html" class="bg-primary text-navy-deep px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all text-center mt-4">Contact</a>
         </nav>
       </div>
     </header>
@@ -614,7 +607,7 @@ document.head.appendChild(o)}initApollo();</script>
 <p>The "dashboard view" provided by many IT departments is no longer sufficient. Uptime and patch cycles are operational metrics, not governance outcomes. A board that relies solely on these figures remains blind to the underlying risk profile of the organisation. You need to move beyond checkbox compliance to proactive risk oversight that can withstand regulatory investigation. For the modern director, tech consulting is the critical bridge between technical risk and legal liability, transforming raw operational data into actionable, defensible governance. This shift ensures that when an incident occurs, your board can prove it took all reasonable steps to mitigate harm.</p>
 
 <h3>Navigating the Australian Regulatory Landscape</h3>
-<p>The Australian regulatory environment is tightening rapidly. With the revised Privacy Act 1988 expanding obligations throughout 2026 and 2027, the definition of "reasonable steps" has become a moving target. Small and medium enterprises now account for 43% of all reported Australian cybercrime, with costs averaging $46,000 per incident. Under the SOCI Act, the 12-hour reporting window for critical incidents leaves no room for hesitation or technical confusion. Independent advisory, such as a <a href="https://aradvice.com.au/cyber-governance-review.html">Cyber Governance Readiness Review</a>, provides the unbiased visibility required to meet these mandates. It ensures your board isn't just informed, but is prepared to lead through a crisis with structured, legally grounded frameworks.</p>
+<p>The Australian regulatory environment is tightening rapidly. With the revised Privacy Act 1988 expanding obligations throughout 2026 and 2027, the definition of "reasonable steps" has become a moving target. Small and medium enterprises now account for 43% of all reported Australian cybercrime, with costs averaging $46,000 per incident. Under the SOCI Act, the 12-hour reporting window for critical incidents leaves no room for hesitation or technical confusion. Independent advisory, such as a <a href="https://aradvice.com.au/readiness-review.html">Cyber Governance Readiness Review</a>, provides the unbiased visibility required to meet these mandates. It ensures your board isn't just informed, but is prepared to lead through a crisis with structured, legally grounded frameworks.</p>
 
 <h2 id="selecting-a-tech-consultant-5-criteria-for-defensible-oversight"><a name="selecting-a-tech-consultant-5-criteria-for-defensible-oversight"></a>Selecting a Tech Consultant: 5 Criteria for Defensible Oversight</h2>
 
@@ -624,7 +617,7 @@ document.head.appendChild(o)}initApollo();</script>
 <p>Vendor-led advisory is a systemic risk in the Australian tech market. When your consultant also sells the implementation, their advice is inherently compromised. Independent advisory is the only way to achieve truly defensible oversight. It removes the incentive to "upsell" and focuses purely on risk mitigation. <a href="https://aradvice.com.au/cyber-governance-review.html">Explore the benefits of independent Cyber Governance Reviews</a> to see how a conflict-free perspective protects your board from biased reporting. This independence ensures that the "Director's Question" is answered with transparency rather than a sales pitch.</p>
 
 <h3>Translating Technical Risk into Board Insights</h3>
-<p>A CISO reports on vulnerabilities; a director needs to know about accountability. Effective advisory moves beyond "What IT Reports" to "What We Reveal." This requires the ability to bridge the gap between technical teams and the boardroom, ensuring that complex risks are presented as strategic choices. Does the consultant speak the language of the AICD and ACS frameworks? If they can't link a cyber vulnerability to a specific section of the Corporations Act, they aren't providing board-level value. You can't manage what you can't understand, and you can't defend what you haven't properly scrutinised. To begin identifying your own visibility gaps, consider a <a href="https://aradvice.com.au/cyber-governance-review.html">structured readiness review</a> that prioritises board-level accountability over IT jargon.</p>
+<p>A CISO reports on vulnerabilities; a director needs to know about accountability. Effective advisory moves beyond "What IT Reports" to "What We Reveal." This requires the ability to bridge the gap between technical teams and the boardroom, ensuring that complex risks are presented as strategic choices. Does the consultant speak the language of the AICD and ACS frameworks? If they can't link a cyber vulnerability to a specific section of the Corporations Act, they aren't providing board-level value. You can't manage what you can't understand, and you can't defend what you haven't properly scrutinised. To begin identifying your own visibility gaps, consider a <a href="https://aradvice.com.au/readiness-review.html">structured readiness review</a> that prioritises board-level accountability over IT jargon.</p>
 
 <h2 id="securing-the-future-strategic-outcomes-of-digital-advisory"><a name="securing-the-future-strategic-outcomes-of-digital-advisory"></a>Securing the Future: Strategic Outcomes of Digital Advisory</h2>
 
@@ -642,7 +635,7 @@ document.head.appendChild(o)}initApollo();</script>
 
 <p>The 2026 regulatory environment, including the March 4 Smart Device Rules and the 12-hour SOCI reporting window, leaves no room for information asymmetry. You don't need more data; you need clarity. Independent, conflict-free advisory ensures your board meets its fiduciary duties without the bias of vendor interests. You can move from uncertainty to structured readiness in a matter of days. This specialised oversight is your best defence against the personal liability risks inherent in the modern corporate landscape.</p>
 
-<p>Take the first step toward achieving a resilient, compliant boardroom. <a href="https://aradvice.com.au/cyber-governance-review.html">Secure your boardroom with a 48-hour Governance Readiness Review</a>. Protecting your organisation and your reputation starts with high-integrity oversight. You have the tools to lead with confidence.</p>
+<p>Take the first step toward achieving a resilient, compliant boardroom. <a href="https://aradvice.com.au/readiness-review.html">Secure your boardroom with a 48-hour Governance Readiness Review</a>. Protecting your organisation and your reputation starts with high-integrity oversight. You have the tools to lead with confidence.</p>
 
 <h2 id="frequently-asked-questions"><a name="frequently-asked-questions"></a>Frequently Asked Questions</h2>
 
