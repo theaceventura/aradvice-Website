@@ -539,7 +539,7 @@ def generate_og_image(item: FeedItem, post_slug: str) -> str:
     """Generate a branded PNG og:image for a blog post. Returns the relative image path."""
     import textwrap
 
-    output_dir = ROOT / "linkedin" / post_slug
+    output_dir = ROOT / "post" / post_slug
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "og-image.png"
 
