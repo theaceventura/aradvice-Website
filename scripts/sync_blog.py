@@ -111,16 +111,24 @@ def rewrite_domains(html: str) -> str:
 
 def strip_platform_widgets(html: str) -> str:
     """Remove third-party CMS widgets injected by the publishing platform."""
-    # Remove the reader feedback overlay div and its associated script
+    # Remove the full reader feedback overlay div and its script
     html = re.sub(
         r'<div id=["\']readerFeedbackOverlay["\'].*?</div>\s*<script>\s*\(function\(\).*?</script>',
         '',
         html,
         flags=re.DOTALL | re.IGNORECASE,
     )
-    # Remove orphaned feedback form elements (textarea, buttons, error messages)
+    # Remove orphaned feedback widget fragment starting from rfRatingError
+    # through the closing </div></div> that ends the widget block
     html = re.sub(
         r'<p id=["\']rfRatingError["\'][^>]*>.*?</div>\s*</div>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    # Belt-and-suspenders: remove any remaining feedback textarea block
+    html = re.sub(
+        r'<p[^>]*>\s*Any more feedback about it\?.*?</div>\s*</div>',
         '',
         html,
         flags=re.DOTALL | re.IGNORECASE,
