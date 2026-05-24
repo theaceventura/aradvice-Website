@@ -428,7 +428,7 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
 
     return (
         '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
-        '<h2 class="text-3xl font-bold text-slate-100 mb-8">Articles</h2>'
+        '<h2 class="text-2xl font-bold text-slate-100 mb-8">More Articles</h2>'
         '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
         + "".join(cards)
         + "</div>"
@@ -451,23 +451,78 @@ def inject_more_articles(html: str, items: list[FeedItem]) -> str:
 
 
 def render_blog_landing_article(items: list[FeedItem]) -> str:
+    """Render the blog landing page hero featuring the latest article."""
+    if not items:
+        return ""
+
+    latest = items[0]
+    published = item_datetime(latest.pub_date).strftime("%d %b %Y")
+    post_url = f"/post/{escape(latest.slug)}/"
+
+    # Extract plain text excerpt
+    raw = re.sub(r"<[^>]+>", "", latest.html[:3000])
+    raw = re.sub(r"\s+", " ", raw).strip()
+    content_start = raw.find(latest.title)
+    if content_start > 0:
+        raw = raw[content_start + len(latest.title):]
+    excerpt = raw.strip()[:220].rsplit(" ", 1)[0] + "..."
+
+    meta = published
+    if latest.read_time:
+        meta += f" &middot; {escape(latest.read_time)}"
+
     return (
-        '<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-slate-900/70 rounded-[2rem] shadow-[0_24px_70px_rgba(2,6,23,0.45)] border border-slate-700/70">'
-        '<h1 class="text-4xl sm:text-5xl font-bold text-white leading-tight mb-4">Blog</h1>'
-        '<p class="text-lg text-slate-300">Select an article below to read the full post.</p>'
-        + "</article>"
+        # Full-width dark hero
+        '<section class="w-full border-b border-slate-700/70 bg-navy-deep">'
+        '<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">'
+
+        # Eyebrow label
+        '<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6">Latest Article</p>'
+
+        # Title
+        f'<h1 class="text-4xl sm:text-5xl font-black text-white leading-tight mb-6 max-w-3xl">'
+        f'<a href="{post_url}" class="hover:text-primary transition-colors" style="text-decoration:none;">'
+        f'{escape(latest.title)}'
+        f'</a></h1>'
+
+        # Meta
+        f'<p class="text-sm text-slate-400 mb-6">{meta}</p>'
+
+        # Excerpt
+        f'<p class="text-lg text-slate-300 leading-relaxed max-w-2xl mb-8">{excerpt}</p>'
+
+        # CTA
+        f'<a href="{post_url}" class="inline-flex items-center gap-2 bg-primary hover:bg-white text-navy-deep px-8 py-4 text-sm font-bold uppercase tracking-widest transition-all transform hover:-translate-y-0.5 shadow-lg" style="text-decoration:none;">'
+        f'Read Article →'
+        f'</a>'
+
+        '</div>'
+        '</section>'
     )
 
 
 def inject_blog_landing_view(html: str, items: list[FeedItem]) -> str:
     landing_article = render_blog_landing_article(items)
-    return re.sub(
+    # Replace the article hero
+    html = re.sub(
         r"<article\b.*?</article>",
         landing_article,
         html,
         count=1,
         flags=re.DOTALL | re.IGNORECASE,
     )
+    # Replace the articles section with all items except the latest
+    remaining = items[1:] if len(items) > 1 else []
+    if remaining:
+        more_section = render_more_articles_section(remaining)
+        html = re.sub(
+            r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>Articles</h2>.*?</section>',
+            more_section,
+            html,
+            count=1,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+    return html
 
 
 def build_sitemap(items: list[FeedItem]) -> str:
