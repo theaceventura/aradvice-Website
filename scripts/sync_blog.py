@@ -518,6 +518,80 @@ def inject_recent_articles(html: str, items: list[FeedItem]) -> str:
     return html.replace("</article>", block + "</article>", 1)
 
 
+def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
+    """Generate a draft LinkedIn post for a feed item using the Anthropic API."""
+    import urllib.request
+    import json
+
+    # Vary tone based on article index (cycle through 3 styles)
+    slug_hash = sum(ord(c) for c in item.slug) % 3
+    tone_instructions = [
+        "Write in a direct, authoritative tone as Andrew Roberts, an advisor speaking plainly to Australian board directors. State a clear position. No fluff.",
+        "Open with a thought-provoking question or challenge directed at board directors. Make them feel the personal stakes. Then deliver a clear point.",
+        "Anchor the post to a specific regulatory pressure or real-world incident relevant to Australian directors. Make it feel timely and urgent.",
+    ][slug_hash]
+
+    # Extract a clean plain-text excerpt from the article
+    plain_text = re.sub(r"<[^>]+>", "", item.html[:3000])
+    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:1500]
+
+    prompt = f"""You are writing a LinkedIn post on behalf of Andrew Roberts, founder of Andrew Roberts Advisory (aradvice.com.au), an independent board-level advisor on cyber governance and AI governance for Australian directors.
+
+Article title: {item.title}
+Article URL: {post_url}
+Article excerpt: {plain_text}
+
+Instructions:
+- {tone_instructions}
+- Write 6 to 10 lines. Medium length. No padding.
+- Write in first person as Andrew Roberts.
+- The audience is Australian non-executive directors and board members.
+- Reference Australian regulatory context where relevant (ASIC, AICD, Corporations Act, Cyber Security Act 2024).
+- End with the article URL on its own line.
+- Do not use hashtags.
+- Do not use bullet points or emojis.
+- Do not use the phrase "I am pleased to share" or any similar announcement language.
+- Output only the post text. No preamble, no explanation."""
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 1000,
+        "messages": [{"role": "user", "content": prompt}]
+    }).encode("utf-8")
+
+    import os
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01",
+            "x-api-key": api_key,
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            return data["content"][0]["text"].strip()
+    except Exception as e:
+        return f"[LinkedIn post generation failed: {e}]"
+
+
+def write_linkedin_draft(item: FeedItem, post_url: str) -> None:
+    """Write a LinkedIn draft post to /linkedin/{slug}.txt if it doesn't already exist."""
+    linkedin_dir = ROOT / "linkedin"
+    linkedin_dir.mkdir(exist_ok=True)
+    draft_path = linkedin_dir / f"{item.slug}.txt"
+    if draft_path.exists():
+        return  # Don't overwrite existing drafts
+    print(f"  Generating LinkedIn draft for: {item.slug}")
+    post_text = generate_linkedin_post(item, post_url)
+    draft_path.write_text(post_text, encoding="utf-8")
+
+
 def main() -> int:
     feed_xml = fetch_text(FEED_URL, "application/rss+xml, application/xml, text/xml")
     feed_items = parse_feed(feed_xml)
@@ -550,6 +624,8 @@ def main() -> int:
         page_path = article_page_path(item.slug)
         page_html = inject_more_articles(item.html, generated_items)
         write_page(page_path, page_html, feed_item=item)
+        post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
+        write_linkedin_draft(item, post_url)
 
     latest_item = generated_items[0]
     latest_with_listing = inject_more_articles(latest_item.html, generated_items)
