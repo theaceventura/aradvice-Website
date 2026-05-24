@@ -109,6 +109,25 @@ def rewrite_domains(html: str) -> str:
     return html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
 
 
+def strip_platform_widgets(html: str) -> str:
+    """Remove third-party CMS widgets injected by the publishing platform."""
+    # Remove article rating widgets
+    html = re.sub(
+        r'<div[^>]*(?:rating|feedback|rate-article)[^>]*>.*?</div>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    # Remove any modal overlays asking users to rate content
+    html = re.sub(
+        r'<div[^>]*(?:modal|overlay|popup)[^>]*>.*?How would you rate.*?</div>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    return html
+
+
 def normalize_internal_links(html: str) -> str:
     replacements = {
         'href="index.html"': 'href="/"',
@@ -265,7 +284,7 @@ def article_page_path(slug: str) -> Path:
 
 def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    rewritten = normalize_internal_links(rewrite_domains(html))
+    rewritten = normalize_internal_links(strip_platform_widgets(rewrite_domains(html)))
     local_head, local_header, local_html, _local_body, local_footer = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
     post_slug = ""
