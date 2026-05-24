@@ -722,7 +722,7 @@ def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
         f"- **Slug:** {item.slug}\n"
         f"- **Article date:** {published}\n"
         f"- **Draft generated:** {datetime.now(timezone.utc).strftime('%d %b %Y')}\n"
-        f"- **Draft file:** linkedin/{item.slug}/post.txt\n"
+        f"- **Draft file:** post/{item.slug}/linkedin.txt\n"
         f"- **Status:** [ ] Draft [ ] Edited [ ] Posted\n"
         f"- **Posted date:**\n"
         f"- **Notes:**\n"
@@ -735,10 +735,10 @@ def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
 
 
 def write_linkedin_draft(item: FeedItem, post_url: str) -> None:
-    """Write a LinkedIn draft post to /linkedin/{slug}/post.txt if it doesn't already exist."""
-    article_dir = ROOT / "linkedin" / item.slug
+    """Write a LinkedIn draft post to /post/{slug}/linkedin.txt if it doesn't already exist."""
+    article_dir = ROOT / "post" / item.slug
     article_dir.mkdir(parents=True, exist_ok=True)
-    draft_path = article_dir / "post.txt"
+    draft_path = article_dir / "linkedin.txt"
     if draft_path.exists():
         return
     print(f"  Generating LinkedIn draft for: {item.slug}")

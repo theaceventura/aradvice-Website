@@ -1,9 +1,0 @@
-A board receives their first AI governance report. Forty-seven AI systems across the business, risk ratings from "low" to "critical", and a recommendation to establish an AI ethics committee. The directors scan for something actionable but find only technical assessments that tell them what happened, not whether their oversight duties are being met.
-
-The problem isn't the technology — it's that AI reporting treats boards like technical committees instead of fiduciary bodies. Directors need to know whether AI decisions align with strategic objectives, whether AI risks could threaten business continuity, and whether the organisation can demonstrate reasonable care if something goes wrong.
-
-Effective AI governance reporting starts with three questions: What decisions is AI making on our behalf? What could go wrong that would matter to shareholders? How do we evidence our oversight if challenged? The answers determine whether your board papers create defensible governance or just document activity.
-
-Most AI governance frameworks focus on the systems. The liability sits with the directors.
-
-https://aradvice.com.au/post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/

@@ -1,0 +1,13 @@
+Your board approved a generative AI policy six months ago. Your executives report monthly on "AI governance metrics." Yet you still cannot answer this question: if your organisation's AI system causes material harm tomorrow, can you demonstrate you exercised reasonable care in your oversight?
+
+The answer for most Australian boards is no. Policy documents and dashboard metrics create an illusion of control while actual AI risks compound daily beneath board visibility.
+
+Directors who mistake AI governance theatre for genuine oversight face a stark reality: ASIC and AICD expectations demand you can articulate specific risk decisions, not just point to process documents.
+
+A defensible governance framework requires three non-negotiable elements: granular visibility into AI risk exposures across your organisation, clear decision-making protocols that escalate material AI risks to board level, and evidence trails that demonstrate active board consideration of specific AI deployment decisions.
+
+The organisations getting this right treat AI governance as a core board competency, not an IT compliance exercise.
+
+Your duty of care doesn't pause while you learn about generative AI risks — it starts the moment your organisation deploys these systems.
+
+https://aradvice.com.au/post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/

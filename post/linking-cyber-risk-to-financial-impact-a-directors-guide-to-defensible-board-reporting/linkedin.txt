@@ -1,0 +1,11 @@
+A board paper lands on your desk: "Cyber risk exposure: $2.3M potential impact." The number feels precise, defensible. Then you dig deeper and discover it's based on outdated breach cost averages, adjusted by nothing more than revenue size. The financial impact that seemed so concrete dissolves under scrutiny.
+
+This scenario plays out across Australian boardrooms every quarter. Directors receive cyber risk reports with financial figures that appear quantified but crumble when tested. The problem isn't the attempt to link cyber risk to dollars — it's that most quantification methods can't withstand board-level interrogation or regulatory scrutiny.
+
+ASIC's focus on continuous disclosure obligations means directors need cyber risk assessments that hold up under questioning. Generic industry multipliers and broad-brush impact estimates won't survive a regulator's review of your decision-making process.
+
+The solution lies in building financial models that connect specific threat scenarios to actual business operations, revenue streams, and recovery costs. These models must be transparent in their assumptions and defensible in their methodology.
+
+Your cyber risk reporting should be robust enough that you'd stake your director's duties compliance on its accuracy — because increasingly, you are.
+
+https://aradvice.com.au/post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/

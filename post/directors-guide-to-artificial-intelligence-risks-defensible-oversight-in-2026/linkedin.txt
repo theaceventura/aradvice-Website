@@ -1,0 +1,11 @@
+A board chair asked their CRO yesterday: "If our AI recommendation engine discriminates against certain customer segments, who gets sued — us or our vendor?" The silence in that boardroom lasted fifteen seconds.
+
+This is the question that separates directors who understand AI risk from those who think it's an IT problem. When your AI system makes 50,000 customer decisions per day, traditional vendor liability frameworks collapse. The discriminatory outcome sits in your customer database, under your brand, with your board ultimately accountable.
+
+The shift from occasional AI pilots to embedded AI operations changes everything about oversight. You cannot delegate accountability for algorithmic decisions that define your customer relationships, pricing strategies, or operational choices.
+
+Your risk committees need new competencies. Your audit processes need new checkpoints. Your vendor contracts need new liability structures.
+
+The directors who master AI governance in 2026 won't be the ones who understand the technology best — they'll be the ones who understand where accountability cannot be outsourced.
+
+https://aradvice.com.au/post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/
