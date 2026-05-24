@@ -1,0 +1,11 @@
+A board chair stopped the AI strategy presentation mid-flow this week. "Can you actually measure whether our AI is creating or destroying shareholder value?" The room went quiet. The CTO had spent twenty minutes on model accuracy and deployment timelines, but couldn't answer the fundamental question.
+
+This scene is playing out across Australian boardrooms as directors realise they're approving AI investments without the governance frameworks to assess their impact. The technical complexity creates a dangerous gap between management enthusiasm and board oversight.
+
+The risk isn't just poor investment decisions. It's fiduciary exposure when directors can't demonstrate they've exercised proper care in AI governance. ASIC's focus on director duties means boards need specific, measurable questions that cut through technical jargon to reveal actual business impact.
+
+The checklist I've developed walks directors through the critical interrogation points: from ROI measurement and risk appetite alignment to regulatory compliance and competitive positioning. Each question is designed to force management to translate AI initiatives into board-relevant business metrics.
+
+Your technical team can build brilliant AI systems, but if your board can't govern them effectively, you're building on regulatory quicksand.
+
+https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/

@@ -1,0 +1,11 @@
+Your board approved generative AI deployment six months ago. You asked for quarterly risk reports. The reports show "low to medium risk" across all categories. Yet you cannot explain how the AI actually makes decisions that affect your customers, what data it accesses, or whether its outputs could expose the company to liability.
+
+This disconnect between board oversight and operational reality creates precisely the governance gap that regulators will target. When directors cannot meaningfully interrogate the risks they are supposedly overseeing, due diligence becomes theatre.
+
+The solution requires moving beyond risk heat maps to operational visibility. Your board needs to understand specific AI decision pathways, data lineage, and failure modes — not just risk scores.
+
+Australian directors who master AI governance mechanics now will define industry standards. Those who delegate technical oversight entirely will find themselves defending governance decisions they never truly understood.
+
+The question is not whether your AI governance looks sufficient on paper, but whether you could defend every approval under examination.
+
+https://aradvice.com.au/post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/

@@ -1,0 +1,11 @@
+The board paper arrives with a single line: "AI systems operating within acceptable risk parameters." No supporting metrics. No definition of "acceptable." No explanation of how risk was measured or by whom.
+
+This scenario plays out across Australian boardrooms monthly. Directors receive AI governance reports that sound reassuring but provide no foundation for defensible oversight. When pressed, management cannot explain why their AI risk assessment differs from their competitors, or whether their controls would satisfy an external audit.
+
+The real governance failure isn't the lack of AI expertise on boards — it's accepting reporting that cannot withstand scrutiny. Directors who approve AI initiatives based on summary statements rather than verifiable metrics are creating liability exposure that extends far beyond technology decisions.
+
+The path forward requires boards to demand AI reporting with the same rigour they expect for financial controls. Risk appetite statements. Control effectiveness testing. Clear escalation triggers. The technical complexity of AI doesn't excuse governance shortcuts.
+
+When the next significant AI incident makes headlines, the directors who survive scrutiny will be those who can demonstrate they asked the right questions of the right reports.
+
+https://aradvice.com.au/post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/
