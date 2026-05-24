@@ -300,7 +300,7 @@ def article_page_path(slug: str) -> Path:
     return ROOT / "post" / slug / "index.html"
 
 
-def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> None:
+def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_id: str = "000") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(strip_platform_widgets(rewrite_domains(html)))
     local_head, local_header, local_html, _local_body, local_footer = read_local_head_and_header()
@@ -333,7 +333,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> No
     post_image = ""
     if feed_item and post_slug:
         try:
-            generated_image = generate_og_image(feed_item, post_slug)
+            generated_image = generate_og_image(feed_item, post_slug, post_id=post_id)
             post_image = f"{MAIN_DOMAIN}{generated_image}"
         except Exception as e:
             print(f"  og:image generation failed for {post_slug}: {e}", file=sys.stderr)
@@ -545,16 +545,92 @@ def inject_recent_articles(html: str, items: list[FeedItem]) -> str:
     return html.replace("</article>", block + "</article>", 1)
 
 
-def generate_og_image(item: FeedItem, post_slug: str) -> str:
+def load_post_registry() -> dict:
+    """Load or create the post ID registry mapping slug to sequential ID."""
+    registry_path = ROOT / "post-registry.json"
+    if registry_path.exists():
+        import json
+        return json.loads(registry_path.read_text(encoding="utf-8"))
+    return {}
+
+
+def save_post_registry(registry: dict) -> None:
+    """Save the post ID registry."""
+    import json
+    registry_path = ROOT / "post-registry.json"
+    registry_path.write_text(
+        json.dumps(registry, indent=2, ensure_ascii=False),
+        encoding="utf-8"
+    )
+
+
+def assign_post_ids(items: list[FeedItem]) -> dict:
+    """Assign sequential IDs to posts by publish date. IDs never change once assigned."""
+    registry = load_post_registry()
+
+    # Sort by publish date oldest first for ID assignment
+    sorted_items = sorted(items, key=lambda i: item_datetime(i.pub_date))
+
+    # Find highest existing ID
+    next_id = max((int(v) for v in registry.values()), default=0) + 1
+
+    # Assign IDs to any new slugs not yet in registry
+    changed = False
+    for item in sorted_items:
+        if item.slug not in registry:
+            registry[item.slug] = next_id
+            next_id += 1
+            changed = True
+
+    if changed:
+        save_post_registry(registry)
+
+    return registry
+
+
+def generate_post_mapping(items: list[FeedItem], registry: dict) -> None:
+    """Generate a markdown mapping document of all posts with their IDs and assets."""
+    sorted_items = sorted(items, key=lambda i: item_datetime(i.pub_date))
+
+    lines = [
+        "# Post Registry and Asset Map\n",
+        f"Generated: {datetime.now(timezone.utc).strftime('%d %b %Y %H:%M UTC')}\n",
+        f"Total posts: {len(sorted_items)}\n",
+        "\n---\n",
+    ]
+
+    for item in sorted_items:
+        post_id = registry.get(item.slug, "???")
+        id_str = f"{post_id:03d}"
+        published = item_datetime(item.pub_date).strftime("%d %b %Y")
+        post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
+
+        lines.append(f"\n## [{id_str}] {item.title}")
+        lines.append(f"- **ID:** {id_str}")
+        lines.append(f"- **Published:** {published}")
+        lines.append(f"- **Slug:** `{item.slug}`")
+        lines.append(f"- **URL:** {post_url}")
+        lines.append(f"- **Article:** `post/{item.slug}/index.html`")
+        lines.append(f"- **og:image:** `post/{item.slug}/{id_str}-og-image.png`")
+        lines.append(f"- **LinkedIn draft:** `post/{item.slug}/{id_str}-linkedin.txt`")
+        lines.append(f"- **LinkedIn log:** see `post/{item.slug}/posting-log.md`")
+        lines.append("")
+
+    mapping_path = ROOT / "post-map.md"
+    mapping_path.write_text("\n".join(lines), encoding="utf-8")
+    print(f"  Post map written: post-map.md ({len(sorted_items)} entries)")
+
+
+def generate_og_image(item: FeedItem, post_slug: str, post_id: str = "000") -> str:
     """Generate a branded PNG og:image for a blog post. Returns the relative image path."""
     import textwrap
 
     output_dir = ROOT / "post" / post_slug
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / "og-image.png"
+    output_path = output_dir / f"{post_id}-og-image.png"
 
     if output_path.exists():
-        return f"/post/{post_slug}/og-image.png"
+        return f"/post/{post_slug}/{post_id}-og-image.png"
 
     width, height = 1200, 630
     img = Image.new("RGB", (width, height), color="#050b1a")
@@ -637,7 +713,7 @@ def generate_og_image(item: FeedItem, post_slug: str) -> str:
     draw.text((width - 300, height - 48), "Independent Board Advisory", font=font_label, fill="#475569")
 
     img.save(output_path, "PNG", optimize=True)
-    return f"/post/{post_slug}/og-image.png"
+    return f"/post/{post_slug}/{post_id}-og-image.png"
 
 
 def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
@@ -727,7 +803,7 @@ FORMAT:
         return f"[LinkedIn post generation failed: {e}]"
 
 
-def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
+def update_linkedin_log(item: FeedItem, draft_path: Path, post_id: str = "000") -> None:
     """Maintain a log of LinkedIn drafts generated, for tracking posting status."""
     log_path = ROOT / "log" / "posting-log.md"
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -737,10 +813,11 @@ def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
     published = item_datetime(item.pub_date).strftime("%d %b %Y")
     entry = (
         f"\n## {item.title}\n"
+        f"- **ID:** {post_id}\n"
         f"- **Slug:** {item.slug}\n"
         f"- **Article date:** {published}\n"
         f"- **Draft generated:** {datetime.now(timezone.utc).strftime('%d %b %Y')}\n"
-        f"- **Draft file:** post/{item.slug}/linkedin.txt\n"
+        f"- **Draft file:** post/{item.slug}/{post_id}-linkedin.txt\n"
         f"- **Status:** [ ] Draft [ ] Edited [ ] Posted\n"
         f"- **Posted date:**\n"
         f"- **Notes:**\n"
@@ -752,17 +829,17 @@ def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
         log_path.write_text(existing + entry, encoding="utf-8")
 
 
-def write_linkedin_draft(item: FeedItem, post_url: str) -> None:
-    """Write a LinkedIn draft post to /post/{slug}/linkedin.txt if it doesn't already exist."""
+def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000") -> None:
+    """Write a LinkedIn draft post to /post/{slug}/{post_id}-linkedin.txt if it doesn't already exist."""
     article_dir = ROOT / "post" / item.slug
     article_dir.mkdir(parents=True, exist_ok=True)
-    draft_path = article_dir / "linkedin.txt"
+    draft_path = article_dir / f"{post_id}-linkedin.txt"
     if draft_path.exists():
         return
     print(f"  Generating LinkedIn draft for: {item.slug}")
     post_text = generate_linkedin_post(item, post_url)
     draft_path.write_text(post_text, encoding="utf-8")
-    update_linkedin_log(item, draft_path)
+    update_linkedin_log(item, draft_path, post_id=post_id)
 
 
 def main() -> int:
@@ -793,13 +870,17 @@ def main() -> int:
 
     generated_items.sort(key=lambda item: item_datetime(item.pub_date), reverse=True)
 
+    # Assign persistent sequential IDs by publish date
+    registry = assign_post_ids(generated_items)
+
     for i, item in enumerate(generated_items):
         page_path = article_page_path(item.slug)
         page_html = inject_more_articles(item.html, generated_items)
-        write_page(page_path, page_html, feed_item=item)
+        post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
+        post_id = f"{registry.get(item.slug, 0):03d}"
+        write_page(page_path, page_html, feed_item=item, post_id=post_id)
         if i < 5:
-            post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
-            write_linkedin_draft(item, post_url)
+            write_linkedin_draft(item, post_url, post_id=post_id)
 
     latest_item = generated_items[0]
     latest_with_listing = inject_more_articles(latest_item.html, generated_items)
@@ -807,6 +888,7 @@ def main() -> int:
     write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(generated_items), encoding="utf-8")
 
+    generate_post_mapping(generated_items, registry)
     print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
     return 0
 

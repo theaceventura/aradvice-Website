@@ -1,0 +1,9 @@
+Your board approved a generative AI pilot six months ago. You asked for quarterly updates on "progress and risks." What you're getting instead are demo videos and productivity metrics while your legal, compliance, and audit teams flag data residency violations, IP leakage, and algorithmic bias incidents you never hear about until it's too late.
+
+The disconnect isn't accidental. Your executive team lacks the governance vocabulary to translate AI operational risks into board-digestible strategic risks. Meanwhile, you're making resource allocation decisions about AI capabilities you cannot evaluate and approving risk appetites for threats you cannot see.
+
+Australian directors need a defensible framework that bridges this gap before ASIC and AICD expectations crystallise into enforcement actions. The framework must connect AI technical risks directly to director duties, establish clear escalation thresholds, and create audit trails that demonstrate active oversight rather than passive briefings.
+
+Your current governance structures assume you can delegate AI oversight the same way you delegate other technology decisions. That assumption will not survive regulatory scrutiny.
+
+https://aradvice.com.au/post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/

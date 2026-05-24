@@ -1,0 +1,11 @@
+The board paper lands with a thud: "AI model performance degraded 15% this quarter due to data drift." The technology committee nods. The audit committee asks about controls. But nobody asks the essential question: what does this mean for the customers, operations, and reputation we're accountable for protecting?
+
+AI governance reporting typically drowns boards in technical metrics while starving them of business context. Model accuracy scores and computational costs matter far less than understanding which decisions the AI influences, what happens when it fails, and whether the humans supposedly supervising it actually can.
+
+The gap isn't technical literacy—it's the absence of reporting frameworks that translate AI performance into director accountability. When an AI system handling loan approvals or medical diagnostics shows performance degradation, boards need to understand customer impact, regulatory exposure, and remediation timelines, not algorithm mathematics.
+
+Australian directors face the same fiduciary duties for AI decisions as any other business decision. Yet most AI reporting treats board oversight as an afterthought, assuming directors will somehow intuit business implications from engineering dashboards.
+
+The question isn't whether your organisation uses AI responsibly—it's whether you can prove it did when regulators, shareholders, or courts come asking.
+
+https://aradvice.com.au/post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/
