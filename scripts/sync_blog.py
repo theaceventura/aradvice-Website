@@ -111,16 +111,30 @@ def rewrite_domains(html: str) -> str:
 
 def strip_platform_widgets(html: str) -> str:
     """Remove third-party CMS widgets injected by the publishing platform."""
-    # Remove article rating widgets
+    # Remove star rating modal
     html = re.sub(
         r'<div[^>]*(?:rating|feedback|rate-article)[^>]*>.*?</div>',
         '',
         html,
         flags=re.DOTALL | re.IGNORECASE,
     )
-    # Remove any modal overlays asking users to rate content
+    # Remove modal overlays asking users to rate content
     html = re.sub(
         r'<div[^>]*(?:modal|overlay|popup)[^>]*>.*?How would you rate.*?</div>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    # Remove inline feedback form (no class names — match by content)
+    html = re.sub(
+        r'<p>\s*Any more feedback about it\?.*?Thank you for your feedback!.*?</p>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    # Remove feedback textarea and buttons block
+    html = re.sub(
+        r'<textarea[^>]*>What did you think of the article\?</textarea>.*?</button>',
         '',
         html,
         flags=re.DOTALL | re.IGNORECASE,
