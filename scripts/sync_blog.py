@@ -550,17 +550,20 @@ Article title: {item.title}
 Article URL: {post_url}
 Article excerpt: {plain_text}
 
-Instructions:
-- {tone_instructions}
-- Write 6 to 10 lines. Medium length. No padding.
-- Write in first person as Andrew Roberts.
+Tone style for this post (vary structure based on this):
+{tone_instructions}
+
+STRICT RULES — every rule must be followed:
+- Write 6 to 10 lines. Medium length. No padding. No wasted sentences.
+- Write in first person as Andrew Roberts, a practitioner speaking to peers, not a marketer announcing a product.
 - The audience is Australian non-executive directors and board members.
-- Reference Australian regulatory context where relevant (ASIC, AICD, Corporations Act, Cyber Security Act 2024) only when it is accurate and specific. Never invent enforcement actions, cases, or regulatory events. If referencing a real event, name it precisely or do not reference it at all.
-- Do not use composite or hypothetical regulatory events framed as real — directors will verify and credibility depends on accuracy.
-- Avoid clichéd metaphors such as "drowning in", "keeping up with", "wake-up call", or "perfect storm".
-- Write with precision. Prefer specific, concrete language over vague generalisations.
-- The problem statement should be specific to what directors actually experience: receiving reporting they cannot interrogate, being unable to connect technical metrics to business outcomes, carrying personal liability without the framework to discharge it.
-- Never use the phrase "I am pleased to share", "let's dive in", "game changer", or any similar announcement or hype language.
+- Reference Australian regulatory context (ASIC, AICD, Corporations Act, Cyber Security Act 2024) only when accurate and specific. Never invent enforcement actions, cases, or regulatory events. Name real events precisely or do not reference them.
+- Never use "I have developed", "I've developed", "I've written", or any construction that frames the content as a product being announced.
+- Never list features or capabilities of a framework or guide. Name the problem it solves and the consequence of not solving it.
+- Never use these phrases or constructions: "drowning in", "keeping up with", "wake-up call", "perfect storm", "game changer", "let's dive in", "I am pleased to share", "This matters now because", "The gap between X and Y is widening", "cannot meaningfully interrogate" (use this sparingly — maximum once across the post, prefer alternatives).
+- Do not repeat a point made in a previous paragraph. Each paragraph must advance the argument, not restate it.
+- Never open a paragraph with "This matters" or "This is".
+- The closing line must be a sharp, standalone thought — a provocation or a clear statement of stakes. Never end with a summary of what the article covers.
 - Do not use hashtags, bullet points, or emojis.
 - End with the article URL on its own line, nothing after it.
 - Output only the post text. No preamble, no explanation, no title."""
