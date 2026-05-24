@@ -317,7 +317,17 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> No
     raw_desc = ""
     if feed_item:
         # Use a short excerpt: strip HTML tags from description, truncate to 160 chars
-        raw_desc = re.sub(r"<[^>]+>", "", feed_item.html[:2000])
+        content_match = re.search(
+            r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
+            feed_item.html,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+        if content_match:
+            desc_html = content_match.group(1)
+        else:
+            h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", feed_item.html, flags=re.DOTALL | re.IGNORECASE)
+            desc_html = h1_match.group(1) if h1_match else feed_item.html[:2000]
+        raw_desc = re.sub(r"<[^>]+>", "", desc_html[:2000])
         raw_desc = re.sub(r"\s+", " ", raw_desc).strip()[:160]
     post_url = f"{MAIN_DOMAIN}/post/{post_slug}/" if post_slug else ""
     post_image = ""
