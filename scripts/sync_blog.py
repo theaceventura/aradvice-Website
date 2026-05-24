@@ -11,6 +11,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
+from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -319,7 +320,14 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> No
         raw_desc = re.sub(r"<[^>]+>", "", feed_item.html[:2000])
         raw_desc = re.sub(r"\s+", " ", raw_desc).strip()[:160]
     post_url = f"{MAIN_DOMAIN}/post/{post_slug}/" if post_slug else ""
-    post_image = feed_item.image_url if feed_item and feed_item.image_url else ""
+    post_image = ""
+    if feed_item and post_slug:
+        try:
+            generated_image = generate_og_image(feed_item, post_slug)
+            post_image = f"{MAIN_DOMAIN}{generated_image}"
+        except Exception as e:
+            print(f"  og:image generation failed for {post_slug}: {e}", file=sys.stderr)
+            post_image = feed_item.image_url if feed_item.image_url else ""
     page_title = ""
     page_description = ""
     page_url = ""
@@ -527,6 +535,89 @@ def inject_recent_articles(html: str, items: list[FeedItem]) -> str:
     return html.replace("</article>", block + "</article>", 1)
 
 
+def generate_og_image(item: FeedItem, post_slug: str) -> str:
+    """Generate a branded PNG og:image for a blog post. Returns the relative image path."""
+    import textwrap
+
+    output_dir = ROOT / "images" / "posts"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / f"{post_slug}.png"
+
+    if output_path.exists():
+        return f"/images/posts/{post_slug}.png"
+
+    width, height = 1200, 630
+    img = Image.new("RGB", (width, height), color="#050b1a")
+    draw = ImageDraw.Draw(img)
+
+    for y in range(height):
+        ratio = y / height
+        r = int(5 + (10 - 5) * ratio)
+        g = int(11 + (20 - 11) * ratio)
+        b = int(26 + (40 - 26) * ratio)
+        draw.line([(0, y), (width, y)], fill=(r, g, b))
+
+    draw.rectangle([(0, 0), (width, 6)], fill="#00d4ff")
+    draw.rectangle([(60, 80), (66, height - 80)], fill="#00d4ff20")
+
+    logo_path = ROOT / "images" / "logo.png"
+    if logo_path.exists():
+        try:
+            logo = Image.open(logo_path).convert("RGBA")
+            logo_height = 48
+            ratio = logo_height / logo.height
+            logo_width = int(logo.width * ratio)
+            logo = logo.resize((logo_width, logo_height), Image.LANCZOS)
+            img.paste(logo, (90, 88), logo)
+        except Exception:
+            pass
+
+    def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
+        font_candidates = [
+            "/System/Library/Fonts/Helvetica.ttc",
+            "/System/Library/Fonts/Arial.ttf",
+            "/Library/Fonts/Arial.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        ]
+        for path in font_candidates:
+            try:
+                return ImageFont.truetype(path, size)
+            except (IOError, OSError):
+                continue
+        return ImageFont.load_default()
+
+    font_brand = load_font(18)
+    font_title = load_font(52, bold=True)
+    font_tagline = load_font(24)
+    font_label = load_font(16)
+
+    draw.text((90, 148), "ANDREW ROBERTS ADVISORY", font=font_brand, fill="#00d4ff")
+
+    title = item.title
+    wrapped = textwrap.wrap(title, width=36)[:3]
+    title_y = 220
+    for line in wrapped:
+        draw.text((90, title_y), line, font=font_title, fill="#ffffff")
+        title_y += 68
+
+    raw = re.sub(r"<[^>]+>", "", item.html[:800])
+    raw = re.sub(r"\s+", " ", raw).strip()
+    tagline_text = raw[:120].rsplit(" ", 1)[0] + "..."
+    tagline_wrapped = textwrap.wrap(tagline_text, width=72)[:2]
+    tagline_y = title_y + 30
+    for line in tagline_wrapped:
+        draw.text((90, tagline_y), line, font=font_tagline, fill="#94a3b8")
+        tagline_y += 36
+
+    draw.rectangle([(0, height - 72), (width, height)], fill="#0a1428")
+    draw.text((90, height - 48), "aradvice.com.au", font=font_label, fill="#00d4ff")
+    draw.text((width - 300, height - 48), "Independent Board Advisory", font=font_label, fill="#475569")
+
+    img.save(output_path, "PNG", optimize=True)
+    return f"/images/posts/{post_slug}.png"
+
+
 def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
     """Generate a draft LinkedIn post for a feed item using the Anthropic API."""
     import urllib.request
@@ -535,9 +626,9 @@ def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
     # Vary tone based on article index (cycle through 3 styles)
     slug_hash = sum(ord(c) for c in item.slug) % 3
     tone_instructions = [
-        "Write in a direct, authoritative tone as Andrew Roberts, an advisor speaking plainly to Australian board directors. State a clear position. No fluff.",
-        "Open with a thought-provoking question or challenge directed at board directors. Make them feel the personal stakes. Then deliver a clear point.",
-        "Anchor the post to a specific regulatory pressure or real-world incident relevant to Australian directors. Make it feel timely and urgent.",
+        "Open with a specific scenario — a real question a director asked, a board meeting moment, a specific metric or number that reveals a governance problem. Make it feel like something that happened last week. Then draw out the implication for the reader.",
+        "Open with a direct challenge or provocation aimed at the reader personally. Use 'you' and 'your board'. Make them feel the gap between where they are and where they need to be. Do not soften it.",
+        "Open with a specific board paper moment, a regulator question, or an incident scenario. Walk through what it reveals about governance. End with the stakes if nothing changes.",
     ][slug_hash]
 
     # Extract a clean plain-text excerpt from the article
@@ -556,7 +647,7 @@ POST TYPE FOR THIS ARTICLE (use this to determine structure):
 WHAT MAKES A GREAT POST:
 - It opens with something specific — a precise scenario, a sharp question, an unexpected detail — not a broad industry observation
 - Each paragraph advances the argument. Nothing restates what came before.
-- The closing line is the sharpest line in the post. It should be a provocation, a reframe, or a statement of stakes that lands independently of everything above it. It must be memorable.
+- The closing line is the sharpest line in the post. It should be a provocation, a reframe, or a clear statement of stakes that lands independently of everything above it. It must be memorable.
 - The best posts make a director stop and think "that's exactly my situation" or "I hadn't thought of it that way"
 
 VOICE:
@@ -564,12 +655,13 @@ VOICE:
 - Authoritative without being academic. Direct without being blunt.
 - Specific and concrete. Vague generalisations undermine credibility with this audience.
 - Never frame content as a product: never use "I've developed", "I've written", "I've created", "I've seen boards struggle", "In my experience"
+- Never use "asked me last week", "a client told me", or similar anecdote framing — state scenarios directly without attributing them to named interactions
 
 REGULATORY REFERENCES:
 - Only reference real, specific regulatory events, inquiries, or enforcement actions if they appear verbatim in the article excerpt. Do not invent or imply regulatory events.
 - ASIC, AICD, Corporations Act, Cyber Security Act 2024 may be referenced accurately and specifically.
 
-BANNED PHRASES AND CONSTRUCTIONS — never use these:
+BANNED PHRASES — never use these:
 - "The regulatory environment is tightening"
 - "The gap between X and Y"
 - "Cannot meaningfully interrogate" (maximum once per post, prefer alternatives)
@@ -577,6 +669,7 @@ BANNED PHRASES AND CONSTRUCTIONS — never use these:
 - "Translation layer"
 - "I am pleased to share", "Let's dive in", "Game changer", "Wake-up call"
 - "This matters now because", "This is why"
+- "Most Australian boards" or "Most Australian directors" as an opening — find a more specific entry point
 - Opening a paragraph with "Most Australian boards" more than once per post
 
 FORMAT:
@@ -612,6 +705,30 @@ FORMAT:
         return f"[LinkedIn post generation failed: {e}]"
 
 
+def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
+    """Maintain a log of LinkedIn drafts generated, for tracking posting status."""
+    log_path = ROOT / "linkedin" / "posting-log.md"
+    existing = log_path.read_text(encoding="utf-8") if log_path.exists() else ""
+    if item.slug in existing:
+        return
+    published = item_datetime(item.pub_date).strftime("%d %b %Y")
+    entry = (
+        f"\n## {item.title}\n"
+        f"- **Slug:** {item.slug}\n"
+        f"- **Article date:** {published}\n"
+        f"- **Draft generated:** {datetime.now(timezone.utc).strftime('%d %b %Y')}\n"
+        f"- **Draft file:** linkedin/{draft_path.name}\n"
+        f"- **Status:** [ ] Draft [ ] Edited [ ] Posted\n"
+        f"- **Posted date:**\n"
+        f"- **Notes:**\n"
+    )
+    if not existing:
+        header = "# LinkedIn Posting Log\n\nTrack draft status and posting history.\n"
+        log_path.write_text(header + entry, encoding="utf-8")
+    else:
+        log_path.write_text(existing + entry, encoding="utf-8")
+
+
 def write_linkedin_draft(item: FeedItem, post_url: str) -> None:
     """Write a LinkedIn draft post to /linkedin/{slug}.txt if it doesn't already exist."""
     linkedin_dir = ROOT / "linkedin"
@@ -622,6 +739,7 @@ def write_linkedin_draft(item: FeedItem, post_url: str) -> None:
     print(f"  Generating LinkedIn draft for: {item.slug}")
     post_text = generate_linkedin_post(item, post_url)
     draft_path.write_text(post_text, encoding="utf-8")
+    update_linkedin_log(item, draft_path)
 
 
 def main() -> int:
