@@ -564,6 +564,8 @@ STRICT RULES — every rule must be followed:
 - Do not repeat a point made in a previous paragraph. Each paragraph must advance the argument, not restate it.
 - Never open a paragraph with "This matters" or "This is".
 - The closing line must be a sharp, standalone thought — a provocation or a clear statement of stakes. Never end with a summary of what the article covers.
+- Never reference a specific regulatory inquiry, enforcement action, or government report unless it appears verbatim in the article excerpt provided. If the excerpt does not name it, do not invent it.
+- Avoid constructions like "I've seen too many boards" or "In my experience" — make the point directly without the personal anecdote framing. Authority comes from precision, not from claiming experience.
 - Do not use hashtags, bullet points, or emojis.
 - End with the article URL on its own line, nothing after it.
 - Output only the post text. No preamble, no explanation, no title."""
