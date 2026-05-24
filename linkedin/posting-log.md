@@ -6,7 +6,7 @@ Track draft status and posting history.
 - **Slug:** linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting
 - **Article date:** 10 Jun 2026
 - **Draft generated:** 24 May 2026
-- **Draft file:** linkedin/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting.txt
+- **Draft file:** linkedin/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/post.txt
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
@@ -15,7 +15,7 @@ Track draft status and posting history.
 - **Slug:** directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026
 - **Article date:** 08 Jun 2026
 - **Draft generated:** 24 May 2026
-- **Draft file:** linkedin/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026.txt
+- **Draft file:** linkedin/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/post.txt
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
@@ -24,7 +24,7 @@ Track draft status and posting history.
 - **Slug:** questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist
 - **Article date:** 05 Jun 2026
 - **Draft generated:** 24 May 2026
-- **Draft file:** linkedin/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist.txt
+- **Draft file:** linkedin/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/post.txt
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
@@ -33,7 +33,7 @@ Track draft status and posting history.
 - **Slug:** ai-governance-reporting-for-boards-a-guide-to-defensible-oversight
 - **Article date:** 03 Jun 2026
 - **Draft generated:** 24 May 2026
-- **Draft file:** linkedin/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight.txt
+- **Draft file:** linkedin/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/post.txt
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
@@ -42,7 +42,7 @@ Track draft status and posting history.
 - **Slug:** board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026
 - **Article date:** 01 Jun 2026
 - **Draft generated:** 24 May 2026
-- **Draft file:** linkedin/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026.txt
+- **Draft file:** linkedin/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/post.txt
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**

@@ -1,0 +1,9 @@
+A board chair asked their CEO last month: "If we're spending $2.3 million on AI initiatives this year, what's our risk exposure?" The CEO couldn't answer. The risk committee couldn't answer. The audit committee deferred to management.
+
+This is the reality facing Australian boards in 2026. Directors are approving AI budgets without understanding the liability they're creating. ASIC's enforcement focus on corporate governance means boards can no longer delegate AI oversight to management and hope for the best.
+
+The questions directors need to ask aren't about technology architecture or algorithm performance. They're about fiduciary duty: How do we quantify AI-related risks? What's our incident response protocol when AI systems fail? How do we demonstrate reasonable care in our AI governance to regulators?
+
+Most boards reviewing AI strategy focus on opportunity. The directors who survive regulatory scrutiny will focus on accountability.
+
+https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/

@@ -1,0 +1,13 @@
+A board paper lands claiming cyber risk exposure of "$2.3 million" — precise, defensible, ready for ASIC scrutiny. But when you probe the methodology, it unravels. The calculation assumes perfect incident response, excludes regulatory penalties, and treats reputational damage as zero.
+
+This isn't just poor analysis. It's a governance failure that exposes every director to personal liability under continuous disclosure obligations.
+
+The problem runs deeper than bad math. Most cyber risk reports conflate technical vulnerabilities with business impact, leaving boards with numbers they cannot defend and decisions they cannot justify.
+
+ASIC expects directors to demonstrate they've properly considered material risks. A cyber incident that costs $50 million while your board papers claimed $2.3 million exposure creates an indefensible position.
+
+The solution requires forensic precision: mapping specific threat scenarios to quantified financial impacts using defensible methodologies that survive regulatory examination.
+
+Because when the regulator asks how you knew the risk was manageable, "the CISO said so" won't protect you.
+
+https://aradvice.com.au/post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/

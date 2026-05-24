@@ -1,0 +1,11 @@
+Your board approved generative AI tools for customer service last quarter. Do you know which third-party AI models your vendor actually uses? Can you name the specific data retention policies of those models? If your vendor's AI starts generating discriminatory responses, can you demonstrate your board exercised reasonable oversight?
+
+These aren't hypothetical questions. ASIC expects directors to understand material business risks, and AI governance failures create compliance, operational and reputational exposure that lands directly on the board.
+
+The challenge isn't technical complexity — it's that traditional risk frameworks don't address AI's unique characteristics. Your existing cybersecurity governance won't capture AI model drift. Your data governance won't cover training data provenance. Your vendor management won't address algorithmic accountability.
+
+Directors need a defensible framework that translates AI risks into board-level oversight without requiring technical expertise. This means specific policies, clear accountabilities, and measurable controls that satisfy both business needs and regulatory expectations.
+
+Your duty of care doesn't pause while you figure out AI governance — it extends to every system operating in your organisation's name.
+
+https://aradvice.com.au/post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/

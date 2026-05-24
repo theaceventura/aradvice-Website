@@ -539,12 +539,12 @@ def generate_og_image(item: FeedItem, post_slug: str) -> str:
     """Generate a branded PNG og:image for a blog post. Returns the relative image path."""
     import textwrap
 
-    output_dir = ROOT / "images" / "posts"
+    output_dir = ROOT / "linkedin" / post_slug
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / f"{post_slug}.png"
+    output_path = output_dir / "og-image.png"
 
     if output_path.exists():
-        return f"/images/posts/{post_slug}.png"
+        return f"/post/{post_slug}/og-image.png"
 
     width, height = 1200, 630
     img = Image.new("RGB", (width, height), color="#050b1a")
@@ -615,7 +615,7 @@ def generate_og_image(item: FeedItem, post_slug: str) -> str:
     draw.text((width - 300, height - 48), "Independent Board Advisory", font=font_label, fill="#475569")
 
     img.save(output_path, "PNG", optimize=True)
-    return f"/images/posts/{post_slug}.png"
+    return f"/post/{post_slug}/og-image.png"
 
 
 def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
@@ -717,7 +717,7 @@ def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
         f"- **Slug:** {item.slug}\n"
         f"- **Article date:** {published}\n"
         f"- **Draft generated:** {datetime.now(timezone.utc).strftime('%d %b %Y')}\n"
-        f"- **Draft file:** linkedin/{draft_path.name}\n"
+        f"- **Draft file:** linkedin/{item.slug}/post.txt\n"
         f"- **Status:** [ ] Draft [ ] Edited [ ] Posted\n"
         f"- **Posted date:**\n"
         f"- **Notes:**\n"
@@ -730,12 +730,12 @@ def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
 
 
 def write_linkedin_draft(item: FeedItem, post_url: str) -> None:
-    """Write a LinkedIn draft post to /linkedin/{slug}.txt if it doesn't already exist."""
-    linkedin_dir = ROOT / "linkedin"
-    linkedin_dir.mkdir(exist_ok=True)
-    draft_path = linkedin_dir / f"{item.slug}.txt"
+    """Write a LinkedIn draft post to /linkedin/{slug}/post.txt if it doesn't already exist."""
+    article_dir = ROOT / "linkedin" / item.slug
+    article_dir.mkdir(parents=True, exist_ok=True)
+    draft_path = article_dir / "post.txt"
     if draft_path.exists():
-        return  # Don't overwrite existing drafts
+        return
     print(f"  Generating LinkedIn draft for: {item.slug}")
     post_text = generate_linkedin_post(item, post_url)
     draft_path.write_text(post_text, encoding="utf-8")

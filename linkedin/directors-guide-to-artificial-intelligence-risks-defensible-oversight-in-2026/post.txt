@@ -1,0 +1,11 @@
+A ASX200 board received their quarterly AI risk report last month: 47 AI tools deployed across the organisation, risk assessment "ongoing", no quantified business impact metrics. The board approved it in twelve minutes.
+
+That same week, their AI-powered customer service system made 3,400 pricing errors before anyone noticed. The financial impact was contained, but the reputational damage wasn't.
+
+The problem isn't that directors don't care about AI governance. It's that most AI risk reports are designed to reassure rather than inform. They list frameworks and policies without showing actual risk exposure or business impact.
+
+Defensible oversight requires three elements most boards lack: real-time visibility into AI decision-making, quantified risk metrics that connect to business outcomes, and clear accountability lines when AI systems fail.
+
+The Corporations Act doesn't distinguish between human decisions and AI decisions when determining director liability.
+
+https://aradvice.com.au/post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/
