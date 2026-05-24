@@ -945,7 +945,8 @@ def main() -> int:
             write_linkedin_draft(item, post_url, post_id=post_id)
 
     latest_item = generated_items[0]
-    latest_with_listing = inject_more_articles(latest_item.html, generated_items)
+    remaining_items = generated_items[1:] if len(generated_items) > 1 else []
+    latest_with_listing = inject_more_articles(latest_item.html, remaining_items)
     latest_with_listing = inject_blog_landing_view(latest_with_listing, generated_items)
     write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(generated_items), encoding="utf-8")
