@@ -14,6 +14,15 @@ import requests
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Load .env from project root if present
+_env_path = ROOT / ".env"
+if _env_path.exists():
+    for _line in _env_path.read_text().splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _v = _line.split("=", 1)
+            import os as _os; _os.environ.setdefault(_k.strip(), _v.strip())
 MAIN_DOMAIN = "https://aradvice.com.au"
 FEED_URL = "https://blog.aradvice.com.au/feed.xml"
 USER_AGENT = (
@@ -620,12 +629,13 @@ def main() -> int:
 
     generated_items.sort(key=lambda item: item_datetime(item.pub_date), reverse=True)
 
-    for item in generated_items:
+    for i, item in enumerate(generated_items):
         page_path = article_page_path(item.slug)
         page_html = inject_more_articles(item.html, generated_items)
         write_page(page_path, page_html, feed_item=item)
-        post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
-        write_linkedin_draft(item, post_url)
+        if i < 5:
+            post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
+            write_linkedin_draft(item, post_url)
 
     latest_item = generated_items[0]
     latest_with_listing = inject_more_articles(latest_item.html, generated_items)
