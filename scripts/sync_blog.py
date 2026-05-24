@@ -481,7 +481,7 @@ def render_blog_landing_article(items: list[FeedItem]) -> str:
     return (
         # Full-width dark hero
         '<section class="w-full border-b border-slate-700/70 bg-navy-deep">'
-        '<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-16">'
+        '<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">'
 
         # Eyebrow label
         '<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6">Latest Article</p>'
