@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(git commit -m ' *)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "Bash(.venv/bin/python scripts/sync_blog.py)"
     ]
   }
 }
