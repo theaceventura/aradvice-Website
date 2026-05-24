@@ -550,23 +550,38 @@ Article title: {item.title}
 Article URL: {post_url}
 Article excerpt: {plain_text}
 
-Tone style for this post (vary structure based on this):
+POST TYPE FOR THIS ARTICLE (use this to determine structure):
 {tone_instructions}
 
-STRICT RULES — every rule must be followed:
-- Write 6 to 10 lines. Medium length. No padding. No wasted sentences.
-- Write in first person as Andrew Roberts, a practitioner speaking to peers, not a marketer announcing a product.
-- The audience is Australian non-executive directors and board members.
-- Reference Australian regulatory context (ASIC, AICD, Corporations Act, Cyber Security Act 2024) only when accurate and specific. Never invent enforcement actions, cases, or regulatory events. Name real events precisely or do not reference them.
-- Never use "I have developed", "I've developed", "I've written", or any construction that frames the content as a product being announced.
-- Never list features or capabilities of a framework or guide. Name the problem it solves and the consequence of not solving it.
-- Never use these phrases or constructions: "drowning in", "keeping up with", "wake-up call", "perfect storm", "game changer", "let's dive in", "I am pleased to share", "This matters now because", "The gap between X and Y is widening", "cannot meaningfully interrogate" (use this sparingly — maximum once across the post, prefer alternatives).
-- Do not repeat a point made in a previous paragraph. Each paragraph must advance the argument, not restate it.
-- Never open a paragraph with "This matters" or "This is".
-- The closing line must be a sharp, standalone thought — a provocation or a clear statement of stakes. Never end with a summary of what the article covers.
-- Never reference a specific regulatory inquiry, enforcement action, or government report unless it appears verbatim in the article excerpt provided. If the excerpt does not name it, do not invent it.
-- Avoid constructions like "I've seen too many boards" or "In my experience" — make the point directly without the personal anecdote framing. Authority comes from precision, not from claiming experience.
-- Do not use hashtags, bullet points, or emojis.
+WHAT MAKES A GREAT POST:
+- It opens with something specific — a precise scenario, a sharp question, an unexpected detail — not a broad industry observation
+- Each paragraph advances the argument. Nothing restates what came before.
+- The closing line is the sharpest line in the post. It should be a provocation, a reframe, or a statement of stakes that lands independently of everything above it. It must be memorable.
+- The best posts make a director stop and think "that's exactly my situation" or "I hadn't thought of it that way"
+
+VOICE:
+- First person as Andrew Roberts — a practitioner, not a commentator
+- Authoritative without being academic. Direct without being blunt.
+- Specific and concrete. Vague generalisations undermine credibility with this audience.
+- Never frame content as a product: never use "I've developed", "I've written", "I've created", "I've seen boards struggle", "In my experience"
+
+REGULATORY REFERENCES:
+- Only reference real, specific regulatory events, inquiries, or enforcement actions if they appear verbatim in the article excerpt. Do not invent or imply regulatory events.
+- ASIC, AICD, Corporations Act, Cyber Security Act 2024 may be referenced accurately and specifically.
+
+BANNED PHRASES AND CONSTRUCTIONS — never use these:
+- "The regulatory environment is tightening"
+- "The gap between X and Y"
+- "Cannot meaningfully interrogate" (maximum once per post, prefer alternatives)
+- "Governing blind"
+- "Translation layer"
+- "I am pleased to share", "Let's dive in", "Game changer", "Wake-up call"
+- "This matters now because", "This is why"
+- Opening a paragraph with "Most Australian boards" more than once per post
+
+FORMAT:
+- 6 to 10 lines. No padding. No wasted sentences.
+- No hashtags, bullet points, or emojis.
 - End with the article URL on its own line, nothing after it.
 - Output only the post text. No preamble, no explanation, no title."""
 
