@@ -459,13 +459,20 @@ def render_blog_landing_article(items: list[FeedItem]) -> str:
     published = item_datetime(latest.pub_date).strftime("%d %b %Y")
     post_url = f"/post/{escape(latest.slug)}/"
 
-    # Extract plain text excerpt
-    raw = re.sub(r"<[^>]+>", "", latest.html[:3000])
+    # Extract plain text excerpt from article-content div only
+    content_match = re.search(
+        r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
+        latest.html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if content_match:
+        excerpt_html = content_match.group(1)
+    else:
+        h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", latest.html, flags=re.DOTALL | re.IGNORECASE)
+        excerpt_html = h1_match.group(1) if h1_match else latest.html[:2000]
+    raw = re.sub(r"<[^>]+>", "", excerpt_html[:2000])
     raw = re.sub(r"\s+", " ", raw).strip()
-    content_start = raw.find(latest.title)
-    if content_start > 0:
-        raw = raw[content_start + len(latest.title):]
-    excerpt = raw.strip()[:220].rsplit(" ", 1)[0] + "..."
+    excerpt = raw[:220].rsplit(" ", 1)[0] + "..."
 
     meta = published
     if latest.read_time:
@@ -481,7 +488,7 @@ def render_blog_landing_article(items: list[FeedItem]) -> str:
 
         # Title
         f'<h1 class="text-4xl sm:text-5xl font-black text-white leading-tight mb-6 max-w-3xl">'
-        f'<a href="{post_url}" class="hover:text-primary transition-colors" style="text-decoration:none;">'
+        f'<a href="{post_url}" class="text-white hover:text-primary transition-colors" style="text-decoration:none;">'
         f'{escape(latest.title)}'
         f'</a></h1>'
 
