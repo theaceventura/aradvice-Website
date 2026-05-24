@@ -712,7 +712,8 @@ FORMAT:
 
 def update_linkedin_log(item: FeedItem, draft_path: Path) -> None:
     """Maintain a log of LinkedIn drafts generated, for tracking posting status."""
-    log_path = ROOT / "linkedin" / "posting-log.md"
+    log_path = ROOT / "log" / "posting-log.md"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
     existing = log_path.read_text(encoding="utf-8") if log_path.exists() else ""
     if item.slug in existing:
         return
