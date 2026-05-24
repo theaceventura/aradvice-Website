@@ -56,6 +56,7 @@ class FeedItem:
     html: str
     image_url: str
     read_time: str
+    excerpt: str = ""
 
 
 def fetch_text(url: str, accept: str) -> str:
@@ -345,23 +346,18 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
             else ""
         )
         image_html = ""
-        if item.image_url:
-            image_html = (
-                '<div class="aspect-[16/9] overflow-hidden bg-slate-900">'
-                f'<img src="{escape(item.image_url)}" alt="{escape(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">'
-                "</div>"
-            )
 
         meta = published
         if item.read_time:
             meta += f" &middot; {escape(item.read_time)}"
 
         cards.append(
-            f'<a href="/post/{escape(item.slug)}/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 overflow-hidden hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;">'
+            f'<a href="/post/{escape(item.slug)}/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;">'
             + image_html
-            + '<div class="p-5">'
+            + '<div class="p-6">'
             + f'<h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">{escape(item.title)}{new_badge}</h3>'
             + f'<div class="text-sm text-slate-400">{meta}</div>'
+            + (f'<p class="text-sm text-slate-300 mt-3 leading-relaxed line-clamp-3">{escape(item.excerpt)}</p>' if item.excerpt else "")
             + "</div>"
             + "</a>"
         )
@@ -496,6 +492,8 @@ def main() -> int:
     for raw_item in feed_items:
         slug = item_slug(raw_item["link"], raw_item["title"])
         article_html = fetch_text(raw_item["link"], "text/html,application/xhtml+xml")
+        raw_excerpt = re.sub(r"<[^>]+>", "", raw_item.get("description", ""))
+        raw_excerpt = re.sub(r"\s+", " ", raw_excerpt).strip()[:160]
         generated_items.append(
             FeedItem(
                 title=raw_item["title"],
@@ -505,6 +503,7 @@ def main() -> int:
                 html=article_html,
                 image_url=extract_hero_image(article_html),
                 read_time=extract_read_time(article_html),
+                excerpt=raw_excerpt,
             )
         )
 
