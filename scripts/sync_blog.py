@@ -555,12 +555,15 @@ Instructions:
 - Write 6 to 10 lines. Medium length. No padding.
 - Write in first person as Andrew Roberts.
 - The audience is Australian non-executive directors and board members.
-- Reference Australian regulatory context where relevant (ASIC, AICD, Corporations Act, Cyber Security Act 2024).
-- End with the article URL on its own line.
-- Do not use hashtags.
-- Do not use bullet points or emojis.
-- Do not use the phrase "I am pleased to share" or any similar announcement language.
-- Output only the post text. No preamble, no explanation."""
+- Reference Australian regulatory context where relevant (ASIC, AICD, Corporations Act, Cyber Security Act 2024) only when it is accurate and specific. Never invent enforcement actions, cases, or regulatory events. If referencing a real event, name it precisely or do not reference it at all.
+- Do not use composite or hypothetical regulatory events framed as real — directors will verify and credibility depends on accuracy.
+- Avoid clichéd metaphors such as "drowning in", "keeping up with", "wake-up call", or "perfect storm".
+- Write with precision. Prefer specific, concrete language over vague generalisations.
+- The problem statement should be specific to what directors actually experience: receiving reporting they cannot interrogate, being unable to connect technical metrics to business outcomes, carrying personal liability without the framework to discharge it.
+- Never use the phrase "I am pleased to share", "let's dive in", "game changer", or any similar announcement or hype language.
+- Do not use hashtags, bullet points, or emojis.
+- End with the article URL on its own line, nothing after it.
+- Output only the post text. No preamble, no explanation, no title."""
 
     payload = json.dumps({
         "model": "claude-sonnet-4-20250514",
