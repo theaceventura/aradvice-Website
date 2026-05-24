@@ -26,25 +26,27 @@ HEADERS = {
     "Referer": FEED_URL,
 }
 
-def read_local_head_and_header() -> tuple[str, str, str, str]:
-    """Extract the local site's <html>, <body>, <head>, and first <header>.
+def read_local_head_and_header() -> tuple[str, str, str, str, str]:
+    """Extract the local site's <html>, <body>, <head>, first <header>, and <footer>.
 
-    Returns a tuple of (head_html, header_html, html_tag, body_tag). Missing parts
+    Returns a tuple of (head_html, header_html, html_tag, body_tag, footer_html). Missing parts
     return empty strings.
     """
     index_path = ROOT / "index.html"
     if not index_path.exists():
-        return "", "", "", ""
+        return "", "", "", "", ""
     content = index_path.read_text(encoding="utf-8")
     head_match = re.search(r"<head\b.*?>(.*?)</head>", content, flags=re.DOTALL | re.IGNORECASE)
     header_match = re.search(r"<header\b.*?</header>", content, flags=re.DOTALL | re.IGNORECASE)
     html_match = re.search(r"(<html\b.*?>)", content, flags=re.IGNORECASE)
     body_match = re.search(r"(<body\b.*?>)", content, flags=re.IGNORECASE)
+    footer_match = re.search(r"<footer\b.*?</footer>", content, flags=re.DOTALL | re.IGNORECASE)
     head_html = f"<head>{head_match.group(1)}</head>" if head_match else ""
     header_html = header_match.group(0) if header_match else ""
     html_tag = html_match.group(1) if html_match else ""
     body_tag = body_match.group(1) if body_match else ""
-    return head_html, header_html, html_tag, body_tag
+    footer_html = footer_match.group(0) if footer_match else ""
+    return head_html, header_html, html_tag, body_tag, footer_html
 
 
 @dataclass
@@ -147,6 +149,7 @@ def replace_host_head_and_header(
     local_head: str,
     local_header: str,
     local_html: str,
+    local_footer: str = "",
     post_slug: str = "",
     post_title: str = "",
     post_description: str = "",
@@ -247,6 +250,12 @@ def replace_host_head_and_header(
             '</style>'
         )
         out = re.sub(r"</head>", fallback_css + "</head>", out, count=1, flags=re.IGNORECASE)
+    if local_footer:
+        existing_footer = re.search(r"<footer\b.*?</footer>", out, flags=re.DOTALL | re.IGNORECASE)
+        if existing_footer:
+            out = re.sub(r"<footer\b.*?</footer>", local_footer, out, count=1, flags=re.DOTALL | re.IGNORECASE)
+        else:
+            out = out.replace("</body>", local_footer + "\n</body>", 1)
     return normalize_internal_links(out)
 
 
@@ -257,7 +266,7 @@ def article_page_path(slug: str) -> Path:
 def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(rewrite_domains(html))
-    local_head, local_header, local_html, _local_body = read_local_head_and_header()
+    local_head, local_header, local_html, _local_body, local_footer = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
     post_slug = ""
     try:
@@ -296,6 +305,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None) -> No
             page_description=page_description,
             page_url=page_url,
             page_image=page_image,
+            local_footer=local_footer,
         ),
         encoding="utf-8",
     )
