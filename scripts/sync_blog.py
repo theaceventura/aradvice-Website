@@ -601,9 +601,14 @@ def generate_og_image(item: FeedItem, post_slug: str) -> str:
         draw.text((90, title_y), line, font=font_title, fill="#ffffff")
         title_y += 68
 
-    raw = re.sub(r"<[^>]+>", "", item.html[:800])
+    body_match = re.search(r"<body\b.*?>(.*)</body>", item.html, flags=re.DOTALL | re.IGNORECASE)
+    body_html = body_match.group(1) if body_match else item.html
+    raw = re.sub(r"<[^>]+>", "", body_html[:3000])
     raw = re.sub(r"\s+", " ", raw).strip()
-    tagline_text = raw[:120].rsplit(" ", 1)[0] + "..."
+    content_start = raw.find(item.title)
+    if content_start > 0:
+        raw = raw[content_start + len(item.title):]
+    tagline_text = raw.strip()[:120].rsplit(" ", 1)[0] + "..."
     tagline_wrapped = textwrap.wrap(tagline_text, width=72)[:2]
     tagline_y = title_y + 30
     for line in tagline_wrapped:
