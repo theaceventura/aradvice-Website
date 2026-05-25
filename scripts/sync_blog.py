@@ -146,6 +146,19 @@ def strip_platform_widgets(html: str) -> str:
     return html
 
 
+def extract_and_strip_meta_description(html: str) -> tuple[str, str]:
+    """Strip the 'Meta Description' heading + paragraph block injected by GetAutoSEO."""
+    match = re.search(
+        r'<h3[^>]*>\s*Meta\s+Description\s*</h3>\s*<p[^>]*>(.*?)</p>',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if not match:
+        return html, ""
+    desc_text = re.sub(r"<[^>]+>", "", match.group(1)).strip()
+    return html[:match.start()] + html[match.end():], desc_text
+
+
 def normalize_internal_links(html: str) -> str:
     replacements = {
         'href="index.html"': 'href="/"',
@@ -303,6 +316,7 @@ def article_page_path(slug: str) -> Path:
 def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_id: str = "000") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(strip_platform_widgets(rewrite_domains(html)))
+    rewritten, body_desc = extract_and_strip_meta_description(rewritten)
     local_head, local_header, local_html, _local_body, local_footer = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
     post_slug = ""
@@ -313,22 +327,30 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     except (ValueError, IndexError):
         pass
     post_title = feed_item.title if feed_item else ""
-    # Extract plain-text description from feed item description field (strip HTML tags)
-    raw_desc = ""
-    if feed_item:
-        # Use a short excerpt: strip HTML tags from description, truncate to 160 chars
-        content_match = re.search(
-            r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
-            feed_item.html,
-            flags=re.DOTALL | re.IGNORECASE,
-        )
-        if content_match:
-            desc_html = content_match.group(1)
-        else:
-            h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", feed_item.html, flags=re.DOTALL | re.IGNORECASE)
-            desc_html = h1_match.group(1) if h1_match else feed_item.html[:2000]
-        raw_desc = re.sub(r"<[^>]+>", "", desc_html[:2000])
-        raw_desc = re.sub(r"\s+", " ", raw_desc).strip()[:160]
+    # Priority: (1) existing <meta name="description"> in source HTML, (2) body Meta Description block, (3) content heuristic
+    existing_meta_match = (
+        re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']{10,})["\']', rewritten, flags=re.IGNORECASE)
+        or re.search(r'<meta[^>]*content=["\']([^"\']{10,})["\'][^>]*name=["\']description["\']', rewritten, flags=re.IGNORECASE)
+    )
+    if existing_meta_match:
+        raw_desc = existing_meta_match.group(1).strip()
+    elif body_desc:
+        raw_desc = body_desc
+    else:
+        raw_desc = ""
+        if feed_item:
+            content_match = re.search(
+                r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
+                feed_item.html,
+                flags=re.DOTALL | re.IGNORECASE,
+            )
+            if content_match:
+                desc_html = content_match.group(1)
+            else:
+                h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", feed_item.html, flags=re.DOTALL | re.IGNORECASE)
+                desc_html = h1_match.group(1) if h1_match else feed_item.html[:2000]
+            raw_desc = re.sub(r"<[^>]+>", "", desc_html[:2000])
+            raw_desc = re.sub(r"\s+", " ", raw_desc).strip()[:160]
     post_url = f"{MAIN_DOMAIN}/post/{post_slug}/" if post_slug else ""
     post_image = ""
     if feed_item and post_slug:
