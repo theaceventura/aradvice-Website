@@ -698,5 +698,27 @@ aradvice.com.au</p><div style="display:flex;gap:12px;margin-top:8px;align-items:
         </div>
       </div>
     </footer>
+<script>
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuIcon = mobileMenuButton.querySelector('.material-symbols-outlined');
+      
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuIcon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
+      });
+      
+      // Close mobile menu when clicking on  a link
+      const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+      mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          mobileMenu.classList.add('hidden');
+          mobileMenuIcon.textContent = 'menu';
+        });
+      });
+    </script>
+<script>
+(function(){var d=document.querySelector('.nav-dropdown'),m=document.querySelector('.dropdown-menu');if(!d||!m)return;var t=null;function show(){clearTimeout(t);m.style.display='block';}function hide(){t=setTimeout(function(){m.style.display='none';},200);}d.addEventListener('mouseenter',show);d.addEventListener('mouseleave',hide);m.addEventListener('mouseenter',show);m.addEventListener('mouseleave',hide);document.addEventListener('click',function(e){if(!d.contains(e.target))m.style.display='none';});}());
+</script>
 </body>
 </html>

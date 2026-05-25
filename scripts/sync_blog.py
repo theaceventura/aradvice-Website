@@ -36,15 +36,15 @@ HEADERS = {
     "Referer": FEED_URL,
 }
 
-def read_local_head_and_header() -> tuple[str, str, str, str, str]:
-    """Extract the local site's <html>, <body>, <head>, first <header>, and <footer>.
+def read_local_head_and_header() -> tuple[str, str, str, str, str, str]:
+    """Extract the local site's <html>, <body>, <head>, first <header>, <footer>, and nav scripts.
 
-    Returns a tuple of (head_html, header_html, html_tag, body_tag, footer_html). Missing parts
-    return empty strings.
+    Returns a tuple of (head_html, header_html, html_tag, body_tag, footer_html, nav_scripts).
+    Missing parts return empty strings.
     """
     index_path = ROOT / "index.html"
     if not index_path.exists():
-        return "", "", "", "", ""
+        return "", "", "", "", "", ""
     content = index_path.read_text(encoding="utf-8")
     head_match = re.search(r"<head\b.*?>(.*?)</head>", content, flags=re.DOTALL | re.IGNORECASE)
     header_match = re.search(r"<header\b.*?</header>", content, flags=re.DOTALL | re.IGNORECASE)
@@ -56,7 +56,13 @@ def read_local_head_and_header() -> tuple[str, str, str, str, str]:
     html_tag = html_match.group(1) if html_match else ""
     body_tag = body_match.group(1) if body_match else ""
     footer_html = footer_match.group(0) if footer_match else ""
-    return head_html, header_html, html_tag, body_tag, footer_html
+    footer_pos = content.rfind("</footer>")
+    nav_scripts = ""
+    if footer_pos != -1:
+        after_footer = content[footer_pos + len("</footer>"):]
+        found = re.findall(r"<script\b[^>]*>.*?</script>", after_footer, flags=re.DOTALL | re.IGNORECASE)
+        nav_scripts = "\n".join(found)
+    return head_html, header_html, html_tag, body_tag, footer_html, nav_scripts
 
 
 @dataclass
@@ -200,6 +206,7 @@ def replace_host_head_and_header(
     local_header: str,
     local_html: str,
     local_footer: str = "",
+    local_nav_scripts: str = "",
     post_slug: str = "",
     post_title: str = "",
     post_description: str = "",
@@ -306,6 +313,8 @@ def replace_host_head_and_header(
             out = re.sub(r"<footer\b.*?</footer>", local_footer, out, count=1, flags=re.DOTALL | re.IGNORECASE)
         else:
             out = out.replace("</body>", local_footer + "\n</body>", 1)
+    if local_nav_scripts:
+        out = re.sub(r"</body>", local_nav_scripts + "\n</body>", out, count=1, flags=re.IGNORECASE)
     return normalize_internal_links(out)
 
 
@@ -317,7 +326,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(strip_platform_widgets(rewrite_domains(html)))
     rewritten, body_desc = extract_and_strip_meta_description(rewritten)
-    local_head, local_header, local_html, _local_body, local_footer = read_local_head_and_header()
+    local_head, local_header, local_html, _local_body, local_footer, local_nav_scripts = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
     post_slug = ""
     try:
@@ -382,6 +391,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
             page_url=page_url,
             page_image=page_image,
             local_footer=local_footer,
+            local_nav_scripts=local_nav_scripts,
         ),
         encoding="utf-8",
     )
