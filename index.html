@@ -778,37 +778,6 @@ document.head.appendChild(o)}initApollo();</script>
         });
       });
     </script>
-    <script>
-      (function () {
-        var dd = document.querySelector('.nav-dropdown');
-        var menu = document.querySelector('.dropdown-menu');
-        if (!dd || !menu) return;
-        var timer = null;
-
-        function show() {
-          clearTimeout(timer);
-          menu.style.display = 'block';
-        }
-
-        function hide() {
-          timer = setTimeout(function () {
-            menu.style.display = 'none';
-          }, 200);
-        }
-
-        dd.addEventListener('mouseenter', show);
-        dd.addEventListener('mouseleave', hide);
-        menu.addEventListener('mouseenter', show);
-        menu.addEventListener('mouseleave', hide);
-
-        document.addEventListener('click', function (e) {
-          if (!dd.contains(e.target)) {
-            menu.style.display = 'none';
-          }
-        });
-      }());
-    </script>
-
 <script>
 (function(){var d=document.querySelector('.nav-dropdown'),m=document.querySelector('.dropdown-menu');if(!d||!m)return;var t=null;function show(){clearTimeout(t);m.style.display='block';}function hide(){t=setTimeout(function(){m.style.display='none';},200);}d.addEventListener('mouseenter',show);d.addEventListener('mouseleave',hide);m.addEventListener('mouseenter',show);m.addEventListener('mouseleave',hide);document.addEventListener('click',function(e){if(!d.contains(e.target))m.style.display='none';});}());
 </script>

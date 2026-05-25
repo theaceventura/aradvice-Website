@@ -44,11 +44,12 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#00d4ff",
+                        primary: "#00d4ff",
+                        "navy-deep": "#050b1a",
+                        "navy-rich": "#0a1428",
                         "background-light": "#ffffff",
                         "background-dark": "#0a1428",
                         "navy-dark": "#050a14",
-                        "navy-rich": "#0a1428"
                     },
                     fontFamily: {
                         "display": ["Inter", "sans-serif"]
@@ -57,13 +58,88 @@
             },
         }
     </script>
-    <style>
+    <style type="text/tailwindcss">
+      @layer base {
         body {
-            font-family: 'Inter', sans-serif;
+          @apply bg-navy-deep text-slate-100 antialiased font-display;
         }
-        .neon-glow {
-            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
-        }
+      }
+      .hero-stacked-section {
+        @apply relative min-h-screen flex items-center w-full overflow-hidden py-32;
+      }
+      .section-overlay {
+        @apply absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/90 to-transparent z-10;
+      }
+      .section-bg-image {
+        @apply absolute inset-0 w-full h-full object-cover z-0 opacity-40;
+      }
+      .glass-card {
+        @apply bg-navy-rich/80 backdrop-blur-md border border-white/10;
+      }
+      .neon-glow {
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+      .electric-border {
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+      }
+      .nav-link {
+        @apply text-sm text-white/90 font-bold tracking-widest uppercase hover:text-primary transition-colors;
+      }
+      .nav-dropdown {
+        position: relative;
+        cursor: pointer;
+      }
+      .nav-dropdown::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        height: 12px;
+        background: transparent;
+      }
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 300px;
+        width: auto;
+        white-space: nowrap;
+        background: #0a1428;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        margin-top: 0;
+        padding-top: 8px;
+      }
+      .dropdown-menu a {
+        display: block;
+        padding: 0.875rem 1.5rem;
+        white-space: nowrap;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+        transition: color 0.15s ease, background 0.15s ease;
+      }
+      .dropdown-menu a:hover,
+      .dropdown-menu a:focus {
+        color: var(--primary, #00bcd4);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .dropdown-menu a:first-child {
+        padding-top: 1rem;
+      }
+      .dropdown-menu a:last-child {
+        padding-bottom: 1rem;
+      }
+      .nav-active {
+        color: #00d4ff !important;
+      }
     </style>
     
     <!-- Apollo Tracking -->
@@ -89,12 +165,12 @@ document.head.appendChild(o)}initApollo();</script>
       <div class="nav-dropdown">
         <button class="text-[0.95rem] font-bold tracking-[0.12em] uppercase text-primary inline-flex items-center h-10" style="border: none; background: none; cursor: pointer; padding: 0; gap: 0.35rem; line-height: 1;">Our Products <span style="font-size: 0.7em;">▾</span></button>
         <div class="dropdown-menu">
-<a href="products.html">All Products →</a>
-<a href="founder-advisory.html">Founder Advisory Session</a>
-<a href="for-directors.html">Director Readiness Assessment</a>
-<a href="ai-governance-review.html">AI Governance Board Review</a>
-<a href="cyber-governance-review.html">Cyber Governance Deep Review</a>
-</div>
+              <a href="products.html">All Products →</a>
+              <a href="founder-advisory.html" id="nav-founder">Founder Advisory Session</a>
+              <a href="for-directors.html">Director Readiness Assessment</a>
+              <a href="ai-governance-review.html" id="nav-ai">AI Governance Board Review</a>
+              <a href="cyber-governance-review.html" id="nav-cyber">Cyber Governance Deep Review</a>
+            </div>
       </div>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="resource-hub.html">Resource Hub</a>
       <a class="text-sm font-bold tracking-widest uppercase text-slate-300 hover:text-primary transition-colors" href="blog.html">Blog</a>
@@ -301,6 +377,9 @@ document.head.appendChild(o)}initApollo();</script>
       });
     });
   }
+</script>
+<script>
+(function(){var d=document.querySelector('.nav-dropdown'),m=document.querySelector('.dropdown-menu');if(!d||!m)return;var t=null;function show(){clearTimeout(t);m.style.display='block';}function hide(){t=setTimeout(function(){m.style.display='none';},200);}d.addEventListener('mouseenter',show);d.addEventListener('mouseleave',hide);m.addEventListener('mouseenter',show);m.addEventListener('mouseleave',hide);document.addEventListener('click',function(e){if(!d.contains(e.target))m.style.display='none';});}());
 </script>
 </body>
 </html>
