@@ -1,0 +1,11 @@
+A board receives a cyber security update showing 99.9% system availability, zero successful breaches, and full patch compliance. The same week, ASIC asks pointed questions about how directors actually oversee cyber risk management. The board cannot answer.
+
+The technical metrics tell you what happened yesterday. They cannot tell you whether your risk appetite is appropriate, your incident response will work under pressure, or your third-party arrangements create unacceptable concentrations of risk. Yet most board papers remain anchored in operational data that sounds reassuring but provides no foundation for governance decisions.
+
+Directors need frameworks that connect cyber risk to business strategy, not reports that list security tools. The question is not whether your firewalls are working. The question is whether you can demonstrate that your oversight process is proportionate, informed, and defensible under the Corporations Act.
+
+Under the Cyber Security Act 2024, some boards will face mandatory incident reporting. Every board faces potential liability for inadequate risk management. Technical metrics cannot bridge that accountability gap.
+
+When the regulator asks how you govern cyber risk, your answer cannot be a list of security controls.
+
+https://aradvice.com.au/post/cyber-security-for-australian-boards-moving-from-technical-metrics-to-defensible-oversight/

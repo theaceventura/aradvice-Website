@@ -46,3 +46,53 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## Third Party Cyber Risk Governance Australia: A Director’s Guide to Defensible Oversight
+- **ID:** 012
+- **Slug:** third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight
+- **Article date:** 25 May 2026
+- **Draft generated:** 26 May 2026
+- **Draft file:** post/third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight/012-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
+
+## Privacy Act Obligations and the Crimes Act: A Director’s Guide to Defensible Oversight
+- **ID:** 011
+- **Slug:** privacy-act-obligations-and-the-crimes-act-a-directors-guide-to-defensible-oversight
+- **Article date:** 22 May 2026
+- **Draft generated:** 26 May 2026
+- **Draft file:** post/privacy-act-obligations-and-the-crimes-act-a-directors-guide-to-defensible-oversight/011-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
+
+## Cyber Security for Australian Boards: Moving from Technical Metrics to Defensible Oversight
+- **ID:** 010
+- **Slug:** cyber-security-for-australian-boards-moving-from-technical-metrics-to-defensible-oversight
+- **Article date:** 20 May 2026
+- **Draft generated:** 26 May 2026
+- **Draft file:** post/cyber-security-for-australian-boards-moving-from-technical-metrics-to-defensible-oversight/010-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
+
+## Regulatory Settlement Agreements: A Director’s Guide to Defensible Governance
+- **ID:** 009
+- **Slug:** regulatory-settlement-agreements-a-directors-guide-to-defensible-governance
+- **Article date:** 18 May 2026
+- **Draft generated:** 26 May 2026
+- **Draft file:** post/regulatory-settlement-agreements-a-directors-guide-to-defensible-governance/009-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
+
+## AI Risk Management Framework for Directors: A Defensible 2026 Guide for Australian Boards
+- **ID:** 008
+- **Slug:** ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards
+- **Article date:** 15 May 2026
+- **Draft generated:** 26 May 2026
+- **Draft file:** post/ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards/008-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**

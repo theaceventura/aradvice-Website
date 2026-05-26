@@ -1,0 +1,11 @@
+Your board reviews privacy policies annually and considers that sufficient oversight. Meanwhile, the updated Privacy Act creates a direct line from inadequate data governance to potential criminal negligence for directors who fail in their oversight duties.
+
+The Crimes Act doesn't care about your good intentions when personal information is mishandled under your watch. It evaluates whether you took reasonable steps to understand and oversee your organisation's data practices. Annual policy reviews won't meet that standard.
+
+Directors who cannot articulate how their organisation identifies, assesses, and responds to privacy risks are operating without the foundational knowledge required for defensible governance. The legal framework now treats privacy oversight as a core fiduciary responsibility, not an administrative task.
+
+You need systematic reporting on data flows, breach response capabilities, and compliance monitoring that allows you to demonstrate active oversight. The alternative is explaining to regulators why you governed critical privacy obligations through annual presentations and assumed compliance.
+
+Criminal negligence provisions don't distinguish between directors who didn't know and directors who didn't bother to know.
+
+https://aradvice.com.au/post/privacy-act-obligations-and-the-crimes-act-a-directors-guide-to-defensible-oversight/
