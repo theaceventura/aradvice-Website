@@ -291,6 +291,15 @@ def replace_host_head_and_header(
         count=1,
         flags=re.IGNORECASE,
     )
+    # Strip AutoSEO hero image figure from article pages
+    if post_slug:
+        out = re.sub(
+            r'<figure[^>]*>.*?getautoseo\.com/storage/hero_images.*?</figure>',
+            '',
+            out,
+            count=1,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
     # Ensure Google Fonts and Material Symbols are present; inject if missing.
     if 'fonts.googleapis' not in out:
         font_links = (
