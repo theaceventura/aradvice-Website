@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 27 May 2026 07:44 UTC
+Generated: 27 May 2026 09:36 UTC
 
-Total posts: 12
+Total posts: 11
 
 
 ---
@@ -19,20 +19,9 @@ Total posts: 12
 - **LinkedIn log:** see `post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/posting-log.md`
 
 
-## [002] What is a Technology Consultant? A Director’s Guide to Strategic Advisory in 2026
-- **ID:** 002
-- **Published:** 30 Apr 2026
-- **Slug:** `what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026`
-- **URL:** https://aradvice.com.au/post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/
-- **Article:** `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/index.html`
-- **og:image:** `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/002-og-image.png`
-- **LinkedIn draft:** `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/002-linkedin.txt`
-- **LinkedIn log:** see `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/posting-log.md`
-
-
 ## [003] Digital Strategy Consulting: A Board-Level Governance Template for 2026
 - **ID:** 003
-- **Published:** 04 May 2026
+- **Published:** 01 May 2026
 - **Slug:** `digital-strategy-consulting-a-board-level-governance-template-for-2026`
 - **URL:** https://aradvice.com.au/post/digital-strategy-consulting-a-board-level-governance-template-for-2026/
 - **Article:** `post/digital-strategy-consulting-a-board-level-governance-template-for-2026/index.html`
@@ -43,7 +32,7 @@ Total posts: 12
 
 ## [004] Defensible Oversight: A Cyber Security Audit Checklist for Australian Boards
 - **ID:** 004
-- **Published:** 06 May 2026
+- **Published:** 04 May 2026
 - **Slug:** `defensible-oversight-a-cyber-security-audit-checklist-for-australian-boards`
 - **URL:** https://aradvice.com.au/post/defensible-oversight-a-cyber-security-audit-checklist-for-australian-boards/
 - **Article:** `post/defensible-oversight-a-cyber-security-audit-checklist-for-australian-boards/index.html`
@@ -54,7 +43,7 @@ Total posts: 12
 
 ## [005] Tech Consulting for Australian Boards: Bridging the Governance Gap in 2026
 - **ID:** 005
-- **Published:** 08 May 2026
+- **Published:** 06 May 2026
 - **Slug:** `tech-consulting-for-australian-boards-bridging-the-governance-gap-in-2026`
 - **URL:** https://aradvice.com.au/post/tech-consulting-for-australian-boards-bridging-the-governance-gap-in-2026/
 - **Article:** `post/tech-consulting-for-australian-boards-bridging-the-governance-gap-in-2026/index.html`
@@ -65,7 +54,7 @@ Total posts: 12
 
 ## [006] Ethical AI Governance Framework Australia: A 2026 Guide for Board Directors
 - **ID:** 006
-- **Published:** 11 May 2026
+- **Published:** 08 May 2026
 - **Slug:** `ethical-ai-governance-framework-australia-a-2026-guide-for-board-directors`
 - **URL:** https://aradvice.com.au/post/ethical-ai-governance-framework-australia-a-2026-guide-for-board-directors/
 - **Article:** `post/ethical-ai-governance-framework-australia-a-2026-guide-for-board-directors/index.html`
@@ -76,7 +65,7 @@ Total posts: 12
 
 ## [007] Cyber Risk Reporting to the Board Australia: Establishing Defensible Oversight in 2026
 - **ID:** 007
-- **Published:** 13 May 2026
+- **Published:** 11 May 2026
 - **Slug:** `cyber-risk-reporting-to-the-board-australia-establishing-defensible-oversight-in-2026`
 - **URL:** https://aradvice.com.au/post/cyber-risk-reporting-to-the-board-australia-establishing-defensible-oversight-in-2026/
 - **Article:** `post/cyber-risk-reporting-to-the-board-australia-establishing-defensible-oversight-in-2026/index.html`
@@ -87,7 +76,7 @@ Total posts: 12
 
 ## [008] AI Risk Management Framework for Directors: A Defensible 2026 Guide for Australian Boards
 - **ID:** 008
-- **Published:** 15 May 2026
+- **Published:** 13 May 2026
 - **Slug:** `ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards`
 - **URL:** https://aradvice.com.au/post/ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards/
 - **Article:** `post/ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards/index.html`
@@ -98,7 +87,7 @@ Total posts: 12
 
 ## [009] Regulatory Settlement Agreements: A Director’s Guide to Defensible Governance
 - **ID:** 009
-- **Published:** 18 May 2026
+- **Published:** 15 May 2026
 - **Slug:** `regulatory-settlement-agreements-a-directors-guide-to-defensible-governance`
 - **URL:** https://aradvice.com.au/post/regulatory-settlement-agreements-a-directors-guide-to-defensible-governance/
 - **Article:** `post/regulatory-settlement-agreements-a-directors-guide-to-defensible-governance/index.html`
@@ -109,7 +98,7 @@ Total posts: 12
 
 ## [010] Cyber Security for Australian Boards: Moving from Technical Metrics to Defensible Oversight
 - **ID:** 010
-- **Published:** 20 May 2026
+- **Published:** 18 May 2026
 - **Slug:** `cyber-security-for-australian-boards-moving-from-technical-metrics-to-defensible-oversight`
 - **URL:** https://aradvice.com.au/post/cyber-security-for-australian-boards-moving-from-technical-metrics-to-defensible-oversight/
 - **Article:** `post/cyber-security-for-australian-boards-moving-from-technical-metrics-to-defensible-oversight/index.html`
@@ -120,7 +109,7 @@ Total posts: 12
 
 ## [011] Privacy Act Obligations and the Crimes Act: A Director’s Guide to Defensible Oversight
 - **ID:** 011
-- **Published:** 22 May 2026
+- **Published:** 20 May 2026
 - **Slug:** `privacy-act-obligations-and-the-crimes-act-a-directors-guide-to-defensible-oversight`
 - **URL:** https://aradvice.com.au/post/privacy-act-obligations-and-the-crimes-act-a-directors-guide-to-defensible-oversight/
 - **Article:** `post/privacy-act-obligations-and-the-crimes-act-a-directors-guide-to-defensible-oversight/index.html`
@@ -131,7 +120,7 @@ Total posts: 12
 
 ## [012] Third Party Cyber Risk Governance Australia: A Director’s Guide to Defensible Oversight
 - **ID:** 012
-- **Published:** 25 May 2026
+- **Published:** 22 May 2026
 - **Slug:** `third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight`
 - **URL:** https://aradvice.com.au/post/third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight/
 - **Article:** `post/third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight/index.html`
