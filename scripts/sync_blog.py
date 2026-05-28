@@ -735,33 +735,31 @@ def generate_og_image(item: FeedItem, post_slug: str, post_id: str = "000") -> s
     if output_path.exists():
         return f"/post/{post_slug}/{post_id}-og-image.png"
 
-    width, height = 1200, 630
-    img = Image.new("RGB", (width, height), color="#050b1a")
+    W, H = 1200, 630
+    NAVY  = (5, 12, 28)
+    CYAN  = (0, 212, 255)
+    WHITE = (255, 255, 255)
+    MUTED = (71, 85, 105)
+    DARK  = (3, 8, 16)
+    SLATE = (100, 116, 139)
+
+    img = Image.new("RGB", (W, H), NAVY)
     draw = ImageDraw.Draw(img)
 
-    for y in range(height):
-        ratio = y / height
-        r = int(5 + (10 - 5) * ratio)
-        g = int(11 + (20 - 11) * ratio)
-        b = int(26 + (40 - 26) * ratio)
-        draw.line([(0, y), (width, y)], fill=(r, g, b))
+    # Top cyan accent bar
+    draw.rectangle([(0, 0), (W, 8)], fill=CYAN)
 
-    draw.rectangle([(0, 0), (width, 6)], fill="#00d4ff")
-    draw.rectangle([(60, 80), (66, height - 80)], fill="#00d4ff20")
-
-    logo_path = ROOT / "images" / "logo.png"
-    if logo_path.exists():
+    # Favicon icon top-left
+    favicon_path = ROOT / "favicon.ico"
+    if favicon_path.exists():
         try:
-            logo = Image.open(logo_path).convert("RGBA")
-            logo_height = 48
-            ratio = logo_height / logo.height
-            logo_width = int(logo.width * ratio)
-            logo = logo.resize((logo_width, logo_height), Image.LANCZOS)
-            img.paste(logo, (90, 88), logo)
+            favicon = Image.open(favicon_path).convert("RGBA")
+            icon = favicon.resize((80, 80), Image.LANCZOS)
+            img.paste(icon, (80, 52), icon)
         except Exception:
             pass
 
-    def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
+    def load_font(size: int) -> ImageFont.FreeTypeFont:
         font_candidates = [
             "/System/Library/Fonts/Helvetica.ttc",
             "/System/Library/Fonts/Arial.ttf",
@@ -776,44 +774,33 @@ def generate_og_image(item: FeedItem, post_slug: str, post_id: str = "000") -> s
                 continue
         return ImageFont.load_default()
 
-    font_brand = load_font(18)
-    font_title = load_font(52, bold=True)
-    font_tagline = load_font(24)
-    font_label = load_font(16)
+    # Brand name beside icon
+    draw.text((178, 62), "ANDREW ROBERTS ADVISORY",
+              font=load_font(16), fill=CYAN)
+    draw.rectangle([(178, 86), (540, 87)], fill=(0, 212, 255, 60))
 
-    draw.text((90, 148), "ANDREW ROBERTS ADVISORY", font=font_brand, fill="#00d4ff")
-
-    title = item.title
-    wrapped = textwrap.wrap(title, width=36)[:3]
-    title_y = 220
+    # Article title — max 3 lines
+    wrapped = textwrap.wrap(item.title, width=26)[:3]
+    ty = 175
     for line in wrapped:
-        draw.text((90, title_y), line, font=font_title, fill="#ffffff")
-        title_y += 68
+        draw.text((80, ty), line, font=load_font(64), fill=WHITE)
+        ty += 78
 
-    # Extract text from article-content div specifically
-    content_match = re.search(
-        r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
-        item.html,
-        flags=re.DOTALL | re.IGNORECASE,
-    )
-    if content_match:
-        content_html = content_match.group(1)
-    else:
-        # Fallback: find first <p> tag after the article h1
-        h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", item.html, flags=re.DOTALL | re.IGNORECASE)
-        content_html = h1_match.group(1) if h1_match else item.html[:2000]
-    raw = re.sub(r"<[^>]+>", "", content_html[:2000])
-    raw = re.sub(r"\s+", " ", raw).strip()
-    tagline_text = raw[:120].rsplit(" ", 1)[0] + "..."
-    tagline_wrapped = textwrap.wrap(tagline_text, width=72)[:2]
-    tagline_y = title_y + 30
-    for line in tagline_wrapped:
-        draw.text((90, tagline_y), line, font=font_tagline, fill="#94a3b8")
-        tagline_y += 36
+    # Post date — parsed from RFC 2822 pub_date string
+    if item.pub_date:
+        try:
+            date_str = item_datetime(item.pub_date).strftime("%-d %B %Y")
+        except Exception:
+            date_str = ""
+        if date_str:
+            draw.text((80, ty + 16), date_str, font=load_font(20), fill=SLATE)
 
-    draw.rectangle([(0, height - 72), (width, height)], fill="#0a1428")
-    draw.text((90, height - 48), "aradvice.com.au", font=font_label, fill="#00d4ff")
-    draw.text((width - 300, height - 48), "Independent Board Advisory", font=font_label, fill="#475569")
+    # Footer bar
+    draw.rectangle([(0, H - 56), (W, H)], fill=DARK)
+    draw.rectangle([(0, H - 57), (W, H - 56)], fill=(0, 212, 255, 50))
+    draw.text((80, H - 36), "aradvice.com.au", font=load_font(14), fill=CYAN)
+    draw.text((W - 370, H - 36), "Independent Board Advisory",
+              font=load_font(14), fill=MUTED)
 
     img.save(output_path, "PNG", optimize=True)
     return f"/post/{post_slug}/{post_id}-og-image.png"
