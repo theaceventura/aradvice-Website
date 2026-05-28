@@ -780,7 +780,7 @@ def generate_og_image(item: FeedItem, post_slug: str, post_id: str = "000") -> s
     draw.rectangle([(178, 86), (540, 87)], fill=(0, 212, 255, 60))
 
     # Article title — max 3 lines
-    wrapped = textwrap.wrap(item.title, width=26)[:3]
+    wrapped = textwrap.wrap(item.title, width=34)[:3]
     ty = 175
     for line in wrapped:
         draw.text((80, ty), line, font=load_font(64), fill=WHITE)
