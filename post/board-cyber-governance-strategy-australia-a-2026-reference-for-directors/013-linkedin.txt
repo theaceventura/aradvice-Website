@@ -1,0 +1,11 @@
+A board I know received their cyber risk dashboard last month showing "94% compliance" across security controls. The chair asked the obvious question: what specific business impact would the missing 6% have during an actual incident?
+
+The room went quiet. IT had delivered metrics. Management had reported status. But nobody could translate control gaps into board-level risk language.
+
+This disconnect isn't just about reporting—it's about whether directors can actually discharge their fiduciary duties around cyber risk. The Cyber Security Act 2024 expects boards to demonstrate reasonable care in cyber governance, but most receive information designed for technical teams, not decision-makers.
+
+The real test isn't whether your CISO can explain your security posture. It's whether you can explain to shareholders, post-incident, exactly what cyber risks you knowingly accepted and why those decisions protected long-term value.
+
+Australian directors who can't connect cyber controls to business outcomes aren't governing—they're just receiving reports.
+
+https://aradvice.com.au/post/board-cyber-governance-strategy-australia-a-2026-reference-for-directors/

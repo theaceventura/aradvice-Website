@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 28 May 2026 07:40 UTC
+Generated: 28 May 2026 13:36 UTC
 
-Total posts: 11
+Total posts: 13
 
 
 ---
@@ -127,3 +127,25 @@ Total posts: 11
 - **og:image:** `post/third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight/012-og-image.png`
 - **LinkedIn draft:** `post/third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight/012-linkedin.txt`
 - **LinkedIn log:** see `post/third-party-cyber-risk-governance-australia-a-directors-guide-to-defensible-oversight/posting-log.md`
+
+
+## [013] Board Cyber Governance Strategy Australia: A 2026 Reference for Directors
+- **ID:** 013
+- **Published:** 25 May 2026
+- **Slug:** `board-cyber-governance-strategy-australia-a-2026-reference-for-directors`
+- **URL:** https://aradvice.com.au/post/board-cyber-governance-strategy-australia-a-2026-reference-for-directors/
+- **Article:** `post/board-cyber-governance-strategy-australia-a-2026-reference-for-directors/index.html`
+- **og:image:** `post/board-cyber-governance-strategy-australia-a-2026-reference-for-directors/013-og-image.png`
+- **LinkedIn draft:** `post/board-cyber-governance-strategy-australia-a-2026-reference-for-directors/013-linkedin.txt`
+- **LinkedIn log:** see `post/board-cyber-governance-strategy-australia-a-2026-reference-for-directors/posting-log.md`
+
+
+## [014] How to Challenge a CISO Report: A Director’s Guide to Defensible Oversight
+- **ID:** 014
+- **Published:** 27 May 2026
+- **Slug:** `how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight`
+- **URL:** https://aradvice.com.au/post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/
+- **Article:** `post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/index.html`
+- **og:image:** `post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/014-og-image.png`
+- **LinkedIn draft:** `post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/014-linkedin.txt`
+- **LinkedIn log:** see `post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/posting-log.md`

@@ -96,3 +96,23 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## How to Challenge a CISO Report: A Director’s Guide to Defensible Oversight
+- **ID:** 014
+- **Slug:** how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight
+- **Article date:** 27 May 2026
+- **Draft generated:** 28 May 2026
+- **Draft file:** post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/014-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
+
+## Board Cyber Governance Strategy Australia: A 2026 Reference for Directors
+- **ID:** 013
+- **Slug:** board-cyber-governance-strategy-australia-a-2026-reference-for-directors
+- **Article date:** 25 May 2026
+- **Draft generated:** 28 May 2026
+- **Draft file:** post/board-cyber-governance-strategy-australia-a-2026-reference-for-directors/013-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
