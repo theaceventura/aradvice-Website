@@ -969,8 +969,7 @@ def main() -> int:
         post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
         post_id = f"{registry.get(item.slug, 0):03d}"
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
-        if i < 5:
-            write_linkedin_draft(item, post_url, post_id=post_id)
+        write_linkedin_draft(item, post_url, post_id=post_id)
 
     latest_item = generated_items[0]
     remaining_items = generated_items[1:] if len(generated_items) > 1 else []
