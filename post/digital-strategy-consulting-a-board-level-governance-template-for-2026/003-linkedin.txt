@@ -1,0 +1,11 @@
+A board paper lands on your desk: "Digital Transformation Strategy Update — Investment Required: $47M." The paper outlines cloud migration, AI implementation, and cybersecurity upgrades. But buried in appendix C is a single line about "assumed regulatory compliance" with no detail on which regulations or how compliance will be achieved.
+
+Under the Corporations Act, directors have a duty to make informed decisions. Yet most digital strategy papers present technology choices without governance frameworks. They detail technical architectures but skip the control environments that make those architectures defensible.
+
+The Cyber Security Act 2024 creates explicit obligations for critical infrastructure. AI governance is evolving rapidly. A $47M digital investment without clear governance isn't just poor strategy — it's potentially a breach of fiduciary duty.
+
+When regulators ask how you governed digital risk, pointing to a vendor's assurance matrix won't suffice. They want board-level oversight frameworks, not technical specifications.
+
+Your digital strategy consulting must address governance first, technology second — or you're governing blind.
+
+https://aradvice.com.au/post/digital-strategy-consulting-a-board-level-governance-template-for-2026/

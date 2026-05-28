@@ -1,0 +1,9 @@
+The audit committee chair asks: "How do we know our cyber security audit actually protects us from ASIC scrutiny?" The room goes quiet because nobody has a clear answer.
+
+This question cuts to the heart of defensible oversight. Most cyber audits focus on technical controls but miss the governance evidence that regulators examine. When ASIC investigates cyber incidents, they're not looking at your firewall configurations — they're looking at board papers, meeting minutes, and decision trails that demonstrate directors exercised reasonable care.
+
+The difference between a compliance exercise and defensible oversight is documentation that shows the board understood the risks, asked informed questions, and made reasonable decisions with adequate information. Technical audit findings mean nothing if the board can't demonstrate they properly considered and acted on them.
+
+Australian boards need audit processes that generate governance evidence, not just technical reports. The stakes are personal liability under the Corporations Act when directors cannot prove they fulfilled their duty of care.
+
+https://aradvice.com.au/post/defensible-oversight-a-cyber-security-audit-checklist-for-australian-boards/
