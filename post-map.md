@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 30 May 2026 01:15 UTC
+Generated: 30 May 2026 07:17 UTC
 
-Total posts: 13
+Total posts: 14
 
 
 ---
@@ -149,3 +149,14 @@ Total posts: 13
 - **og:image:** `post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/014-og-image.png`
 - **LinkedIn draft:** `post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/014-linkedin.txt`
 - **LinkedIn log:** see `post/how-to-challenge-a-ciso-report-a-directors-guide-to-defensible-oversight/posting-log.md`
+
+
+## [015] Board Oversight of Generative AI Risks: A Defensible Governance Framework for 2026
+- **ID:** 015
+- **Published:** 29 May 2026
+- **Slug:** `board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026`
+- **URL:** https://aradvice.com.au/post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/
+- **Article:** `post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/index.html`
+- **og:image:** `post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/015-og-image.png`
+- **LinkedIn draft:** `post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/015-linkedin.txt`
+- **LinkedIn log:** see `post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/posting-log.md`
