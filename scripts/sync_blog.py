@@ -717,6 +717,7 @@ def generate_post_mapping(items: list[FeedItem], registry: dict) -> None:
         lines.append(f"- **og:image:** `post/{item.slug}/{id_str}-og-image.png`")
         lines.append(f"- **LinkedIn draft:** `post/{item.slug}/{id_str}-linkedin.txt`")
         lines.append(f"- **LinkedIn log:** see `post/{item.slug}/posting-log.md`")
+        lines.append(f"- **Advisor brief:** `post/{item.slug}/{id_str}-advisor-brief.md`")
         lines.append("")
 
     mapping_path = ROOT / "post-map.md"
@@ -932,6 +933,91 @@ def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000") ->
     update_linkedin_log(item, draft_path, post_id=post_id)
 
 
+def generate_advisor_brief(item: FeedItem, post_url: str) -> str:
+    """Generate an internal advisor briefing doc for a feed item using the Anthropic API."""
+    import urllib.request
+    import json
+
+    plain_text = re.sub(r"<[^>]+>", "", item.html[:6000])
+    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:4000]
+
+    prompt = f"""You are preparing an internal advisor briefing for Andrew Roberts, founder of Andrew Roberts Advisory (aradvice.com.au), an independent board-level advisor on cyber governance and AI governance for Australian directors.
+
+A client director has just read the following article and may ring Andy to discuss it. Andy needs a concise internal reference he can scan before or during the call.
+
+Article title: {item.title}
+Article URL: {post_url}
+Article content: {plain_text}
+
+Write the briefing in plain markdown. Use the following structure exactly:
+
+## What the article argues
+Two or three sentences. The core thesis — what Andy is claiming and why it matters for Australian directors right now.
+
+## Key regulatory and legal context
+Bullet points. Only include regulators, legislation, enforcement actions, or standards that are explicitly mentioned or clearly implied in the article. Do not invent regulatory context. Include ASIC, APRA, the Corporations Act, or the Cyber Security Act 2024 only where the article supports it.
+
+## Questions a client is likely to ask
+Four to six bullet points. Specific questions a director or board chair would realistically ask after reading this article. Phrase them as the client would ask them, not as abstract topics.
+
+## How to respond — key messages
+For each likely question area, one or two sentences on the position Andy should take. Concrete and actionable. No vague generalities.
+
+## Advisory angles — services to position
+Bullet points. What specific services or engagements does this article create an opening for? Be direct about the commercial opportunity without being sales-y.
+
+## Watch-outs
+Two or three bullet points. Things Andy should be careful not to overstate, areas of genuine uncertainty in the law or regulation, or nuances the article glosses over that a sophisticated client might push back on.
+
+Output only the briefing. No preamble, no explanation."""
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 1500,
+        "messages": [{"role": "user", "content": prompt}]
+    }).encode("utf-8")
+
+    import os
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01",
+            "x-api-key": api_key,
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            return data["content"][0]["text"].strip()
+    except Exception as e:
+        return f"[Advisor brief generation failed: {e}]"
+
+
+def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> None:
+    """Write an internal advisor briefing doc to /post/{slug}/{post_id}-advisor-brief.md if it doesn't already exist."""
+    article_dir = ROOT / "post" / item.slug
+    article_dir.mkdir(parents=True, exist_ok=True)
+    brief_path = article_dir / f"{post_id}-advisor-brief.md"
+    if brief_path.exists():
+        return
+    print(f"  Generating advisor brief for: {item.slug}")
+    brief_text = generate_advisor_brief(item, post_url)
+    published = item_datetime(item.pub_date).strftime("%d %b %Y")
+    header = (
+        f"# Advisor Brief — {item.title}\n\n"
+        f"**Article:** {post_url}  \n"
+        f"**Published:** {published}  \n"
+        f"**Generated:** {datetime.now(timezone.utc).strftime('%d %b %Y')}  \n\n"
+        "---\n\n"
+    )
+    brief_path.write_text(header + brief_text, encoding="utf-8")
+
+
 def main() -> int:
     feed_xml = fetch_text(FEED_URL, "application/rss+xml, application/xml, text/xml")
     feed_items = parse_feed(feed_xml)
@@ -970,6 +1056,7 @@ def main() -> int:
         post_id = f"{registry.get(item.slug, 0):03d}"
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
         write_linkedin_draft(item, post_url, post_id=post_id)
+        write_advisor_brief(item, post_url, post_id=post_id)
 
     latest_item = generated_items[0]
     remaining_items = generated_items[1:] if len(generated_items) > 1 else []
