@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 01 Jun 2026 08:11 UTC
+Generated: 01 Jun 2026 14:22 UTC
 
-Total posts: 14
+Total posts: 15
 
 
 ---
@@ -160,3 +160,14 @@ Total posts: 14
 - **og:image:** `post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/015-og-image.png`
 - **LinkedIn draft:** `post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/015-linkedin.txt`
 - **LinkedIn log:** see `post/board-oversight-of-generative-ai-risks-a-defensible-governance-framework-for-2026/posting-log.md`
+
+
+## [016] AI Governance Reporting for Boards: A Guide to Defensible Oversight
+- **ID:** 016
+- **Published:** 01 Jun 2026
+- **Slug:** `ai-governance-reporting-for-boards-a-guide-to-defensible-oversight`
+- **URL:** https://aradvice.com.au/post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/
+- **Article:** `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/index.html`
+- **og:image:** `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/016-og-image.png`
+- **LinkedIn draft:** `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/016-linkedin.txt`
+- **LinkedIn log:** see `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/posting-log.md`
