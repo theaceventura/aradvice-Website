@@ -78,13 +78,6 @@
 - logged: 02 Jun 2026 15:17 UTC
 - status: dry-run
 
-## AI Risk Management Framework for Directors: A Defensible 2026 Guide for Australian Boards
-- slug: ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards
-- subject: APRA 2026 AI requirements: Your board liability framework
-- article_date: 13 May 2026
-- logged: 02 Jun 2026 15:18 UTC
-- status: dry-run
-
 ## Cyber Risk Reporting to the Board Australia: Establishing Defensible Oversight in 2026
 - slug: cyber-risk-reporting-to-the-board-australia-establishing-defensible-oversight-in-2026
 - subject: Cyber Security Act 2024: Your board reporting obligations
@@ -125,4 +118,11 @@
 - subject: Cyber governance: Moving beyond technical metrics to defensible oversight
 - article_date: 29 Apr 2026
 - logged: 02 Jun 2026 15:19 UTC
+- status: dry-run
+
+## AI Risk Management Framework for Directors: A Defensible 2026 Guide for Australian Boards
+- slug: ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards
+- subject: AI Risk Management: Your fiduciary duties in 2026
+- article_date: 13 May 2026
+- logged: 02 Jun 2026 23:04 UTC
 - status: dry-run
