@@ -212,6 +212,7 @@ def replace_host_head_and_header(
     post_description: str = "",
     post_url: str = "",
     post_image: str = "",
+    post_keywords: str = "",
     page_title: str = "",
     page_description: str = "",
     page_url: str = "",
@@ -264,6 +265,7 @@ def replace_host_head_and_header(
         out = re.sub(r'<meta[^>]*property=["\']twitter:description["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
         out = re.sub(r'<meta[^>]*property=["\']twitter:url["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
         out = re.sub(r'<meta[^>]*property=["\']twitter:image["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
+        out = re.sub(r'<meta[^>]*name=["\']keywords["\'][^>]*/?>', "", out, flags=re.IGNORECASE)
         # Build and inject post-specific tags before </head>
         injected = (
             f'<title>{escaped_title} | Andrew Roberts Advisory</title>\n    '
@@ -277,6 +279,7 @@ def replace_host_head_and_header(
             f'<meta property="twitter:description" content="{escaped_description}" />\n    '
             f'<meta property="twitter:url" content="{escaped_url}" />\n    '
             f'<meta property="twitter:image" content="{escaped_image}" />\n    '
+            f'<meta name="keywords" content="{escape(post_keywords)}" />\n    '
         )
         out = re.sub(r"</head>", injected + "</head>", out, count=1, flags=re.IGNORECASE)
     if local_header:
@@ -345,30 +348,25 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     except (ValueError, IndexError):
         pass
     post_title = feed_item.title if feed_item else ""
-    # Priority: (1) existing <meta name="description"> in source HTML, (2) body Meta Description block, (3) content heuristic
-    existing_meta_match = (
-        re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']{10,})["\']', rewritten, flags=re.IGNORECASE)
-        or re.search(r'<meta[^>]*content=["\']([^"\']{10,})["\'][^>]*name=["\']description["\']', rewritten, flags=re.IGNORECASE)
-    )
-    if existing_meta_match:
-        raw_desc = existing_meta_match.group(1).strip()
-    elif body_desc:
-        raw_desc = body_desc
+    # Generate click-optimised description and per-post keywords via API
+    api_desc, post_keywords = ("", "")
+    if feed_item:
+        api_desc, post_keywords = generate_post_meta(feed_item)
+
+    # Fallback chain if API call failed
+    if not api_desc:
+        existing_meta_match = (
+            re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']{10,})["\']', rewritten, flags=re.IGNORECASE)
+            or re.search(r'<meta[^>]*content=["\']([^"\']{10,})["\'][^>]*name=["\']description["\']', rewritten, flags=re.IGNORECASE)
+        )
+        if existing_meta_match:
+            raw_desc = existing_meta_match.group(1).strip()
+        elif body_desc:
+            raw_desc = body_desc
+        else:
+            raw_desc = ""
     else:
-        raw_desc = ""
-        if feed_item:
-            content_match = re.search(
-                r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
-                feed_item.html,
-                flags=re.DOTALL | re.IGNORECASE,
-            )
-            if content_match:
-                desc_html = content_match.group(1)
-            else:
-                h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", feed_item.html, flags=re.DOTALL | re.IGNORECASE)
-                desc_html = h1_match.group(1) if h1_match else feed_item.html[:2000]
-            raw_desc = re.sub(r"<[^>]+>", "", desc_html[:2000])
-            raw_desc = re.sub(r"\s+", " ", raw_desc).strip()[:160]
+        raw_desc = api_desc
     post_url = f"{MAIN_DOMAIN}/post/{post_slug}/" if post_slug else ""
     post_image = ""
     if feed_item and post_slug:
@@ -395,6 +393,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
             post_description=raw_desc,
             post_url=post_url,
             post_image=post_image,
+            post_keywords=post_keywords,
             page_title=page_title,
             page_description=page_description,
             page_url=page_url,
@@ -996,6 +995,63 @@ Output only the briefing. No preamble, no explanation."""
             return data["content"][0]["text"].strip()
     except Exception as e:
         return f"[Advisor brief generation failed: {e}]"
+
+
+def generate_post_meta(item: FeedItem) -> tuple[str, str]:
+    """Generate a click-optimised meta description and post-specific keywords
+    for a blog post using the Anthropic API.
+    Returns (description, keywords_csv) — both as plain strings."""
+    import urllib.request, json, os
+
+    plain_text = re.sub(r"<[^>]+>", "", item.html[:3000])
+    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:1500]
+
+    prompt = f"""You are writing SEO metadata for a blog post on aradvice.com.au,
+an independent board-level advisory practice for Australian directors on cyber
+and AI governance.
+
+Post title: {item.title}
+Post excerpt: {plain_text}
+
+Return a JSON object with exactly two keys:
+- "description": A meta description of 130–155 characters. Lead with the
+  director's specific problem or risk (not a description of the article).
+  Include a reason to click. End with a concrete outcome or action.
+  Do not start with "Directors," or "Learn". Never mention the site name.
+- "keywords": A comma-separated list of 6–8 specific keywords for this post
+  only. Use terms a director would actually search for. Include relevant
+  regulation names (e.g. APRA CPS 234, Cyber Security Act 2024, ASIC s180)
+  where topically relevant. Do not include generic site-wide terms like
+  "board advisory" or "Australian boards" — those are already on the homepage.
+
+Return only the JSON object. No preamble, no markdown fences."""
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 400,
+        "messages": [{"role": "user", "content": prompt}]
+    }).encode("utf-8")
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01",
+            "x-api-key": api_key,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            raw = data["content"][0]["text"].strip()
+            parsed = json.loads(raw)
+            return parsed.get("description", ""), parsed.get("keywords", "")
+    except Exception as e:
+        print(f"  generate_post_meta failed for {item.slug}: {e}", file=sys.stderr)
+        return "", ""
 
 
 def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> None:
