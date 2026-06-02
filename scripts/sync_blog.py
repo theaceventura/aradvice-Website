@@ -558,13 +558,78 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
 
     return (
         '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
+        '<h2 class="text-2xl font-bold text-slate-100 mb-8">More Articles</h2>'
+        '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
+        + "".join(cards)
+        + "</div>"
+        "</section>"
+    )
+
+
+
+def inject_more_articles(html: str, items: list[FeedItem]) -> str:
+    section_html = render_more_articles_section(items)
+    replaced = re.sub(
+        r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>More Articles</h2>.*?</section>',
+        section_html,
+        html,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if replaced != html:
+        return replaced
+    return html.replace("</main>", section_html + "\n    </main>", 1)
+
+
+def render_blog_landing_article(items: list[FeedItem]) -> str:
+    if not items:
+        return ""
+
+    latest = items[0]
+    published = item_datetime(latest.pub_date).strftime("%d %b %Y")
+    post_url = f"/post/{escape(latest.slug)}/"
+
+    content_match = re.search(
+        r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
+        latest.html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if content_match:
+        excerpt_html = content_match.group(1)
+    else:
+        h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", latest.html, flags=re.DOTALL | re.IGNORECASE)
+        excerpt_html = h1_match.group(1) if h1_match else latest.html[:2000]
+    raw = re.sub(r"<[^>]+>", "", excerpt_html[:2000])
+    raw = re.sub(r"\s+", " ", raw).strip()
+    excerpt = raw[:220].rsplit(" ", 1)[0] + "..."
+
+    meta = published
+    if latest.read_time:
+        meta += f" &middot; {escape(latest.read_time)}"
+
+    return (
+        '<section class="w-full border-b border-slate-700/70 bg-navy-deep">' 
+        '<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">'
+        '<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6">Latest Article</p>'
+        f'<h1 class="text-3xl sm:text-4xl font-black text-white leading-tight mb-6 max-w-3xl">'
+        f'<a href="{post_url}" class="text-white hover:text-primary transition-colors" style="text-decoration:none;">'
+        f'{escape(latest.title)}'
+        f'</a></h1>'
+        f'<p class="text-sm text-slate-400 mb-6">{meta}</p>'
+        f'<p class="text-lg text-slate-300 leading-relaxed max-w-2xl mb-8">{excerpt}</p>'
+        f'<a href="{post_url}" class="inline-flex items-center gap-2 bg-primary hover:bg-white text-navy-deep px-8 py-4 text-sm font-bold uppercase tracking-widest transition-all transform hover:-translate-y-0.5 shadow-lg" style="text-decoration:none;">'
+        f'Read Article \u2192'
+        f'</a>'
+        '</div>'
+        '</section>'
+        '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
         '<div class="max-w-xl mx-auto text-center mb-8">'
         '<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-3">GOVERNANCE BRIEFINGS</p>'
         '<h2 class="text-2xl font-bold text-slate-100 mb-3">Stay informed on cyber and AI governance</h2>'
-        '<p class="text-slate-400 text-sm">Short, practical briefings for Australian directors — delivered when there is something worth reading.</p>'
+        '<p class="text-slate-400 text-sm">Short, practical briefings for Australian directors \u2014 delivered when there is something worth reading.</p>'
         '</div>'
         '<div class="max-w-md mx-auto">'
-                '<style>'
+        '<style>'
         '.formkit-form[data-uid="67af2df661"] {'
         'background: transparent !important;'
         'box-shadow: none !important;'
@@ -616,7 +681,6 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
         '</div>'
         '</section>'
     )
-
 
 def inject_blog_landing_view(html: str, items: list[FeedItem]) -> str:
     landing_article = render_blog_landing_article(items)
