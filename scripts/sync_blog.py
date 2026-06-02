@@ -390,26 +390,6 @@ def replace_host_head_and_header(
             '</style>'
         )
         out = re.sub(r"</head>", fallback_css + "</head>", out, count=1, flags=re.IGNORECASE)
-    if post_slug:
-        author_bio = (
-            '<aside class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 '
-            'py-8 mt-4 border-t border-slate-200">'
-            '<div class="flex items-start gap-4"><div>'
-            '<p class="text-sm font-semibold text-slate-900">'
-            'Andrew Roberts</p>'
-            '<p class="text-sm text-slate-600 mt-1">Independent '
-            'board-level advisor on cyber governance and AI governance '
-            'for Australian directors. Founder of '
-            '<a href="https://aradvice.com.au" '
-            'class="text-cyan-600 hover:underline">'
-            'Andrew Roberts Advisory</a>. '
-            'Conflict-free. No vendor relationships.</p>'
-            '<a href="/about.html" class="text-xs text-cyan-600 '
-            'hover:underline mt-2 inline-block">'
-            'About Andrew →</a>'
-            '</div></div></aside>'
-        )
-        out = out.replace("</article>", author_bio + "\n</article>", 1)
     if local_footer:
         existing_footer = re.search(r"<footer\b.*?</footer>", out, flags=re.DOTALL | re.IGNORECASE)
         if existing_footer:
