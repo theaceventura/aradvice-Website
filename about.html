@@ -234,28 +234,50 @@
     <h2 class="text-2xl font-bold text-slate-100 mb-3">Stay informed on cyber and AI governance</h2>
     <p class="text-slate-400 text-sm">Short, practical briefings for Australian directors — delivered when there is something worth reading.</p>
   </div>
-  <div class="max-w-md mx-auto">
-    <form
-      action="https://app.kit.com/forms/9514147/subscriptions"
-      method="POST"
-      target="_blank"
-      class="seva-form">
+  <div class="max-w-md mx-auto kit-form-wrapper">
+    <div id="kit-form-container">
       <div class="flex gap-3">
         <input
+          id="kit-email"
           class="flex-1 bg-slate-800 border border-slate-600 text-slate-100 placeholder-slate-400 px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 transition-colors"
-          name="email_address"
           type="email"
           placeholder="Your email address"
           required />
         <button
-          type="submit"
+          id="kit-submit"
+          type="button"
           class="bg-primary hover:bg-white text-navy-deep px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap">
           Subscribe
         </button>
       </div>
       <p class="text-xs text-slate-500 mt-3 text-center">No spam. Unsubscribe anytime.</p>
-    </form>
+    </div>
+    <div id="kit-success" style="display:none;" class="text-center py-4">
+      <p class="text-cyan-400 font-semibold">Check your email to confirm your subscription.</p>
+    </div>
   </div>
+  <script>
+    document.getElementById('kit-submit').addEventListener('click', function() {
+      var email = document.getElementById('kit-email').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('kit-email').focus();
+        return;
+      }
+      var data = new FormData();
+      data.append('email_address', email);
+      fetch('https://app.kit.com/forms/9514147/subscriptions', {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors'
+      }).then(function() {
+        document.getElementById('kit-form-container').style.display = 'none';
+        document.getElementById('kit-success').style.display = 'block';
+      }).catch(function() {
+        document.getElementById('kit-form-container').style.display = 'none';
+        document.getElementById('kit-success').style.display = 'block';
+      });
+    });
+  </script>
 </section>
 
 <section class="pb-24">
