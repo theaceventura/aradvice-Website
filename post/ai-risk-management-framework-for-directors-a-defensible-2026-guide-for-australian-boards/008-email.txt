@@ -1,6 +1,6 @@
-SUBJECT: APRA 2026 AI requirements: Your board liability framework
+SUBJECT: AI Risk Management: Your fiduciary duties in 2026
 
-APRA's 2026 AI governance requirements will expose directors to personal liability if their boards lack defensible AI risk management frameworks. This guide provides Australian directors with a practical framework to discharge your fiduciary duties around AI oversight, covering risk assessment protocols, governance structures, and documentation requirements that will satisfy regulatory scrutiny. The framework addresses the specific challenges Australian boards face as AI becomes material to business operations and regulatory compliance. Read the full AI Risk Management Framework for Directors guide: https://aradvice.com.au/post/ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards/
+Your board faces growing exposure as AI deployment accelerates without proper risk frameworks in place. This guide provides a defensible AI risk management framework designed specifically for Australian directors navigating their fiduciary duties in an AI-driven business environment. The framework addresses the governance gaps that leave directors personally exposed when AI initiatives go wrong or create unintended consequences. Read the complete framework at https://aradvice.com.au/post/ai-risk-management-framework-for-directors-a-defensible-2026-guide-for-australian-boards/
 
 Andrew Roberts
 Andrew Roberts Advisory

@@ -429,7 +429,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     post_title = feed_item.title if feed_item else ""
     # Generate click-optimised description and per-post keywords via API
     api_desc, post_keywords = ("", "")
-    if feed_item:
+    if feed_item and not path.exists():
         api_desc, post_keywords = generate_post_meta(feed_item)
 
     # Fallback chain if API call failed
@@ -1059,6 +1059,7 @@ Rules:
 - Do not mention "newsletter" or "blog post"
 - Address the reader as a director with personal accountability
 - Under 150 words total for the body
+- CRITICAL: Do not reference specific regulatory requirements, deadlines, or enforcement actions unless they appear verbatim in the article excerpt provided. If unsure, omit the regulatory reference entirely and focus on the director's governance obligation instead.
 
 Return a JSON object with exactly two keys:
 "subject": the subject line
