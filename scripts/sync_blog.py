@@ -558,113 +558,26 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
 
     return (
         '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
-        '<h2 class="text-2xl font-bold text-slate-100 mb-8">More Articles</h2>'
-        '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
-        + "".join(cards)
-        + "</div>"
-        "</section>"
-    )
-
-
-def inject_more_articles(html: str, items: list[FeedItem]) -> str:
-    section_html = render_more_articles_section(items)
-    replaced = re.sub(
-        r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>More Articles</h2>.*?</section>',
-        section_html,
-        html,
-        count=1,
-        flags=re.DOTALL | re.IGNORECASE,
-    )
-    if replaced != html:
-        return replaced
-    return html.replace("</main>", section_html + "\n    </main>", 1)
-
-
-def render_blog_landing_article(items: list[FeedItem]) -> str:
-    """Render the blog landing page hero featuring the latest article."""
-    if not items:
-        return ""
-
-    latest = items[0]
-    published = item_datetime(latest.pub_date).strftime("%d %b %Y")
-    post_url = f"/post/{escape(latest.slug)}/"
-
-    # Extract plain text excerpt from article-content div only
-    content_match = re.search(
-        r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</div>\s*</article>',
-        latest.html,
-        flags=re.DOTALL | re.IGNORECASE,
-    )
-    if content_match:
-        excerpt_html = content_match.group(1)
-    else:
-        h1_match = re.search(r"</h1>.*?(<p\b.*?</p>)", latest.html, flags=re.DOTALL | re.IGNORECASE)
-        excerpt_html = h1_match.group(1) if h1_match else latest.html[:2000]
-    raw = re.sub(r"<[^>]+>", "", excerpt_html[:2000])
-    raw = re.sub(r"\s+", " ", raw).strip()
-    excerpt = raw[:220].rsplit(" ", 1)[0] + "..."
-
-    meta = published
-    if latest.read_time:
-        meta += f" &middot; {escape(latest.read_time)}"
-
-    return (
-        # Full-width dark hero
-        '<section class="w-full border-b border-slate-700/70 bg-navy-deep">'
-        '<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">'
-
-        # Eyebrow label
-        '<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6">Latest Article</p>'
-
-        # Title
-        f'<h1 class="text-3xl sm:text-4xl font-black text-white leading-tight mb-6 max-w-3xl">'
-        f'<a href="{post_url}" class="text-white hover:text-primary transition-colors" style="text-decoration:none;">'
-        f'{escape(latest.title)}'
-        f'</a></h1>'
-
-        # Meta
-        f'<p class="text-sm text-slate-400 mb-6">{meta}</p>'
-
-        # Excerpt
-        f'<p class="text-lg text-slate-300 leading-relaxed max-w-2xl mb-8">{excerpt}</p>'
-
-        # CTA
-        f'<a href="{post_url}" class="inline-flex items-center gap-2 bg-primary hover:bg-white text-navy-deep px-8 py-4 text-sm font-bold uppercase tracking-widest transition-all transform hover:-translate-y-0.5 shadow-lg" style="text-decoration:none;">'
-        f'Read Article →'
-        f'</a>'
-
-        '</div>'
-        '</section>'
-
-        '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
         '<div class="max-w-xl mx-auto text-center mb-8">'
         '<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-3">GOVERNANCE BRIEFINGS</p>'
         '<h2 class="text-2xl font-bold text-slate-100 mb-3">Stay informed on cyber and AI governance</h2>'
         '<p class="text-slate-400 text-sm">Short, practical briefings for Australian directors — delivered when there is something worth reading.</p>'
         '</div>'
-        '<div class="max-w-md mx-auto kit-form-wrapper">'
-        '<div id="kit-form-container">'
-        '<div class="flex gap-3">'
-        '<input id="kit-email" class="flex-1 bg-slate-800 border border-slate-600 text-slate-100 placeholder-slate-400 px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 transition-colors" type="email" placeholder="Your email address" required />'
-        '<button id="kit-submit" type="button" class="bg-primary hover:bg-white text-navy-deep px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap">Subscribe</button>'
+        '<div class="max-w-md mx-auto">'
+        '<script src="https://f.convertkit.com/ckjs/ck.5.js"></script>'
+        '<form action="https://app.kit.com/forms/9514147/subscriptions" class="seva-form formkit-form" method="post" data-sv-form="9514147" data-uid="67af2df661" data-format="inline" data-version="5" data-options="{&quot;settings&quot;:{&quot;after_subscribe&quot;:{&quot;action&quot;:&quot;message&quot;,&quot;success_message&quot;:&quot;Success! Check your email to confirm.&quot;}}}">'
+        '<ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul>'
+        '<div data-element="fields" class="seva-fields formkit-fields">'
+        '<div class="formkit-field">'
+        '<input class="formkit-input" name="email_address" aria-label="Email Address" placeholder="Your email address" required type="email" style="background:#1e293b; color:#f1f5f9; border:1px solid #475569; border-radius:0; padding:12px 16px; width:100%; font-size:14px;" />'
         '</div>'
-        '<p class="text-xs text-slate-500 mt-3 text-center">No spam. Unsubscribe anytime.</p>'
+        '<button data-element="submit" class="formkit-submit" style="background:#00d4ff; color:#050c1c; border:none; padding:12px 24px; font-weight:700; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; width:100%; margin-top:8px;">'
+        '<span>Subscribe</span>'
+        '</button>'
         '</div>'
-        '<div id="kit-success" style="display:none;" class="text-center py-4">'
-        '<p class="text-cyan-400 font-semibold">Check your email to confirm your subscription.</p>'
+        '<p style="color:#64748b; font-size:12px; text-align:center; margin-top:12px;">No spam. Unsubscribe anytime.</p>'
+        '</form>'
         '</div>'
-        '</div>'
-        '<script>'
-        "document.getElementById('kit-submit').addEventListener('click', function() {"
-        "var email = document.getElementById('kit-email').value.trim();"
-        "if (!email || !email.includes('@')) { document.getElementById('kit-email').focus(); return; }"
-        "var data = new FormData();"
-        "data.append('email_address', email);"
-        "fetch('https://app.kit.com/forms/9514147/subscriptions', {method: 'POST', body: data, mode: 'no-cors'})"
-        ".then(function() { document.getElementById('kit-form-container').style.display = 'none'; document.getElementById('kit-success').style.display = 'block'; })"
-        ".catch(function() { document.getElementById('kit-form-container').style.display = 'none'; document.getElementById('kit-success').style.display = 'block'; });"
-        "});"
-        '</script>'
         '</section>'
     )
 
