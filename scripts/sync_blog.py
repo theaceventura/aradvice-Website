@@ -213,6 +213,7 @@ def replace_host_head_and_header(
     post_url: str = "",
     post_image: str = "",
     post_keywords: str = "",
+    article_schema: str = "",
     page_title: str = "",
     page_description: str = "",
     page_url: str = "",
@@ -250,7 +251,7 @@ def replace_host_head_and_header(
 
     if canonical_url:
         escaped_title = escape(title)
-        escaped_description = escape(description)
+        escaped_description = escape(description).replace("&#x27;", "'")
         escaped_url = escape(canonical_url)
         escaped_image = escape(image)
         # Remove existing tags we are replacing
@@ -282,6 +283,12 @@ def replace_host_head_and_header(
             f'<meta name="keywords" content="{escape(post_keywords)}" />\n    '
         )
         out = re.sub(r"</head>", injected + "</head>", out, count=1, flags=re.IGNORECASE)
+        if article_schema:
+            out = re.sub(
+                r"</head>",
+                article_schema + "\n</head>",
+                out, count=1, flags=re.IGNORECASE
+            )
     if local_header:
         out = re.sub(r"<header\b.*?</header>", local_header, out, count=1, flags=re.DOTALL | re.IGNORECASE)
     # Ensure content starts below fixed header.
@@ -319,6 +326,26 @@ def replace_host_head_and_header(
             '</style>'
         )
         out = re.sub(r"</head>", fallback_css + "</head>", out, count=1, flags=re.IGNORECASE)
+    if post_slug:
+        author_bio = (
+            '<aside class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 '
+            'py-8 mt-4 border-t border-slate-200">'
+            '<div class="flex items-start gap-4"><div>'
+            '<p class="text-sm font-semibold text-slate-900">'
+            'Andrew Roberts</p>'
+            '<p class="text-sm text-slate-600 mt-1">Independent '
+            'board-level advisor on cyber governance and AI governance '
+            'for Australian directors. Founder of '
+            '<a href="https://aradvice.com.au" '
+            'class="text-cyan-600 hover:underline">'
+            'Andrew Roberts Advisory</a>. '
+            'Conflict-free. No vendor relationships.</p>'
+            '<a href="/about.html" class="text-xs text-cyan-600 '
+            'hover:underline mt-2 inline-block">'
+            'About Andrew →</a>'
+            '</div></div></aside>'
+        )
+        out = out.replace("</article>", author_bio + "\n</article>", 1)
     if local_footer:
         existing_footer = re.search(r"<footer\b.*?</footer>", out, flags=re.DOTALL | re.IGNORECASE)
         if existing_footer:
@@ -381,10 +408,20 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     page_url = ""
     page_image = ""
     if path == ROOT / "blog.html":
-        page_title = "Blog"
-        page_description = "Board-level insights on cyber governance, AI governance, technology oversight, and defensible decision-making for Australian directors."
+        page_title = "Board Cyber & AI Governance Insights"
+        page_description = (
+            "Practical insights for Australian directors on cyber "
+            "governance, AI oversight, and defensible decision-making "
+            "under Australian regulatory expectations."
+        )
         page_url = f"{MAIN_DOMAIN}/blog.html"
         page_image = f"{MAIN_DOMAIN}/og-image.jpg"
+    article_schema = ""
+    if post_slug and feed_item:
+        article_schema = generate_article_schema(
+            feed_item,
+            f"{MAIN_DOMAIN}/post/{post_slug}/"
+        )
     path.write_text(
         replace_host_head_and_header(
             rewritten, local_head, local_header, local_html,
@@ -394,6 +431,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
             post_url=post_url,
             post_image=post_image,
             post_keywords=post_keywords,
+            article_schema=article_schema,
             page_title=page_title,
             page_description=page_description,
             page_url=page_url,
@@ -1052,6 +1090,34 @@ Return only the JSON object. No preamble, no markdown fences."""
     except Exception as e:
         print(f"  generate_post_meta failed for {item.slug}: {e}", file=sys.stderr)
         return "", ""
+
+
+def generate_article_schema(item: FeedItem, post_url: str) -> str:
+    """Generate JSON-LD Article schema for a blog post."""
+    published = item_datetime(item.pub_date).isoformat()
+    escaped_title = escape(item.title)
+    return (
+        '<script type="application/ld+json">\n'
+        '{\n'
+        '  "@context": "https://schema.org",\n'
+        '  "@type": "Article",\n'
+        f'  "headline": "{escaped_title}",\n'
+        f'  "url": "{post_url}",\n'
+        f'  "datePublished": "{published}",\n'
+        '  "author": {\n'
+        '    "@type": "Person",\n'
+        '    "name": "Andrew Roberts",\n'
+        '    "url": "https://aradvice.com.au/about.html"\n'
+        '  },\n'
+        '  "publisher": {\n'
+        '    "@type": "Organization",\n'
+        '    "name": "Andrew Roberts Advisory",\n'
+        '    "url": "https://aradvice.com.au",\n'
+        '    "logo": "https://aradvice.com.au/favicon.ico"\n'
+        '  }\n'
+        '}\n'
+        '</script>'
+    )
 
 
 def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> None:
