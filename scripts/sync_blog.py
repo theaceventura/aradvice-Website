@@ -1046,9 +1046,9 @@ Write a plain-text email with two parts:
 SUBJECT: A direct, specific subject line under 60 characters. Lead with the governance issue, not "New article" or "New briefing". Example format: "Cyber Security Act 2024: Your board obligations" or "APRA CPS 234: What directors must do".
 
 BODY: 4-6 sentences maximum.
-- Sentence 1: State the specific governance problem or risk this article addresses. Be concrete — name the regulation, the liability, or the board gap.
-- Sentences 2-3: What the article covers and why it matters right now for Australian directors personally.
-- Sentence 4: One clear call to action with the article URL.
+- Sentence 1: State the specific governance problem or risk this article addresses. Write it as a specific situation a director would recognise — name the exposure, the regulatory obligation, or the board gap. Do NOT describe the article or what it contains.
+- Sentences 2-3: What the director needs to understand and why it matters to them personally right now. Be concrete.
+- Sentence 4: The article URL on its own line, nothing else before or after it — no "Read more at", no "Full article:", just the bare URL.
 - Sign off: "Andrew Roberts\\nAndrew Roberts Advisory"
 - Footer: "You're receiving this because you subscribed at aradvice.com.au."
 
