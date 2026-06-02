@@ -26,6 +26,26 @@ if _env_path.exists():
             import os as _os; _os.environ.setdefault(_k.strip(), _v.strip())
 MAIN_DOMAIN = "https://aradvice.com.au"
 FEED_URL = "https://blog.aradvice.com.au/feed.xml"
+MANUAL_POSTS = [
+    {
+        "title": "Linking Cyber Risk to Financial Impact: A Director's Guide to Defensible Board Reporting",
+        "link": "https://aradvice.com.au/post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/",
+        "pub_date": "Wed, 10 Jun 2026 00:00:00 +0000",
+        "description": "Can you defend a cyber strategy that you cannot quantify in Australian Dollars? As a director, you likely feel the growing disconnect between technical jargon and personal liability.",
+    },
+    {
+        "title": "Director's Guide to Artificial Intelligence Risks: Defensible Oversight in 2026",
+        "link": "https://aradvice.com.au/post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/",
+        "pub_date": "Mon, 08 Jun 2026 00:00:00 +0000",
+        "description": "Our director's guide to artificial intelligence risks helps you meet your duty of care. Learn defensible AI oversight for 2026 regulatory compliance in Australia.",
+    },
+    {
+        "title": "Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director's Checklist",
+        "link": "https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/",
+        "pub_date": "Thu, 05 Jun 2026 00:00:00 +0000",
+        "description": "Facing ASIC scrutiny? Here are the critical questions for boards to ask about corporate AI strategy to mitigate fiduciary risk and meet 2026 director duties.",
+    },
+]
 USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
@@ -1223,6 +1243,14 @@ def main() -> int:
     print(f"  Found {len(feed_items)} articles on blog index "
           f"({len(rss_by_slug)} in RSS feed)")
 
+    # Merge manually-managed posts not in the getautoseo feed
+    feed_slugs = {item_slug(i["link"], i["title"])
+                  for i in feed_items}
+    for manual in MANUAL_POSTS:
+        s = item_slug(manual["link"], manual["title"])
+        if s not in feed_slugs:
+            feed_items.append(manual)
+
     generated_items: list[FeedItem] = []
     for raw_item in feed_items:
         slug = item_slug(raw_item["link"], raw_item["title"])
@@ -1247,11 +1275,20 @@ def main() -> int:
     # Assign persistent sequential IDs by publish date
     registry = assign_post_ids(generated_items)
 
+    manual_slugs = {item_slug(m["link"], m["title"]) for m in MANUAL_POSTS}
+
     for i, item in enumerate(generated_items):
         page_path = article_page_path(item.slug)
-        page_html = inject_more_articles(item.html, generated_items)
         post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
         post_id = f"{registry.get(item.slug, 0):03d}"
+
+        # Skip HTML regeneration for manually-managed posts
+        if item.slug in manual_slugs:
+            write_linkedin_draft(item, post_url, post_id=post_id)
+            write_advisor_brief(item, post_url, post_id=post_id)
+            continue
+
+        page_html = inject_more_articles(item.html, generated_items)
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
         write_linkedin_draft(item, post_url, post_id=post_id)
         write_advisor_brief(item, post_url, post_id=post_id)

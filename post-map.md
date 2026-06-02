@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 02 Jun 2026 04:43 UTC
+Generated: 02 Jun 2026 04:56 UTC
 
-Total posts: 15
+Total posts: 18
 
 
 ---
@@ -186,3 +186,39 @@ Total posts: 15
 - **LinkedIn draft:** `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/016-linkedin.txt`
 - **LinkedIn log:** see `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/posting-log.md`
 - **Advisor brief:** `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/016-advisor-brief.md`
+
+
+## [017] Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director's Checklist
+- **ID:** 017
+- **Published:** 05 Jun 2026
+- **Slug:** `questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist`
+- **URL:** https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/
+- **Article:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/index.html`
+- **og:image:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-og-image.png`
+- **LinkedIn draft:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-linkedin.txt`
+- **LinkedIn log:** see `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/posting-log.md`
+- **Advisor brief:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-advisor-brief.md`
+
+
+## [018] Director's Guide to Artificial Intelligence Risks: Defensible Oversight in 2026
+- **ID:** 018
+- **Published:** 08 Jun 2026
+- **Slug:** `directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026`
+- **URL:** https://aradvice.com.au/post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/
+- **Article:** `post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/index.html`
+- **og:image:** `post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/018-og-image.png`
+- **LinkedIn draft:** `post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/018-linkedin.txt`
+- **LinkedIn log:** see `post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/posting-log.md`
+- **Advisor brief:** `post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/018-advisor-brief.md`
+
+
+## [019] Linking Cyber Risk to Financial Impact: A Director's Guide to Defensible Board Reporting
+- **ID:** 019
+- **Published:** 10 Jun 2026
+- **Slug:** `linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting`
+- **URL:** https://aradvice.com.au/post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/
+- **Article:** `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/index.html`
+- **og:image:** `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/019-og-image.png`
+- **LinkedIn draft:** `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/019-linkedin.txt`
+- **LinkedIn log:** see `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/posting-log.md`
+- **Advisor brief:** `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/019-advisor-brief.md`
