@@ -121,6 +121,50 @@ def parse_feed(xml_text: str) -> list[dict[str, str]]:
     return items
 
 
+def parse_blog_index() -> list[dict[str, str]]:
+    """Scrape all article links from the paginated blog index."""
+    base = "https://blog.aradvice.com.au"
+    items: list[dict[str, str]] = []
+    page = 1
+    seen: set[str] = set()
+
+    while True:
+        url = base if page == 1 else f"{base}?page={page}"
+        try:
+            html = fetch_text(url, "text/html")
+        except Exception as e:
+            print(f"  Blog index page {page} failed: {e}",
+                  file=sys.stderr)
+            break
+
+        # Extract article links — hrefs may be relative (/post/...) or absolute
+        links = re.findall(
+            r'href=["\'](?:' + re.escape(base) + r')?(/post/([^"\']+))["\']',
+            html
+        )
+        new_found = False
+        for path, slug in links:
+            slug = slug.rstrip("/")
+            full_url = base + path.rstrip("/") + "/"
+            if full_url in seen:
+                continue
+            seen.add(full_url)
+            new_found = True
+            items.append({
+                "title": "",   # filled later from article
+                "link": full_url,
+                "pub_date": "",
+                "description": "",
+            })
+
+        # Check for next page link
+        if f'page={page + 1}' not in html or not new_found:
+            break
+        page += 1
+
+    return items
+
+
 def rewrite_domains(html: str) -> str:
     return html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
 
@@ -1141,11 +1185,43 @@ def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> 
 
 
 def main() -> int:
-    feed_xml = fetch_text(FEED_URL, "application/rss+xml, application/xml, text/xml")
-    feed_items = parse_feed(feed_xml)
+    # Primary: scrape blog index pages to get all articles
+    feed_items = parse_blog_index()
+
+    # Fallback: supplement with RSS feed items (for pub_date
+    # and description which index pages don't provide)
+    try:
+        feed_xml = fetch_text(
+            FEED_URL,
+            "application/rss+xml, application/xml, text/xml"
+        )
+        rss_items = parse_feed(feed_xml)
+        # Build lookup of RSS data by slug for merging
+        rss_by_slug: dict[str, dict] = {}
+        for rss in rss_items:
+            s = item_slug(rss["link"], rss["title"])
+            rss_by_slug[s] = rss
+    except Exception as e:
+        print(f"  RSS feed fetch failed, continuing without: {e}",
+              file=sys.stderr)
+        rss_by_slug = {}
+
     if not feed_items:
-        print("No feed items found.", file=sys.stderr)
+        print("No articles found on blog index.", file=sys.stderr)
         return 1
+
+    # Merge RSS metadata into index-scraped items
+    for item in feed_items:
+        slug = item_slug(item["link"], item["title"])
+        if slug in rss_by_slug:
+            rss = rss_by_slug[slug]
+            item["pub_date"] = rss.get("pub_date", "")
+            item["description"] = rss.get("description", "")
+            if not item["title"]:
+                item["title"] = rss.get("title", "")
+
+    print(f"  Found {len(feed_items)} articles on blog index "
+          f"({len(rss_by_slug)} in RSS feed)")
 
     generated_items: list[FeedItem] = []
     for raw_item in feed_items:
