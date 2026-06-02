@@ -1,0 +1,8 @@
+SUBJECT: AI governance gaps: Board oversight questions for 2026
+
+Many boards lack frameworks to oversee AI strategy, creating potential liability gaps as regulators increase scrutiny of algorithmic decision-making and data governance. This checklist provides specific questions directors should ask management about AI risk assessment, ethical frameworks, and compliance monitoring. With ACCC and OAIC signalling stronger AI oversight, directors need practical tools to discharge their duty of care around emerging technology risks. Read the full checklist: https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/
+
+Andrew Roberts
+Andrew Roberts Advisory
+
+You're receiving this because you subscribed at aradvice.com.au.

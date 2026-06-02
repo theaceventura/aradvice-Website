@@ -1,0 +1,8 @@
+SUBJECT: Cyber governance: Moving beyond technical metrics to defensible oversight
+
+Many Australian boards struggle to demonstrate defensible cyber oversight when relying solely on technical metrics that don't translate to fiduciary accountability. This article provides a practical framework for building cyber governance that meets your duties as a director while moving beyond confusing vulnerability counts and patch statistics. You'll learn how to structure board reporting, ask the right questions of management, and document decisions that will stand up to regulatory scrutiny or post-incident review. Read the full guidance here: https://aradvice.com.au/post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/
+
+Andrew Roberts
+Andrew Roberts Advisory
+
+You're receiving this because you subscribed at aradvice.com.au.

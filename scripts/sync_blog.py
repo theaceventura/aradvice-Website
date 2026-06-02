@@ -635,6 +635,23 @@ def render_blog_landing_article(items: list[FeedItem]) -> str:
 
         '</div>'
         '</section>'
+
+        '<section class="w-full bg-navy-rich border-b border-slate-700/70">'
+        '<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14">'
+        '<p class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-4">Governance Briefings</p>'
+        '<h2 class="text-2xl sm:text-3xl font-black text-white leading-tight mb-3 max-w-xl">Stay informed on cyber and AI governance</h2>'
+        '<p class="text-slate-300 mb-8 max-w-lg">Short, practical briefings for Australian directors — delivered when there\'s something worth reading.</p>'
+        '<form action="https://app.kit.com/forms/67af2df661/subscriptions" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-lg">'
+        '<input type="email" name="email_address" placeholder="Your email address" required'
+        ' class="flex-1 px-4 py-3 bg-white/5 border border-slate-600 text-slate-100 placeholder-slate-400 focus:outline-none focus:border-primary text-sm" />'
+        '<button type="submit"'
+        ' class="bg-primary hover:bg-white text-navy-deep px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all whitespace-nowrap">'
+        'Subscribe'
+        '</button>'
+        '</form>'
+        '<p class="text-xs text-slate-500 mt-3">No spam. Unsubscribe anytime.</p>'
+        '</div>'
+        '</section>'
     )
 
 
@@ -983,6 +1000,198 @@ FORMAT:
         return f"[LinkedIn post generation failed: {e}]"
 
 
+def generate_email_draft(item: FeedItem, post_url: str) -> tuple[str, str]:
+    """Generate a plain-text email subject and body for a new article using the Anthropic API.
+    Returns (subject, body)."""
+    import urllib.request, json, os
+
+    plain_text = re.sub(r"<[^>]+>", "", item.html[:3000])
+    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:1500]
+
+    prompt = f"""You are writing a brief email to Australian company directors who have subscribed to receive governance briefings from Andrew Roberts Advisory (aradvice.com.au).
+
+Article title: {item.title}
+Article URL: {post_url}
+Article excerpt: {plain_text}
+
+Write a plain-text email with two parts:
+
+SUBJECT: A direct, specific subject line under 60 characters. Lead with the governance issue, not "New article" or "New briefing". Example format: "Cyber Security Act 2024: Your board obligations" or "APRA CPS 234: What directors must do".
+
+BODY: 4-6 sentences maximum.
+- Sentence 1: State the specific governance problem or risk this article addresses. Be concrete — name the regulation, the liability, or the board gap.
+- Sentences 2-3: What the article covers and why it matters right now for Australian directors personally.
+- Sentence 4: One clear call to action with the article URL.
+- Sign off: "Andrew Roberts\\nAndrew Roberts Advisory"
+- Footer: "You're receiving this because you subscribed at aradvice.com.au."
+
+Rules:
+- No HTML, no markdown, plain text only
+- No "I hope this finds you well" or similar openers
+- No exclamation marks
+- Do not mention "newsletter" or "blog post"
+- Address the reader as a director with personal accountability
+- Under 150 words total for the body
+
+Return a JSON object with exactly two keys:
+"subject": the subject line
+"body": the full email body
+
+Return only the JSON. No preamble, no markdown fences."""
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 500,
+        "messages": [{"role": "user", "content": prompt}]
+    }).encode("utf-8")
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01",
+            "x-api-key": api_key,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            raw = data["content"][0]["text"].strip()
+            parsed = json.loads(raw)
+            return parsed.get("subject", ""), parsed.get("body", "")
+    except Exception as e:
+        print(f"  generate_email_draft failed for {item.slug}: {e}",
+              file=sys.stderr)
+        return "", ""
+
+
+def send_kit_broadcast(subject: str, body: str) -> bool:
+    """Send a broadcast email via the Kit (ConvertKit) API.
+    Returns True on success."""
+    import urllib.request, json, os
+
+    api_key = os.environ.get("KIT_API_KEY", "")
+    if not api_key:
+        print("  KIT_API_KEY not set — skipping broadcast",
+              file=sys.stderr)
+        return False
+
+    # Convert plain text body to minimal HTML for Kit
+    html_body = "<br>".join(body.split("\n"))
+
+    payload = json.dumps({
+        "broadcast": {
+            "subject": subject,
+            "content": html_body,
+            "description": subject,
+            "public": False,
+            "published_at": None,
+            "send_at": None,
+            "email_layout_template": "plain",
+        }
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.kit.com/v4/broadcasts",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "X-Kit-Api-Key": api_key,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            broadcast_id = data.get("broadcast", {}).get("id", "")
+            send_req = urllib.request.Request(
+                f"https://api.kit.com/v4/broadcasts/{broadcast_id}/send",
+                data=b"{}",
+                headers={
+                    "Content-Type": "application/json",
+                    "X-Kit-Api-Key": api_key,
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(send_req, timeout=30):
+                pass
+            print(f"  Email broadcast sent: {subject}")
+            return True
+    except Exception as e:
+        print(f"  Kit broadcast failed: {e}", file=sys.stderr)
+        return False
+
+
+def load_email_log() -> set:
+    """Return set of slugs already emailed."""
+    log_path = ROOT / "log" / "email-log.md"
+    if not log_path.exists():
+        return set()
+    slugs = set()
+    for line in log_path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("- slug:"):
+            slugs.add(line.replace("- slug:", "").strip())
+    return slugs
+
+
+def update_email_log(item: FeedItem, subject: str,
+                     sent: bool, dry_run: bool = False) -> None:
+    """Append an entry to the email log."""
+    log_path = ROOT / "log" / "email-log.md"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    existing = log_path.read_text(
+        encoding="utf-8") if log_path.exists() else ""
+    if not existing:
+        existing = "# Email Broadcast Log\n\n"
+    status = "dry-run" if dry_run else ("sent" if sent else "failed")
+    published = item_datetime(item.pub_date).strftime("%d %b %Y")
+    entry = (
+        f"\n## {item.title}\n"
+        f"- slug: {item.slug}\n"
+        f"- subject: {subject}\n"
+        f"- article_date: {published}\n"
+        f"- logged: "
+        f"{datetime.now(timezone.utc).strftime('%d %b %Y %H:%M UTC')}\n"
+        f"- status: {status}\n"
+    )
+    log_path.write_text(existing + entry, encoding="utf-8")
+
+
+def write_email_draft(item: FeedItem, post_url: str,
+                      post_id: str = "000",
+                      dry_run: bool = False) -> None:
+    """Generate email draft, save to disk, and send via Kit unless already sent or dry_run."""
+    emailed = load_email_log()
+    if item.slug in emailed:
+        return
+
+    article_dir = ROOT / "post" / item.slug
+    article_dir.mkdir(parents=True, exist_ok=True)
+    draft_path = article_dir / f"{post_id}-email.txt"
+
+    subject, body = generate_email_draft(item, post_url)
+    if not subject or not body:
+        return
+
+    # Always save the draft to disk
+    draft_path.write_text(
+        f"SUBJECT: {subject}\n\n{body}",
+        encoding="utf-8"
+    )
+    print(f"  Email draft saved: {draft_path.name}")
+
+    if dry_run:
+        print(f"  [DRY RUN] Would send: {subject}")
+        update_email_log(item, subject, sent=False, dry_run=True)
+        return
+
+    sent = send_kit_broadcast(subject, body)
+    update_email_log(item, subject, sent=sent, dry_run=False)
+
+
 def update_linkedin_log(item: FeedItem, draft_path: Path, post_id: str = "000") -> None:
     """Maintain a log of LinkedIn drafts generated, for tracking posting status."""
     log_path = ROOT / "log" / "posting-log.md"
@@ -1193,6 +1402,15 @@ def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> 
 
 
 def main() -> int:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Generate email drafts without sending"
+    )
+    args = parser.parse_args()
+    dry_run = args.dry_run
+
     # Primary: scrape blog index pages to get all articles
     feed_items = parse_blog_index()
 
@@ -1274,12 +1492,14 @@ def main() -> int:
         if item.slug in manual_slugs:
             write_linkedin_draft(item, post_url, post_id=post_id)
             write_advisor_brief(item, post_url, post_id=post_id)
+            write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
             continue
 
         page_html = inject_more_articles(item.html, generated_items)
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
         write_linkedin_draft(item, post_url, post_id=post_id)
         write_advisor_brief(item, post_url, post_id=post_id)
+        write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
 
     latest_item = generated_items[0]
     remaining_items = generated_items[1:] if len(generated_items) > 1 else []

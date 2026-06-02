@@ -1,0 +1,8 @@
+SUBJECT: AI governance reporting: Your fiduciary duty gaps
+
+Australian boards are struggling to exercise defensible oversight of AI systems, creating potential personal liability under the Corporations Act for directors who cannot demonstrate informed decision-making on AI risks. This guide translates complex AI metrics into board-ready reporting frameworks that satisfy your fiduciary duties and enable proper risk oversight. You'll learn how to structure AI governance reports, identify the key metrics that matter for board decision-making, and establish audit trails that demonstrate due diligence. Read the full guide at https://aradvice.com.au/post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/
+
+Andrew Roberts
+Andrew Roberts Advisory
+
+You're receiving this because you subscribed at aradvice.com.au.
