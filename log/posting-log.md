@@ -176,3 +176,13 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## APRA CPS 234: Board Obligations Checklist for Directors
+- **ID:** 020
+- **Slug:** apra-cps-234-board-obligations-checklist-for-directors
+- **Article date:** 03 Jun 2026
+- **Draft generated:** 03 Jun 2026
+- **Draft file:** post/apra-cps-234-board-obligations-checklist-for-directors/020-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**

@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 02 Jun 2026 23:05 UTC
+Generated: 03 Jun 2026 05:02 UTC
 
-Total posts: 18
+Total posts: 19
 
 
 ---
@@ -186,6 +186,18 @@ Total posts: 18
 - **LinkedIn draft:** `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/016-linkedin.txt`
 - **LinkedIn log:** see `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/posting-log.md`
 - **Advisor brief:** `post/ai-governance-reporting-for-boards-a-guide-to-defensible-oversight/016-advisor-brief.md`
+
+
+## [020] APRA CPS 234: Board Obligations Checklist for Directors
+- **ID:** 020
+- **Published:** 03 Jun 2026
+- **Slug:** `apra-cps-234-board-obligations-checklist-for-directors`
+- **URL:** https://aradvice.com.au/post/apra-cps-234-board-obligations-checklist-for-directors/
+- **Article:** `post/apra-cps-234-board-obligations-checklist-for-directors/index.html`
+- **og:image:** `post/apra-cps-234-board-obligations-checklist-for-directors/020-og-image.png`
+- **LinkedIn draft:** `post/apra-cps-234-board-obligations-checklist-for-directors/020-linkedin.txt`
+- **LinkedIn log:** see `post/apra-cps-234-board-obligations-checklist-for-directors/posting-log.md`
+- **Advisor brief:** `post/apra-cps-234-board-obligations-checklist-for-directors/020-advisor-brief.md`
 
 
 ## [017] Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director's Checklist
