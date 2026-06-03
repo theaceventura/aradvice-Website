@@ -1509,6 +1509,10 @@ def main() -> int:
     # Assign persistent sequential IDs by publish date
     registry = assign_post_ids(generated_items)
 
+    # Only render published articles (exclude future-dated posts from blog/sitemap)
+    now = datetime.now(timezone.utc)
+    visible_items = [i for i in generated_items if item_datetime(i.pub_date) <= now]
+
     manual_slugs = {item_slug(m["link"], m["title"]) for m in MANUAL_POSTS}
 
     for i, item in enumerate(generated_items):
@@ -1523,18 +1527,18 @@ def main() -> int:
             write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
             continue
 
-        page_html = inject_more_articles(item.html, generated_items)
+        page_html = inject_more_articles(item.html, visible_items)
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
         write_linkedin_draft(item, post_url, post_id=post_id)
         write_advisor_brief(item, post_url, post_id=post_id)
         write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
 
-    latest_item = generated_items[0]
-    remaining_items = generated_items[1:] if len(generated_items) > 1 else []
+    latest_item = visible_items[0]
+    remaining_items = visible_items[1:] if len(visible_items) > 1 else []
     latest_with_listing = inject_more_articles(latest_item.html, remaining_items)
-    latest_with_listing = inject_blog_landing_view(latest_with_listing, generated_items)
+    latest_with_listing = inject_blog_landing_view(latest_with_listing, visible_items)
     write_page(ROOT / "blog.html", latest_with_listing)
-    (ROOT / "sitemap.xml").write_text(build_sitemap(generated_items), encoding="utf-8")
+    (ROOT / "sitemap.xml").write_text(build_sitemap(visible_items), encoding="utf-8")
 
     generate_post_mapping(generated_items, registry)
     print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
