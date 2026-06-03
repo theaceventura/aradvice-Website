@@ -1540,6 +1540,27 @@ def main() -> int:
     write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(visible_items), encoding="utf-8")
 
+    # Patch any existing post pages not in the current sync (e.g. fell off blog index)
+    # to remove future article cards from their More Articles sections
+    future_slugs = {i.slug for i in generated_items if i not in visible_items}
+    if future_slugs:
+        synced_slugs = {i.slug for i in generated_items}
+        for post_dir in ROOT.glob("post/*/index.html"):
+            slug = post_dir.parent.name
+            if slug in synced_slugs:
+                continue  # already handled above
+            html = post_dir.read_text(encoding="utf-8")
+            patched = html
+            for fs in future_slugs:
+                patched = re.sub(
+                    rf'<a\s+href="[^"]*{re.escape(fs)}[^"]*"[^>]*>.*?</a>',
+                    '',
+                    patched,
+                    flags=re.DOTALL,
+                )
+            if patched != html:
+                post_dir.write_text(patched, encoding="utf-8")
+
     generate_post_mapping(generated_items, registry)
     print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
     return 0
