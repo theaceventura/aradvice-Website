@@ -1,6 +1,6 @@
 SUBJECT: APRA CPS 234: Your board obligations checklist
 
-Directors at APRA-regulated entities face personal accountability gaps when cyber security incidents expose inadequate board oversight. Your ability to demonstrate defensible readiness depends on understanding exactly what CPS 234 requires from you as a director, not just what management reports. This checklist helps you challenge the reports you receive and secure your position when regulators ask what you knew and when you knew it.
+Directors under APRA CPS 234 face personal accountability for cyber security oversight, yet many boards lack defensible processes to challenge management reports and demonstrate due diligence. You need specific frameworks to assess whether your organisation's cyber security reporting meets regulatory expectations and protects your position as a director. This checklist helps you identify gaps in board oversight and establish the questioning disciplines that demonstrate defensible governance.
 
 https://aradvice.com.au/post/apra-cps-234-board-obligations-checklist-for-directors/
 

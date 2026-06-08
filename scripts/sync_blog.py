@@ -186,7 +186,14 @@ def parse_blog_index() -> list[dict[str, str]]:
 
 
 def rewrite_domains(html: str) -> str:
-    return html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
+    html = html.replace("https://blog.aradvice.com.au", MAIN_DOMAIN)
+    # Replace externally-hosted author thumbnail with local copy
+    html = re.sub(
+        r'https://getautoseo\.com/storage/author-thumbnails/[^"\']+',
+        "/images/andrew-roberts.jpg",
+        html,
+    )
+    return html
 
 
 def strip_platform_widgets(html: str) -> str:
@@ -1097,9 +1104,10 @@ Return only the JSON. No preamble, no markdown fences."""
 
 
 def send_kit_broadcast(subject: str, body: str) -> bool:
-    """Send a broadcast email via the Kit (ConvertKit) API.
+    """Send a broadcast email via the Kit (ConvertKit) API v4.
     Returns True on success."""
     import urllib.request, json, os
+    from datetime import datetime, timezone
 
     api_key = os.environ.get("KIT_API_KEY", "")
     if not api_key:
@@ -1110,16 +1118,16 @@ def send_kit_broadcast(subject: str, body: str) -> bool:
     # Convert plain text body to minimal HTML for Kit
     html_body = "<br>".join(body.split("\n"))
 
+    # Kit v4: flat payload, send_at set to now triggers immediate send
+    send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     payload = json.dumps({
-        "broadcast": {
-            "subject": subject,
-            "content": html_body,
-            "description": subject,
-            "public": False,
-            "published_at": None,
-            "send_at": None,
-            "email_layout_template": "plain",
-        }
+        "subject": subject,
+        "content": html_body,
+        "description": subject,
+        "public": False,
+        "send_at": send_at,
+        "preview_text": "",
+        "subscriber_filter": [{"all": True}],
     }).encode("utf-8")
 
     req = urllib.request.Request(
@@ -1134,19 +1142,8 @@ def send_kit_broadcast(subject: str, body: str) -> bool:
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            broadcast_id = data.get("broadcast", {}).get("id", "")
-            send_req = urllib.request.Request(
-                f"https://api.kit.com/v4/broadcasts/{broadcast_id}/send",
-                data=b"{}",
-                headers={
-                    "Content-Type": "application/json",
-                    "X-Kit-Api-Key": api_key,
-                },
-                method="POST",
-            )
-            with urllib.request.urlopen(send_req, timeout=30):
-                pass
-            print(f"  Email broadcast sent: {subject}")
+            broadcast_id = data.get("broadcast", {}).get("id") or data.get("id", "")
+            print(f"  Email broadcast sent: {subject} (id={broadcast_id})")
             return True
     except Exception as e:
         print(f"  Kit broadcast failed: {e}", file=sys.stderr)
@@ -1461,8 +1458,8 @@ def main() -> int:
         rss_by_slug = {}
 
     if not feed_items:
-        print("No articles found on blog index.", file=sys.stderr)
-        return 1
+        print("Blog index returned no articles — blog may be temporarily unavailable. Skipping sync.", file=sys.stderr)
+        return 0
 
     # Merge RSS metadata into index-scraped items
     for item in feed_items:
