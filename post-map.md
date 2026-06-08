@@ -1,6 +1,6 @@
 # Post Registry and Asset Map
 
-Generated: 08 Jun 2026 01:25 UTC
+Generated: 08 Jun 2026 08:05 UTC
 
 Total posts: 19
 
@@ -200,9 +200,9 @@ Total posts: 19
 - **Advisor brief:** `post/apra-cps-234-board-obligations-checklist-for-directors/020-advisor-brief.md`
 
 
-## [017] Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director's Checklist
+## [017] Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director’s Checklist
 - **ID:** 017
-- **Published:** 05 Jun 2026
+- **Published:** 07 Jun 2026
 - **Slug:** `questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist`
 - **URL:** https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/
 - **Article:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/index.html`
