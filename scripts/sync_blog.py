@@ -1164,8 +1164,11 @@ def send_kit_broadcast(subject: str, body: str) -> bool:
               file=sys.stderr)
         return False
 
-    # Convert plain text body to minimal HTML for Kit
-    html_body = "<br>".join(body.split("\n"))
+    # Convert plain text body to minimal HTML for Kit, with first-name personalisation
+    html_body = (
+        "Hi {{ subscriber.first_name | default: 'Director' }},<br><br>"
+        + "<br>".join(body.split("\n"))
+    )
 
     # Kit v4: flat payload, send_at set to now triggers immediate send
     send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
