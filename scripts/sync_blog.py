@@ -220,6 +220,15 @@ def strip_platform_widgets(html: str) -> str:
         html,
         flags=re.DOTALL | re.IGNORECASE,
     )
+    # Remove platform-generated TOC blocks (identified by space-y-2 list class)
+    # that list meta-sections like "Key Takeaways" and "Table of Contents" itself.
+    # The article's own in-body TOC uses plain <ul> without that class.
+    html = re.sub(
+        r'<h2[^>]*>\s*Table of Contents\s*</h2>\s*<ul[^>]*class="[^"]*space-y-2[^"]*"[^>]*>.*?</ul>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
     return html
 
 
@@ -1549,10 +1558,17 @@ def main() -> int:
         post_id = f"{registry.get(item.slug, 0):03d}"
 
         # Skip full HTML regeneration for manually-managed posts,
-        # but still normalise internal links in the existing file.
+        # but still run content cleaning and link normalisation on the existing file.
         if item.slug in manual_slugs:
             if page_path.exists():
-                fixed = normalize_internal_links(page_path.read_text(encoding="utf-8"))
+                fixed = page_path.read_text(encoding="utf-8")
+                fixed = normalize_internal_links(
+                    clean_article_content(
+                        strip_platform_widgets(
+                            rewrite_domains(fixed)
+                        )
+                    )
+                )
                 page_path.write_text(fixed, encoding="utf-8")
             write_linkedin_draft(item, post_url, post_id=post_id)
             write_advisor_brief(item, post_url, post_id=post_id)
