@@ -863,8 +863,14 @@ def assign_post_ids(items: list[FeedItem]) -> dict:
     # Sort by publish date oldest first for ID assignment
     sorted_items = sorted(items, key=lambda i: item_datetime(i.pub_date))
 
-    # Find highest existing ID
-    next_id = max((int(v) for v in registry.values()), default=0) + 1
+    # Find highest existing ID — skip non-integer values from manual edits
+    valid_ids = []
+    for v in registry.values():
+        try:
+            valid_ids.append(int(v))
+        except (TypeError, ValueError):
+            print(f"  Warning: non-integer value in post registry: {v!r} — skipping", file=sys.stderr)
+    next_id = max(valid_ids, default=0) + 1
 
     # Assign IDs to any new slugs not yet in registry
     changed = False
@@ -1332,6 +1338,9 @@ def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000") ->
         return
     print(f"  Generating LinkedIn draft for: {item.slug}")
     post_text = generate_linkedin_post(item, post_url)
+    if post_text.startswith("[LinkedIn post generation failed"):
+        print(f"  LinkedIn draft generation failed for {item.slug} — skipping write.", file=sys.stderr)
+        return
     draft_path.write_text(post_text, encoding="utf-8")
     update_linkedin_log(item, draft_path, post_id=post_id)
 
@@ -1495,6 +1504,9 @@ def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> 
         return
     print(f"  Generating advisor brief for: {item.slug}")
     brief_text = generate_advisor_brief(item, post_url)
+    if brief_text.startswith("[Advisor brief generation failed"):
+        print(f"  Advisor brief generation failed for {item.slug} — skipping write.", file=sys.stderr)
+        return
     published = item_datetime(item.pub_date).strftime("%d %b %Y")
     header = (
         f"# Advisor Brief — {item.title}\n\n"
@@ -1554,9 +1566,12 @@ def main() -> int:
     print(f"  Found {len(feed_items)} articles on blog index "
           f"({len(rss_by_slug)} in RSS feed)")
 
-    # Merge manually-managed posts not in the getautoseo feed
+    # Merge manually-managed posts not in the getautoseo feed.
+    # Also register their slugs so the main loop treats them as manual
+    # even if the blog index has picked them up independently.
     feed_slugs = {item_slug(i["link"], i["title"])
                   for i in feed_items}
+    manual_slug_set = {item_slug(m["link"], m["title"]) for m in MANUAL_POSTS}
     for manual in MANUAL_POSTS:
         s = item_slug(manual["link"], manual["title"])
         if s not in feed_slugs:
@@ -1565,7 +1580,11 @@ def main() -> int:
     generated_items: list[FeedItem] = []
     for raw_item in feed_items:
         slug = item_slug(raw_item["link"], raw_item["title"])
-        article_html = fetch_text(raw_item["link"], "text/html,application/xhtml+xml")
+        try:
+            article_html = fetch_text(raw_item["link"], "text/html,application/xhtml+xml")
+        except Exception as e:
+            print(f"  Skipping {raw_item['link']}: fetch failed: {e}", file=sys.stderr)
+            continue
         raw_excerpt = re.sub(r"<[^>]+>", "", raw_item.get("description", ""))
         raw_excerpt = re.sub(r"\s+", " ", raw_excerpt).strip()[:160]
         generated_items.append(
@@ -1590,7 +1609,7 @@ def main() -> int:
     now = datetime.now(timezone.utc)
     visible_items = [i for i in generated_items if item_datetime(i.pub_date) <= now]
 
-    manual_slugs = {item_slug(m["link"], m["title"]) for m in MANUAL_POSTS}
+    manual_slugs = manual_slug_set
 
     for i, item in enumerate(generated_items):
         page_path = article_page_path(item.slug)
@@ -1624,6 +1643,10 @@ def main() -> int:
         write_linkedin_draft(item, post_url, post_id=post_id)
         write_advisor_brief(item, post_url, post_id=post_id)
         write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
+
+    if not visible_items:
+        print("No published articles found — skipping blog and sitemap generation.", file=sys.stderr)
+        return 0
 
     latest_item = visible_items[0]
     remaining_items = visible_items[1:] if len(visible_items) > 1 else []
