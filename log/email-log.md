@@ -131,5 +131,5 @@
 - slug: apra-cps-234-board-obligations-checklist-for-directors
 - subject: APRA CPS 234: Your board obligations checklist
 - article_date: 03 Jun 2026
-- logged: 08 Jun 2026 21:52 UTC
+- logged: 09 Jun 2026 00:10 UTC
 - status: sent

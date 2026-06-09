@@ -193,6 +193,13 @@ def rewrite_domains(html: str) -> str:
         "/images/andrew-roberts.jpg",
         html,
     )
+    # Fix author-box images that point to hero/og images or missing files
+    html = re.sub(
+        r'(<div[^>]*class="[^"]*author-box[^"]*"[^>]*>\s*<img\s+)src="(?!/images/andrew-roberts\.jpg)[^"]*"',
+        r'\1src="/images/andrew-roberts.jpg"',
+        html,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
     return html
 
 
@@ -1567,6 +1574,7 @@ def main() -> int:
 
         # Skip full HTML regeneration for manually-managed posts,
         # but still run content cleaning and link normalisation on the existing file.
+        # If the local file is missing, fall through to full write_page() processing.
         if item.slug in manual_slugs:
             if page_path.exists():
                 fixed = page_path.read_text(encoding="utf-8")
@@ -1578,10 +1586,11 @@ def main() -> int:
                     )
                 )
                 page_path.write_text(fixed, encoding="utf-8")
-            write_linkedin_draft(item, post_url, post_id=post_id)
-            write_advisor_brief(item, post_url, post_id=post_id)
-            write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
-            continue
+                write_linkedin_draft(item, post_url, post_id=post_id)
+                write_advisor_brief(item, post_url, post_id=post_id)
+                write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
+                continue
+            # File deleted — rebuild via full pipeline using fetched HTML
 
         other_items = [i for i in visible_items if i.slug != item.slug]
         page_html = inject_more_articles(item.html, other_items)
