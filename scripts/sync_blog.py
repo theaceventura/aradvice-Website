@@ -236,9 +236,11 @@ def clean_article_content(html: str) -> str:
             html,
             flags=re.IGNORECASE | re.DOTALL,
         )
-    # Remove CMS bio separator artifact: &quot;,&quot; or literal ","
-    html = html.replace(' &quot;,&quot; ', ' ')
-    html = html.replace(' "," ', ' ')
+    # Fix CMS bio separator artifact: &quot;,&quot; should be a plain comma
+    html = html.replace(' &quot;,&quot; ', ', ')
+    html = html.replace(' "," ', ', ')
+    # Strip trailing "aradvice.com.au" injected into the bio paragraph
+    html = re.sub(r'\s*aradvice\.com\.au\s*(?=</p>)', '', html)
     # Remove duplicate "If this resonates" CTA — keep only the last occurrence.
     # Each CTA block is three consecutive <p> tags.
     cta_pattern = re.compile(
