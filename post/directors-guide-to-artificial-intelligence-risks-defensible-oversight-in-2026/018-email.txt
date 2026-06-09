@@ -1,6 +1,6 @@
-SUBJECT: AI risks: Your duty of care and defensible oversight
+SUBJECT: AI Risks: Board oversight failures and director liability
 
-Your board faces growing exposure from AI systems operating without adequate director-level oversight or risk frameworks. As AI deployment accelerates across business operations, directors who cannot demonstrate defensible governance processes risk personal liability when systems fail or cause harm. You need practical frameworks to discharge your duty of care while enabling AI innovation, plus clear evidence that your board is actively managing these emerging risks.
+The procurement committee approved a new AI system for customer service last month, but when the CEO asked about algorithmic bias monitoring at yesterday's board meeting, no director could explain what oversight was in place. Section 180 of the Corporations Act requires directors to exercise care and diligence, and courts are increasingly scrutinising whether boards have adequate processes to oversee AI-related risks. Personal liability follows when directors cannot demonstrate they took reasonable steps to understand and monitor the technology risks their company has assumed.
 
 https://aradvice.com.au/post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/
 

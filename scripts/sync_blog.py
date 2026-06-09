@@ -1101,21 +1101,23 @@ Write a plain-text email with two parts:
 
 SUBJECT: A direct, specific subject line under 60 characters. Lead with the governance issue, not "New article" or "New briefing". Example format: "Cyber Security Act 2024: Your board obligations" or "APRA CPS 234: What directors must do".
 
-BODY: 4-6 sentences maximum.
-- Sentence 1: State the specific governance problem or risk this article addresses. Write it as a specific situation a director would recognise — name the exposure, the regulatory obligation, or the board gap. Do NOT describe the article or what it contains.
-- Sentences 2-3: What the director needs to understand and why it matters to them personally right now. Be concrete.
-- Sentence 4: The article URL on its own line, nothing else before or after it — no "Read more at", no "Full article:", just the bare URL.
+BODY: 3-4 sentences maximum. No salutation — open cold with the first substantive sentence.
+
+- Sentence 1: Describe a specific situation — a boardroom moment, a procurement decision, a model deployed without sign-off, a board paper that couldn't answer the regulator's question. Write it as if describing something that happened in a specific boardroom recently. Concrete and particular. Do NOT open with generalisations about "most boards" or "directors must" or "your board faces". Do not state a problem abstractly — place the reader in a scene.
+- Sentences 2-3: Name the concrete consequence if this is wrong. Regulatory, legal, or reputational — be specific about what actually happens to the director. Not "shifts the conversation", not "transforms risk into responsibility", not "manageable oversight protocols". What is the actual exposure? What does ASIC, APRA, or a shareholder actually do? State it directly. Only reference specific regulatory actions or enforcement if they appear verbatim in the article excerpt — otherwise name the legal mechanism (e.g. s.180 Corporations Act duty of care) and the personal consequence.
+- Final line: The article URL on its own line, nothing else before or after it — no "Read more at", no "Full article:", just the bare URL.
 - Sign off: "Andrew Roberts\\nAndrew Roberts Advisory"
 - Footer: "You're receiving this because you subscribed at aradvice.com.au."
 
 Rules:
-- No HTML, no markdown, plain text only
+- No salutation of any kind — no "Hi", no "Dear", no "Hello"
 - No "I hope this finds you well" or similar openers
 - No exclamation marks
-- Do not mention "newsletter" or "blog post"
-- Address the reader as a director with personal accountability
-- Under 150 words total for the body
-- CRITICAL: Do not reference specific regulatory requirements, deadlines, or enforcement actions unless they appear verbatim in the article excerpt provided. If unsure, omit the regulatory reference entirely and focus on the director's governance obligation instead.
+- Banned phrases — never use these: "most boards lack", "your board faces", "directors must", "shifts the conversation", "transforms X into Y", "manageable oversight protocols", "structured board responsibility", "defensible processes for overseeing", "the regulatory environment", "growing exposure", "practical frameworks"
+- Do not mention "newsletter", "blog post", or "article" — write as if delivering a direct observation, not promoting content
+- Under 110 words total for the body
+- Tone: the same register as a brief note from a trusted advisor who has just seen something relevant — not a marketing email, not a warning, not a sales pitch
+- CRITICAL: Do not reference specific regulatory requirements, deadlines, or enforcement actions unless they appear verbatim in the article excerpt provided. If unsure, omit the regulatory reference entirely and focus on the director's personal legal exposure instead.
 
 Return a JSON object with exactly two keys:
 "subject": the subject line
@@ -1164,11 +1166,9 @@ def send_kit_broadcast(subject: str, body: str) -> bool:
               file=sys.stderr)
         return False
 
-    # Convert plain text body to minimal HTML for Kit, with first-name personalisation
-    html_body = (
-        "Hi {{ subscriber.first_name | default: 'Director' }},<br><br>"
-        + "<br>".join(body.split("\n"))
-    )
+    # Convert plain text body to HTML paragraphs for Kit
+    paragraphs = [p.strip() for p in body.split("\n") if p.strip()]
+    html_body = "".join(f"<p>{p}</p>" for p in paragraphs)
 
     # Kit v4: flat payload, send_at set to now triggers immediate send
     send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -1265,7 +1265,22 @@ def write_email_draft(item: FeedItem, post_url: str,
         update_email_log(item, subject, sent=False, dry_run=True)
         return
 
-    sent = send_kit_broadcast(subject, body)
+    # Split body into one sentence per line so send_kit_broadcast
+    # wraps each sentence in its own <p> tag.
+    def split_sentences(text: str) -> str:
+        lines = text.splitlines()
+        result = []
+        for line in lines:
+            line = line.strip()
+            if not line:
+                result.append("")
+                continue
+            sentences = re.split(r'(?<=[.!?])\s+(?=[A-Z])', line)
+            result.extend(s.strip() for s in sentences if s.strip())
+        return "\n".join(result)
+
+    broadcast_body = split_sentences(body)
+    sent = send_kit_broadcast(subject, broadcast_body)
     update_email_log(item, subject, sent=sent, dry_run=False)
 
 
