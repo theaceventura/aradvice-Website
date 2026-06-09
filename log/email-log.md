@@ -8,13 +8,6 @@
 - logged: 02 Jun 2026 15:16 UTC
 - status: dry-run
 
-## Director's Guide to Artificial Intelligence Risks: Defensible Oversight in 2026
-- slug: directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026
-- subject: AI governance risks: Your director duties in 2026
-- article_date: 08 Jun 2026
-- logged: 02 Jun 2026 15:16 UTC
-- status: dry-run
-
 ## Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director's Checklist
 - slug: questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist
 - subject: AI governance gaps: Board oversight questions for 2026
@@ -132,4 +125,11 @@
 - subject: APRA CPS 234: Your board obligations checklist
 - article_date: 03 Jun 2026
 - logged: 09 Jun 2026 00:10 UTC
+- status: sent
+
+## Director's Guide to Artificial Intelligence Risks: Defensible Oversight in 2026
+- slug: directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026
+- subject: AI risks: Your duty of care and defensible oversight
+- article_date: 08 Jun 2026
+- logged: 09 Jun 2026 03:19 UTC
 - status: sent

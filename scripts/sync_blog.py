@@ -34,12 +34,6 @@ MANUAL_POSTS = [
         "description": "Can you defend a cyber strategy that you cannot quantify in Australian Dollars? As a director, you likely feel the growing disconnect between technical jargon and personal liability.",
     },
     {
-        "title": "Director's Guide to Artificial Intelligence Risks: Defensible Oversight in 2026",
-        "link": "https://aradvice.com.au/post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/",
-        "pub_date": "Mon, 08 Jun 2026 00:00:00 +0000",
-        "description": "Our director's guide to artificial intelligence risks helps you meet your duty of care. Learn defensible AI oversight for 2026 regulatory compliance in Australia.",
-    },
-    {
         "title": "Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director's Checklist",
         "link": "https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/",
         "pub_date": "Thu, 05 Jun 2026 00:00:00 +0000",
@@ -247,22 +241,6 @@ def strip_platform_widgets(html: str) -> str:
     return html
 
 
-_CANONICAL_BIO = (
-    'Founder and Principal Advisor at Andrew Roberts Advisory. '
-    'I work directly with Australian boards and non-executive directors on cyber governance, '
-    'AI governance, and IT general controls, translating complex regulatory terrain into '
-    'clear, defensible oversight frameworks that directors can own and act on.<br />\n<br />\n'
-    'I have founded and exited two technology companies. '
-    'I founded Field Solutions Group, served as Group CEO for a decade, and led the ASX listing in 2017. '
-    'During that time I held direct board accountability for cyber risk, ISO 27001 certification, '
-    'and governance at the listed company level. '
-    'I have also served as Deputy Chairman of a federally funded Cooperative Research Centre.<br />\n<br />\n'
-    'I am a Member of the Australian Institute of Company Directors (AICD) and the '
-    'Australian Computer Society (ACS), holding the ACS designation MACS (Snr) CP (Cyber), '
-    'and am a Member of ISACA.'
-)
-
-
 def clean_article_content(html: str) -> str:
     """Fix content-level issues introduced by the GetAutoSEO publishing platform."""
     # Convert Markdown-style headings left as plain text inside <p> tags.
@@ -291,21 +269,6 @@ def clean_article_content(html: str) -> str:
     if len(matches) > 1:
         for m in reversed(matches[:-1]):
             html = html[:m.start()] + html[m.end():]
-    # Canonicalize author bio — replace whatever the platform injected with the correct text
-    html = re.sub(
-        r'(<div[^>]*class="[^"]*author-box[^"]*"[^>]*>.*?<p[^>]*>Andrew\s+Roberts</p>\s*)'
-        r'<p[^>]*>.*?</p>'
-        r'(\s*<div[^>]*>.*?</div>\s*</div>\s*</div>)',
-        lambda m: (
-            m.group(1)
-            + '<p style="margin:0;font-size:14px;color:#4b5563;line-height:1.6;">'
-            + _CANONICAL_BIO
-            + '</p>'
-            + m.group(2)
-        ),
-        html,
-        flags=re.DOTALL | re.IGNORECASE,
-    )
     return html
 
 
