@@ -220,11 +220,19 @@ def strip_platform_widgets(html: str) -> str:
         html,
         flags=re.DOTALL | re.IGNORECASE,
     )
-    # Remove platform-generated TOC blocks (identified by space-y-2 list class)
-    # that list meta-sections like "Key Takeaways" and "Table of Contents" itself.
-    # The article's own in-body TOC uses plain <ul> without that class.
+    # Remove the platform-generated TOC widget. Two passes handle both the case
+    # where the list is still present and the case where a previous run already
+    # stripped the list, leaving only the empty outer container.
+    # Pass 1: strip list content if still present
     html = re.sub(
         r'<h2[^>]*>\s*Table of Contents\s*</h2>\s*<ul[^>]*class="[^"]*space-y-2[^"]*"[^>]*>.*?</ul>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    # Pass 2: strip the now-empty (or already-empty) container div
+    html = re.sub(
+        r'<div[^>]*class="[^"]*bg-gray-50[^"]*rounded[^"]*"[^>]*>\s*</div>',
         '',
         html,
         flags=re.DOTALL | re.IGNORECASE,
