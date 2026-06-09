@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from html import escape
+from html import escape, unescape
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -488,20 +488,46 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     if feed_item and not path.exists():
         api_desc, post_keywords = generate_post_meta(feed_item)
 
-    # Fallback chain if API call failed
-    if not api_desc:
-        existing_meta_match = (
+    # Resolve description and keywords — priority:
+    #   1. API result (new articles only)
+    #   2. Existing local file (preserves previously generated/edited values)
+    #   3. Fetched HTML meta (new articles where API failed)
+    #   4. Extracted body description
+    if api_desc:
+        raw_desc = api_desc
+    elif path.exists():
+        # Read from the stored page so we never overwrite with inferior CMS content.
+        # Fully unescape the captured value — previous runs may have over-encoded it —
+        # so escape() in replace_host_head_and_header produces a clean single encoding.
+        stored = path.read_text(encoding="utf-8")
+        stored_desc_match = (
+            re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']{10,})["\']', stored, flags=re.IGNORECASE)
+            or re.search(r'<meta[^>]*content=["\']([^"\']{10,})["\'][^>]*name=["\']description["\']', stored, flags=re.IGNORECASE)
+        )
+        if stored_desc_match:
+            raw = stored_desc_match.group(1).strip()
+            prev = None
+            while prev != raw:
+                prev = raw
+                raw = unescape(raw)
+            raw_desc = raw
+        else:
+            raw_desc = ""
+        if not post_keywords:
+            stored_kw_match = re.search(r'<meta[^>]*name=["\']keywords["\'][^>]*content=["\']([^"\']+)["\']', stored, flags=re.IGNORECASE)
+            if stored_kw_match:
+                post_keywords = stored_kw_match.group(1).strip()
+    else:
+        fetched_meta_match = (
             re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']{10,})["\']', rewritten, flags=re.IGNORECASE)
             or re.search(r'<meta[^>]*content=["\']([^"\']{10,})["\'][^>]*name=["\']description["\']', rewritten, flags=re.IGNORECASE)
         )
-        if existing_meta_match:
-            raw_desc = existing_meta_match.group(1).strip()
+        if fetched_meta_match:
+            raw_desc = fetched_meta_match.group(1).strip()
         elif body_desc:
             raw_desc = body_desc
         else:
             raw_desc = ""
-    else:
-        raw_desc = api_desc
     post_url = f"{MAIN_DOMAIN}/post/{post_slug}/" if post_slug else ""
     post_image = ""
     if feed_item and post_slug:
