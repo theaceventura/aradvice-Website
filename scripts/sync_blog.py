@@ -979,7 +979,8 @@ def generate_og_image(item: FeedItem, post_slug: str, post_id: str = "000") -> s
     # Post date — parsed from RFC 2822 pub_date string
     if item.pub_date:
         try:
-            date_str = item_datetime(item.pub_date).strftime("%-d %B %Y")
+            dt = item_datetime(item.pub_date)
+            date_str = f"{dt.day} {dt.strftime('%B %Y')}"
         except Exception:
             date_str = ""
         if date_str:
@@ -1113,7 +1114,7 @@ Rules:
 - No salutation of any kind — no "Hi", no "Dear", no "Hello"
 - No "I hope this finds you well" or similar openers
 - No exclamation marks
-- Banned phrases — never use these: "most boards lack", "your board faces", "directors must", "shifts the conversation", "transforms X into Y", "manageable oversight protocols", "structured board responsibility", "defensible processes for overseeing", "the regulatory environment", "growing exposure", "practical frameworks"
+- Banned phrases — never use these: "most boards lack", "your board faces", "directors must", "shifts the conversation", "transforms X into Y", "manageable oversight protocols", "structured board responsibility", "defensible processes for overseeing", "the regulatory environment", "growing exposure", "practical frameworks", "courts are increasingly", "regulators are increasingly", "ASIC is increasingly", "increasingly scrutinising", "increasingly important"
 - Do not mention "newsletter", "blog post", or "article" — write as if delivering a direct observation, not promoting content
 - Under 110 words total for the body
 - Tone: the same register as a brief note from a trusted advisor who has just seen something relevant — not a marketing email, not a warning, not a sales pitch
@@ -1215,7 +1216,7 @@ def load_email_log() -> set:
 
 
 def update_email_log(item: FeedItem, subject: str,
-                     sent: bool, dry_run: bool = False) -> None:
+                     status: str) -> None:
     """Append an entry to the email log."""
     log_path = ROOT / "log" / "email-log.md"
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1223,7 +1224,6 @@ def update_email_log(item: FeedItem, subject: str,
         encoding="utf-8") if log_path.exists() else ""
     if not existing:
         existing = "# Email Broadcast Log\n\n"
-    status = "dry-run" if dry_run else ("sent" if sent else "failed")
     published = item_datetime(item.pub_date).strftime("%d %b %Y")
     entry = (
         f"\n## {item.title}\n"
@@ -1262,8 +1262,11 @@ def write_email_draft(item: FeedItem, post_url: str,
 
     if dry_run:
         print(f"  [DRY RUN] Would send: {subject}")
-        update_email_log(item, subject, sent=False, dry_run=True)
+        update_email_log(item, subject, status="dry-run")
         return
+
+    # Log before sending — prevents duplicate sends if log write fails after
+    update_email_log(item, subject, status="sending")
 
     # Split body into one sentence per line so send_kit_broadcast
     # wraps each sentence in its own <p> tag.
@@ -1281,7 +1284,17 @@ def write_email_draft(item: FeedItem, post_url: str,
 
     broadcast_body = split_sentences(body)
     sent = send_kit_broadcast(subject, broadcast_body)
-    update_email_log(item, subject, sent=sent, dry_run=False)
+
+    # Patch status in log now we know the outcome
+    log_path = ROOT / "log" / "email-log.md"
+    log_text = log_path.read_text(encoding="utf-8")
+    final_status = "sent" if sent else "failed"
+    log_text = re.sub(
+        rf'(- slug: {re.escape(item.slug)}\n(?:.*\n)*?- status:) sending',
+        rf'\1 {final_status}',
+        log_text,
+    )
+    log_path.write_text(log_text, encoding="utf-8")
 
 
 def update_linkedin_log(item: FeedItem, draft_path: Path, post_id: str = "000") -> None:
@@ -1600,7 +1613,8 @@ def main() -> int:
                 page_path.write_text(fixed, encoding="utf-8")
                 write_linkedin_draft(item, post_url, post_id=post_id)
                 write_advisor_brief(item, post_url, post_id=post_id)
-                write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
+                if item_datetime(item.pub_date) <= now:
+                    write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
                 continue
             # File deleted — rebuild via full pipeline using fetched HTML
 
