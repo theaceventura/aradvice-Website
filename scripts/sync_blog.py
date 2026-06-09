@@ -223,6 +223,35 @@ def strip_platform_widgets(html: str) -> str:
     return html
 
 
+def clean_article_content(html: str) -> str:
+    """Fix content-level issues introduced by the GetAutoSEO publishing platform."""
+    # Convert Markdown-style headings left as plain text inside <p> tags.
+    # \s* handles both "## Heading" and "##Heading" (no space after hashes).
+    # (?!#) ensures we don't match more # than intended.
+    for n, tag in ((3, 'h3'), (2, 'h2'), (1, 'h1')):
+        pattern = r'<p>\s*' + '#' * n + r'(?!#)\s*(.+?)\s*</p>'
+        html = re.sub(
+            pattern,
+            lambda m, t=tag: f'<{t}>{m.group(1)}</{t}>',
+            html,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+    # Remove CMS bio separator artifact: &quot;,&quot; or literal ","
+    html = html.replace(' &quot;,&quot; ', ' ')
+    html = html.replace(' "," ', ' ')
+    # Remove duplicate "If this resonates" CTA — keep only the last occurrence.
+    # Each CTA block is three consecutive <p> tags.
+    cta_pattern = re.compile(
+        r'<p[^>]*>\s*If this resonates[^<]*</p>\s*<p[^>]*>[^<]*</p>\s*<p[^>]*>[^<]*</p>',
+        flags=re.IGNORECASE,
+    )
+    matches = list(cta_pattern.finditer(html))
+    if len(matches) > 1:
+        for m in reversed(matches[:-1]):
+            html = html[:m.start()] + html[m.end():]
+    return html
+
+
 def extract_and_strip_meta_description(html: str) -> tuple[str, str]:
     """Strip the 'Meta Description' heading + paragraph block injected by GetAutoSEO."""
     match = re.search(
@@ -422,7 +451,7 @@ def article_page_path(slug: str) -> Path:
 
 def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_id: str = "000") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    rewritten = normalize_internal_links(strip_platform_widgets(rewrite_domains(html)))
+    rewritten = normalize_internal_links(clean_article_content(strip_platform_widgets(rewrite_domains(html))))
     rewritten, body_desc = extract_and_strip_meta_description(rewritten)
     local_head, local_header, local_html, _local_body, local_footer, local_nav_scripts = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
@@ -1528,7 +1557,8 @@ def main() -> int:
             write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
             continue
 
-        page_html = inject_more_articles(item.html, visible_items)
+        other_items = [i for i in visible_items if i.slug != item.slug]
+        page_html = inject_more_articles(item.html, other_items)
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
         write_linkedin_draft(item, post_url, post_id=post_id)
         write_advisor_brief(item, post_url, post_id=post_id)
