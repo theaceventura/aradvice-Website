@@ -1517,8 +1517,12 @@ def main() -> int:
         post_url = f"{MAIN_DOMAIN}/post/{item.slug}/"
         post_id = f"{registry.get(item.slug, 0):03d}"
 
-        # Skip HTML regeneration for manually-managed posts
+        # Skip full HTML regeneration for manually-managed posts,
+        # but still normalise internal links in the existing file.
         if item.slug in manual_slugs:
+            if page_path.exists():
+                fixed = normalize_internal_links(page_path.read_text(encoding="utf-8"))
+                page_path.write_text(fixed, encoding="utf-8")
             write_linkedin_draft(item, post_url, post_id=post_id)
             write_advisor_brief(item, post_url, post_id=post_id)
             write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
