@@ -247,6 +247,22 @@ def strip_platform_widgets(html: str) -> str:
     return html
 
 
+_CANONICAL_BIO = (
+    'Founder and Principal Advisor at Andrew Roberts Advisory. '
+    'I work directly with Australian boards and non-executive directors on cyber governance, '
+    'AI governance, and IT general controls, translating complex regulatory terrain into '
+    'clear, defensible oversight frameworks that directors can own and act on.<br />\n<br />\n'
+    'I have founded and exited two technology companies. '
+    'I founded Field Solutions Group, served as Group CEO for a decade, and led the ASX listing in 2017. '
+    'During that time I held direct board accountability for cyber risk, ISO 27001 certification, '
+    'and governance at the listed company level. '
+    'I have also served as Deputy Chairman of a federally funded Cooperative Research Centre.<br />\n<br />\n'
+    'I am a Member of the Australian Institute of Company Directors (AICD) and the '
+    'Australian Computer Society (ACS), holding the ACS designation MACS (Snr) CP (Cyber), '
+    'and am a Member of ISACA.'
+)
+
+
 def clean_article_content(html: str) -> str:
     """Fix content-level issues introduced by the GetAutoSEO publishing platform."""
     # Convert Markdown-style headings left as plain text inside <p> tags.
@@ -275,6 +291,21 @@ def clean_article_content(html: str) -> str:
     if len(matches) > 1:
         for m in reversed(matches[:-1]):
             html = html[:m.start()] + html[m.end():]
+    # Canonicalize author bio — replace whatever the platform injected with the correct text
+    html = re.sub(
+        r'(<div[^>]*class="[^"]*author-box[^"]*"[^>]*>.*?<p[^>]*>Andrew\s+Roberts</p>\s*)'
+        r'<p[^>]*>.*?</p>'
+        r'(\s*<div[^>]*>.*?</div>\s*</div>\s*</div>)',
+        lambda m: (
+            m.group(1)
+            + '<p style="margin:0;font-size:14px;color:#4b5563;line-height:1.6;">'
+            + _CANONICAL_BIO
+            + '</p>'
+            + m.group(2)
+        ),
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
     return html
 
 
@@ -1606,26 +1637,27 @@ def main() -> int:
     write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(visible_items), encoding="utf-8")
 
-    # Patch any existing post pages not in the current sync (e.g. fell off blog index)
-    # to remove future article cards from their More Articles sections
+    # Patch any existing post pages not in the current sync (e.g. fell off blog index):
+    # apply content cleaning and remove stale future-article cards.
     future_slugs = {i.slug for i in generated_items if i not in visible_items}
-    if future_slugs:
-        synced_slugs = {i.slug for i in generated_items}
-        for post_dir in ROOT.glob("post/*/index.html"):
-            slug = post_dir.parent.name
-            if slug in synced_slugs:
-                continue  # already handled above
-            html = post_dir.read_text(encoding="utf-8")
-            patched = html
-            for fs in future_slugs:
-                patched = re.sub(
-                    rf'<a\s+href="[^"]*{re.escape(fs)}[^"]*"[^>]*>.*?</a>',
-                    '',
-                    patched,
-                    flags=re.DOTALL,
-                )
-            if patched != html:
-                post_dir.write_text(patched, encoding="utf-8")
+    synced_slugs = {i.slug for i in generated_items}
+    for post_dir in ROOT.glob("post/*/index.html"):
+        slug = post_dir.parent.name
+        if slug in synced_slugs:
+            continue  # already handled above
+        html = post_dir.read_text(encoding="utf-8")
+        patched = normalize_internal_links(
+            clean_article_content(strip_platform_widgets(rewrite_domains(html)))
+        )
+        for fs in future_slugs:
+            patched = re.sub(
+                rf'<a\s+href="[^"]*{re.escape(fs)}[^"]*"[^>]*>.*?</a>',
+                '',
+                patched,
+                flags=re.DOTALL,
+            )
+        if patched != html:
+            post_dir.write_text(patched, encoding="utf-8")
 
     generate_post_mapping(generated_items, registry)
     print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
