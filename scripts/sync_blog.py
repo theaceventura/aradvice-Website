@@ -1234,6 +1234,16 @@ def send_kit_broadcast(subject: str, body: str) -> bool:
               file=sys.stderr)
         return False
 
+    # Guard: never send more than one subscriber broadcast per calendar day.
+    guard_path = ROOT / "log" / "last-broadcast-date.txt"
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if guard_path.exists() and guard_path.read_text(encoding="utf-8").strip() == today:
+        print(f"  Broadcast guard: already sent today — BLOCKED: {subject}",
+              file=sys.stderr)
+        return False
+    guard_path.parent.mkdir(parents=True, exist_ok=True)
+    guard_path.write_text(today, encoding="utf-8")
+
     # Convert plain text body to HTML paragraphs for Kit
     paragraphs = [p.strip() for p in body.split("\n") if p.strip()]
     html_body = "".join(f"<p>{p}</p>" for p in paragraphs)
@@ -1271,14 +1281,22 @@ def send_kit_broadcast(subject: str, body: str) -> bool:
 
 
 def load_email_log() -> set:
-    """Return set of slugs already emailed."""
+    """Return set of slugs already emailed.
+    Entries with status 'failed' are excluded so blocked or failed
+    sends retry on a later run."""
     log_path = ROOT / "log" / "email-log.md"
     if not log_path.exists():
         return set()
     slugs = set()
+    current = ""
     for line in log_path.read_text(encoding="utf-8").splitlines():
         if line.startswith("- slug:"):
-            slugs.add(line.replace("- slug:", "").strip())
+            current = line.replace("- slug:", "").strip()
+        elif line.startswith("- status:"):
+            status = line.replace("- status:", "").strip()
+            if current and status != "failed":
+                slugs.add(current)
+            current = ""
     return slugs
 
 
@@ -1311,6 +1329,7 @@ def write_email_draft(item: FeedItem, post_url: str,
     """Generate email draft, save to disk, and send via Kit unless already sent or dry_run."""
     emailed = load_email_log()
     if item.slug in emailed and not force:
+        print(f"  Email: {item.slug} — already sent, skipped")
         return
 
     article_dir = ROOT / "post" / item.slug
@@ -1415,6 +1434,7 @@ def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000",
     article_dir.mkdir(parents=True, exist_ok=True)
     draft_path = article_dir / f"{post_id}-linkedin.txt"
     if draft_path.exists() and not force:
+        print(f"  LinkedIn: {item.slug} — draft exists, skipped")
         return
     print(f"  Generating LinkedIn draft for: {item.slug}")
     post_text = generate_linkedin_post(item, post_url)
@@ -1586,6 +1606,7 @@ def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> 
     article_dir.mkdir(parents=True, exist_ok=True)
     brief_path = article_dir / f"{post_id}-advisor-brief.md"
     if brief_path.exists():
+        print(f"  Brief: {item.slug} — exists, skipped")
         return
     print(f"  Generating advisor brief for: {item.slug}")
     brief_text = generate_advisor_brief(item, post_url)
@@ -1601,6 +1622,46 @@ def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> 
         "---\n\n"
     )
     brief_path.write_text(header + brief_text, encoding="utf-8")
+
+
+class _Tee:
+    """Duplicate a stream into a buffer so run output can be emailed."""
+    def __init__(self, stream, buffer):
+        self.stream = stream
+        self.buffer = buffer
+    def write(self, data):
+        self.stream.write(data)
+        self.buffer.write(data)
+        return len(data)
+    def flush(self):
+        self.stream.flush()
+
+
+def send_run_report(body: str, status: str) -> None:
+    """Email the run transcript to the operator via SMTP. Never raises."""
+    import smtplib
+    import os
+    from email.mime.text import MIMEText
+    host = os.environ.get("SMTP_HOST", "smtp.office365.com")
+    user = os.environ.get("SMTP_USER", "")
+    password = os.environ.get("SMTP_PASSWORD", "")
+    to_addr = os.environ.get("RUN_REPORT_TO", user)
+    if not user or not password:
+        print("  SMTP_USER/SMTP_PASSWORD not set — skipping run report",
+              file=sys.stderr)
+        return
+    ts = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
+    msg = MIMEText(body, "plain", "utf-8")
+    msg["Subject"] = f"sync_blog {status} — {ts}"
+    msg["From"] = user
+    msg["To"] = to_addr
+    try:
+        with smtplib.SMTP(host, 587, timeout=30) as s:
+            s.starttls()
+            s.login(user, password)
+            s.send_message(msg)
+    except Exception as e:
+        sys.__stderr__.write(f"  Run report email failed: {e}\n")
 
 
 def main() -> int:
@@ -1779,4 +1840,24 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    import io
+    import traceback
+    _buf = io.StringIO()
+    sys.stdout = _Tee(sys.__stdout__, _buf)
+    sys.stderr = _Tee(sys.__stderr__, _buf)
+    _status = "OK"
+    _code = 0
+    try:
+        _code = main()
+        if _code:
+            _status = f"EXIT {_code}"
+    except Exception:
+        traceback.print_exc()
+        _status = "FAILED"
+        _code = 1
+    finally:
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+        if "--test" not in sys.argv:
+            send_run_report(_buf.getvalue() or "(no output)", _status)
+    raise SystemExit(_code)
