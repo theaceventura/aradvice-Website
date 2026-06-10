@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 09 Jun 2026 18:59 UTC
+Generated: 10 Jun 2026 09:38 UTC
 
-Total posts: 19
+Total posts: 20
 
 
 ---
@@ -234,3 +234,15 @@ Total posts: 19
 - **LinkedIn draft:** `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/019-linkedin.txt`
 - **LinkedIn log:** see `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/posting-log.md`
 - **Advisor brief:** `post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/019-advisor-brief.md`
+
+
+## [021] Investor Expectations for Board Cyber Oversight in 2026
+- **ID:** 021
+- **Published:** 10 Jun 2026
+- **Slug:** `investor-expectations-for-board-cyber-oversight-in-2026`
+- **URL:** https://aradvice.com.au/post/investor-expectations-for-board-cyber-oversight-in-2026/
+- **Article:** `post/investor-expectations-for-board-cyber-oversight-in-2026/index.html`
+- **og:image:** `post/investor-expectations-for-board-cyber-oversight-in-2026/021-og-image.png`
+- **LinkedIn draft:** `post/investor-expectations-for-board-cyber-oversight-in-2026/021-linkedin.txt`
+- **LinkedIn log:** see `post/investor-expectations-for-board-cyber-oversight-in-2026/posting-log.md`
+- **Advisor brief:** `post/investor-expectations-for-board-cyber-oversight-in-2026/021-advisor-brief.md`

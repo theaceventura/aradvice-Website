@@ -1029,6 +1029,32 @@ def generate_og_image(item: FeedItem, post_slug: str, post_id: str = "000") -> s
     return f"/post/{post_slug}/{post_id}-og-image.png"
 
 
+def extract_article_text(html: str, limit: int) -> str:
+    """Extract readable article body text from fetched HTML for AI prompts.
+    Prefers the article-content div, falls back to <article>, then <body>."""
+    source = html
+    for pattern in (
+        r'<div[^>]*class=["\'][^"\']*article-content[^"\']*["\'][^>]*>(.*?)</article>',
+        r"<article\b[^>]*>(.*?)</article>",
+        r"<body\b[^>]*>(.*?)</body>",
+    ):
+        m = re.search(pattern, html, flags=re.DOTALL | re.IGNORECASE)
+        if m:
+            source = m.group(1)
+            break
+    source = re.sub(r"<script\b.*?</script>", "", source, flags=re.DOTALL | re.IGNORECASE)
+    source = re.sub(r"<style\b.*?</style>", "", source, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", " ", source)
+    return re.sub(r"\s+", " ", text).strip()[:limit]
+
+
+def sanitise_ai_text(text: str) -> str:
+    """Remove em/en dashes and tidy spacing in AI-generated copy."""
+    text = text.replace("—", ", ").replace(" – ", ", ")
+    text = text.replace(", ,", ",").replace(",,", ",").replace(" ,", ",")
+    return re.sub(r" {2,}", " ", text)
+
+
 def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
     """Generate a draft LinkedIn post for a feed item using the Anthropic API."""
     import urllib.request
@@ -1042,9 +1068,7 @@ def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
         "Open with a specific board paper moment, a regulator question, or an incident scenario. Walk through what it reveals about governance. End with the stakes if nothing changes.",
     ][slug_hash]
 
-    # Extract a clean plain-text excerpt from the article
-    plain_text = re.sub(r"<[^>]+>", "", item.html[:3000])
-    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:1500]
+    plain_text = extract_article_text(item.html, 1500)
 
     prompt = f"""You are writing a LinkedIn post on behalf of Andrew Roberts, founder of Andrew Roberts Advisory (aradvice.com.au), an independent board-level advisor on cyber governance and AI governance for Australian directors.
 
@@ -1067,6 +1091,7 @@ VOICE:
 - Specific and concrete. Vague generalisations undermine credibility with this audience.
 - Never frame content as a product: never use "I've developed", "I've written", "I've created", "I've seen boards struggle", "In my experience"
 - Never use "asked me last week", "a client told me", or similar anecdote framing — state scenarios directly without attributing them to named interactions
+- Never present an invented scenario as a real event. Banned framings include "Last month", "Recently", "This week", or any phrasing implying the event actually occurred. Invented dialogue must be framed as illustrative ("Picture the question...", "Consider a chair who is asked...") never as a reported exchange.
 
 REGULATORY REFERENCES:
 - Only reference real, specific regulatory events, inquiries, or enforcement actions if they appear verbatim in the article excerpt. Do not invent or imply regulatory events.
@@ -1082,6 +1107,12 @@ BANNED PHRASES — never use these:
 - "This matters now because", "This is why"
 - "Most Australian boards" or "Most Australian directors" as an opening — find a more specific entry point
 - Opening a paragraph with "Most Australian boards" more than once per post
+
+HARD RULES:
+- The opening must express the same core argument as the article title, in different words. A reader who clicks through must find exactly what the opening promised.
+- Never use em dashes or en dashes anywhere. Restructure the sentence or use a comma or full stop instead.
+- No exclamation marks.
+- Never state a commencement date, deadline, or penalty figure for any legislation.
 
 FORMAT:
 - 6 to 10 lines. No padding. No wasted sentences.
@@ -1111,7 +1142,7 @@ FORMAT:
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            return data["content"][0]["text"].strip()
+            return sanitise_ai_text(data["content"][0]["text"].strip())
     except Exception as e:
         return f"[LinkedIn post generation failed: {e}]"
 
@@ -1121,8 +1152,7 @@ def generate_email_draft(item: FeedItem, post_url: str) -> tuple[str, str]:
     Returns (subject, body)."""
     import urllib.request, json, os
 
-    plain_text = re.sub(r"<[^>]+>", "", item.html[:3000])
-    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:1500]
+    plain_text = extract_article_text(item.html, 1500)
 
     prompt = f"""You are writing a brief email to Australian company directors who have subscribed to receive governance briefings from Andrew Roberts Advisory (aradvice.com.au).
 
@@ -1143,9 +1173,13 @@ BODY: 3-4 sentences maximum. No salutation — open cold with the first substant
 - Footer: "You're receiving this because you subscribed at aradvice.com.au."
 
 Rules:
+- The subject line must express the same core argument as the article title, in different words. A reader who clicks through must find exactly what the subject promised.
 - No salutation of any kind — no "Hi", no "Dear", no "Hello"
 - No "I hope this finds you well" or similar openers
 - No exclamation marks
+- Never use em dashes or en dashes anywhere. Restructure the sentence or use a comma or full stop instead.
+- Never state a commencement date, deadline, or penalty figure for any legislation.
+- The opening scenario must be causally coherent. Read it back as a literal sequence of events and confirm it makes sense.
 - Banned phrases — never use these: "most boards lack", "your board faces", "directors must", "shifts the conversation", "transforms X into Y", "manageable oversight protocols", "structured board responsibility", "defensible processes for overseeing", "the regulatory environment", "growing exposure", "practical frameworks", "courts are increasingly", "regulators are increasingly", "ASIC is increasingly", "increasingly scrutinising", "increasingly important"
 - Do not mention "newsletter", "blog post", or "article" — write as if delivering a direct observation, not promoting content
 - Under 110 words total for the body
@@ -1180,7 +1214,8 @@ Return only the JSON. No preamble, no markdown fences."""
             data = json.loads(resp.read().decode("utf-8"))
             raw = data["content"][0]["text"].strip()
             parsed = json.loads(raw)
-            return parsed.get("subject", ""), parsed.get("body", "")
+            return (sanitise_ai_text(parsed.get("subject", "")),
+                    sanitise_ai_text(parsed.get("body", "")))
     except Exception as e:
         print(f"  generate_email_draft failed for {item.slug}: {e}",
               file=sys.stderr)
@@ -1271,10 +1306,11 @@ def update_email_log(item: FeedItem, subject: str,
 
 def write_email_draft(item: FeedItem, post_url: str,
                       post_id: str = "000",
-                      dry_run: bool = False) -> None:
+                      dry_run: bool = False,
+                      force: bool = False) -> None:
     """Generate email draft, save to disk, and send via Kit unless already sent or dry_run."""
     emailed = load_email_log()
-    if item.slug in emailed:
+    if item.slug in emailed and not force:
         return
 
     article_dir = ROOT / "post" / item.slug
@@ -1284,6 +1320,22 @@ def write_email_draft(item: FeedItem, post_url: str,
     subject, body = generate_email_draft(item, post_url)
     if not subject or not body:
         return
+
+    # Append the briefing number to the footer line (deterministic, not AI-generated)
+    try:
+        brief_no = int(post_id)
+    except (TypeError, ValueError):
+        brief_no = 0
+    if brief_no:
+        footer = "You're receiving this because you subscribed at aradvice.com.au."
+        if footer in body:
+            body = body.replace(
+                footer,
+                f"Briefing No. {brief_no} | {footer}",
+                1,
+            )
+        else:
+            body = body.rstrip() + f"\n\nBriefing No. {brief_no}"
 
     # Always save the draft to disk
     draft_path.write_text(
@@ -1355,12 +1407,14 @@ def update_linkedin_log(item: FeedItem, draft_path: Path, post_id: str = "000") 
         log_path.write_text(existing + entry, encoding="utf-8")
 
 
-def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000") -> None:
-    """Write a LinkedIn draft post to /post/{slug}/{post_id}-linkedin.txt if it doesn't already exist."""
+def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000",
+                         force: bool = False) -> None:
+    """Write a LinkedIn draft post to /post/{slug}/{post_id}-linkedin.txt if it doesn't already exist.
+    force=True regenerates and overwrites the existing draft file."""
     article_dir = ROOT / "post" / item.slug
     article_dir.mkdir(parents=True, exist_ok=True)
     draft_path = article_dir / f"{post_id}-linkedin.txt"
-    if draft_path.exists():
+    if draft_path.exists() and not force:
         return
     print(f"  Generating LinkedIn draft for: {item.slug}")
     post_text = generate_linkedin_post(item, post_url)
@@ -1368,6 +1422,10 @@ def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000") ->
         print(f"  LinkedIn draft generation failed for {item.slug} — skipping write.", file=sys.stderr)
         return
     draft_path.write_text(post_text, encoding="utf-8")
+    if force:
+        print(f"\n  [TEST] Regenerated LinkedIn draft for {item.slug}")
+        print(post_text)
+        print()
     update_linkedin_log(item, draft_path, post_id=post_id)
 
 
@@ -1376,8 +1434,7 @@ def generate_advisor_brief(item: FeedItem, post_url: str) -> str:
     import urllib.request
     import json
 
-    plain_text = re.sub(r"<[^>]+>", "", item.html[:6000])
-    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:4000]
+    plain_text = extract_article_text(item.html, 4000)
 
     prompt = f"""You are preparing an internal advisor briefing for Andrew Roberts, founder of Andrew Roberts Advisory (aradvice.com.au), an independent board-level advisor on cyber governance and AI governance for Australian directors.
 
@@ -1407,6 +1464,8 @@ Bullet points. What specific services or engagements does this article create an
 ## Watch-outs
 Two or three bullet points. Things Andy should be careful not to overstate, areas of genuine uncertainty in the law or regulation, or nuances the article glosses over that a sophisticated client might push back on.
 
+Hard rules: never use em dashes or en dashes. Never state a commencement date, deadline, or penalty figure for any legislation unless it appears verbatim in the article content.
+
 Output only the briefing. No preamble, no explanation."""
 
     payload = json.dumps({
@@ -1431,7 +1490,7 @@ Output only the briefing. No preamble, no explanation."""
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            return data["content"][0]["text"].strip()
+            return sanitise_ai_text(data["content"][0]["text"].strip())
     except Exception as e:
         return f"[Advisor brief generation failed: {e}]"
 
@@ -1442,8 +1501,7 @@ def generate_post_meta(item: FeedItem) -> tuple[str, str]:
     Returns (description, keywords_csv) — both as plain strings."""
     import urllib.request, json, os
 
-    plain_text = re.sub(r"<[^>]+>", "", item.html[:3000])
-    plain_text = re.sub(r"\s+", " ", plain_text).strip()[:1500]
+    plain_text = extract_article_text(item.html, 1500)
 
     prompt = f"""You are writing SEO metadata for a blog post on aradvice.com.au,
 an independent board-level advisory practice for Australian directors on cyber
@@ -1457,6 +1515,7 @@ Return a JSON object with exactly two keys:
   director's specific problem or risk (not a description of the article).
   Include a reason to click. End with a concrete outcome or action.
   Do not start with "Directors," or "Learn". Never mention the site name.
+  Never use em dashes or en dashes. Never state a commencement date or deadline.
 - "keywords": A comma-separated list of 6–8 specific keywords for this post
   only. Use terms a director would actually search for. Include relevant
   regulation names (e.g. APRA CPS 234, Cyber Security Act 2024, ASIC s180)
@@ -1487,7 +1546,7 @@ Return only the JSON object. No preamble, no markdown fences."""
             data = json.loads(resp.read().decode("utf-8"))
             raw = data["content"][0]["text"].strip()
             parsed = json.loads(raw)
-            return parsed.get("description", ""), parsed.get("keywords", "")
+            return sanitise_ai_text(parsed.get("description", "")), parsed.get("keywords", "")
     except Exception as e:
         print(f"  generate_post_meta failed for {item.slug}: {e}", file=sys.stderr)
         return "", ""
@@ -1551,8 +1610,15 @@ def main() -> int:
         "--dry-run", action="store_true",
         help="Generate email drafts without sending"
     )
+    parser.add_argument(
+        "--test", metavar="SLUG", default="", dest="test_slug",
+        help="Force-regenerate the email and LinkedIn drafts for SLUG (never sends, email log untouched, overwrites the LinkedIn draft file)"
+    )
     args = parser.parse_args()
     dry_run = args.dry_run
+    test_slug = args.test_slug
+    if test_slug:
+        dry_run = True
 
     # Primary: scrape blog index pages to get all articles
     feed_items = parse_blog_index()
@@ -1656,19 +1722,23 @@ def main() -> int:
                     )
                 )
                 page_path.write_text(fixed, encoding="utf-8")
-                write_linkedin_draft(item, post_url, post_id=post_id)
+                write_linkedin_draft(item, post_url, post_id=post_id,
+                                     force=(item.slug == test_slug))
                 write_advisor_brief(item, post_url, post_id=post_id)
                 if item_datetime(item.pub_date) <= now:
-                    write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
+                    write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run,
+                                      force=(item.slug == test_slug))
                 continue
             # File deleted — rebuild via full pipeline using fetched HTML
 
         other_items = [i for i in visible_items if i.slug != item.slug]
         page_html = inject_more_articles(item.html, other_items)
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
-        write_linkedin_draft(item, post_url, post_id=post_id)
+        write_linkedin_draft(item, post_url, post_id=post_id,
+                             force=(item.slug == test_slug))
         write_advisor_brief(item, post_url, post_id=post_id)
-        write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run)
+        write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run,
+                          force=(item.slug == test_slug))
 
     if not visible_items:
         print("No published articles found — skipping blog and sitemap generation.", file=sys.stderr)
