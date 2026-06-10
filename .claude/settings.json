@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git commit -m ' *)",
       "Bash(git pull *)",
-      "Bash(.venv/bin/python scripts/sync_blog.py)"
+      "Bash(.venv/bin/python scripts/sync_blog.py)",
+      "Bash(git -C /Users/andewroberts/Projects/andrew-roberts-advisory add scripts/sync_blog.py)"
     ]
   }
 }
