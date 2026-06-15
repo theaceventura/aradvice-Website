@@ -1,0 +1,10 @@
+SUBJECT: Essential Eight green status: When boards miss the real risk
+
+Your CISO presented a dashboard showing green Essential Eight maturity across all controls, but when you asked which specific vulnerabilities remained unaddressed, the response was a technical explanation about methodology rather than residual business risk. Under section 180 of the Corporations Act, directors face personal liability for failing to exercise reasonable care and diligence in oversight of material risks. ASIC's intensified focus on cyber governance means surface-level compliance metrics no longer provide adequate protection for your oversight record.
+
+https://aradvice.com.au/post/essential-eight-board-oversight-for-australian-directors/
+
+Andrew Roberts
+Andrew Roberts Advisory
+
+Briefing No. 22 | You're receiving this because you subscribed at aradvice.com.au.

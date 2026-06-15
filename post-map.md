@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 15 Jun 2026 01:29 UTC
+Generated: 15 Jun 2026 07:12 UTC
 
-Total posts: 20
+Total posts: 21
 
 
 ---
@@ -246,3 +246,15 @@ Total posts: 20
 - **LinkedIn draft:** `post/investor-expectations-for-board-cyber-oversight-in-2026/021-linkedin.txt`
 - **LinkedIn log:** see `post/investor-expectations-for-board-cyber-oversight-in-2026/posting-log.md`
 - **Advisor brief:** `post/investor-expectations-for-board-cyber-oversight-in-2026/021-advisor-brief.md`
+
+
+## [022] Essential Eight Board Oversight for Australian Directors
+- **ID:** 022
+- **Published:** 12 Jun 2026
+- **Slug:** `essential-eight-board-oversight-for-australian-directors`
+- **URL:** https://aradvice.com.au/post/essential-eight-board-oversight-for-australian-directors/
+- **Article:** `post/essential-eight-board-oversight-for-australian-directors/index.html`
+- **og:image:** `post/essential-eight-board-oversight-for-australian-directors/022-og-image.png`
+- **LinkedIn draft:** `post/essential-eight-board-oversight-for-australian-directors/022-linkedin.txt`
+- **LinkedIn log:** see `post/essential-eight-board-oversight-for-australian-directors/posting-log.md`
+- **Advisor brief:** `post/essential-eight-board-oversight-for-australian-directors/022-advisor-brief.md`

@@ -148,3 +148,10 @@
 - article_date: 10 Jun 2026
 - logged: 10 Jun 2026 09:38 UTC
 - status: dry-run
+
+## Essential Eight Board Oversight for Australian Directors
+- slug: essential-eight-board-oversight-for-australian-directors
+- subject: Essential Eight green status: When boards miss the real risk
+- article_date: 12 Jun 2026
+- logged: 15 Jun 2026 07:12 UTC
+- status: sent

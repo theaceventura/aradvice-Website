@@ -196,3 +196,13 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## Essential Eight Board Oversight for Australian Directors
+- **ID:** 022
+- **Slug:** essential-eight-board-oversight-for-australian-directors
+- **Article date:** 12 Jun 2026
+- **Draft generated:** 15 Jun 2026
+- **Draft file:** post/essential-eight-board-oversight-for-australian-directors/022-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
