@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 17 Jun 2026 01:29 UTC
+Generated: 17 Jun 2026 06:42 UTC
 
-Total posts: 21
+Total posts: 22
 
 
 ---
@@ -198,6 +198,18 @@ Total posts: 21
 - **LinkedIn draft:** `post/apra-cps-234-board-obligations-checklist-for-directors/020-linkedin.txt`
 - **LinkedIn log:** see `post/apra-cps-234-board-obligations-checklist-for-directors/posting-log.md`
 - **Advisor brief:** `post/apra-cps-234-board-obligations-checklist-for-directors/020-advisor-brief.md`
+
+
+## [023] Cyber Security Act 2024: Australian Director Obligations
+- **ID:** 023
+- **Published:** 05 Jun 2026
+- **Slug:** `cyber-security-act-2024-australian-director-obligations`
+- **URL:** https://aradvice.com.au/post/cyber-security-act-2024-australian-director-obligations/
+- **Article:** `post/cyber-security-act-2024-australian-director-obligations/index.html`
+- **og:image:** `post/cyber-security-act-2024-australian-director-obligations/023-og-image.png`
+- **LinkedIn draft:** `post/cyber-security-act-2024-australian-director-obligations/023-linkedin.txt`
+- **LinkedIn log:** see `post/cyber-security-act-2024-australian-director-obligations/posting-log.md`
+- **Advisor brief:** `post/cyber-security-act-2024-australian-director-obligations/023-advisor-brief.md`
 
 
 ## [017] Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director’s Checklist

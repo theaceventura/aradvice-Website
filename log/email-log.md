@@ -155,3 +155,10 @@
 - article_date: 12 Jun 2026
 - logged: 15 Jun 2026 07:12 UTC
 - status: sent
+
+## Cyber Security Act 2024: Australian Director Obligations
+- slug: cyber-security-act-2024-australian-director-obligations
+- subject: Cyber Security Act 2024: Your personal liability as a director
+- article_date: 05 Jun 2026
+- logged: 17 Jun 2026 06:42 UTC
+- status: sent

@@ -1,0 +1,11 @@
+Picture the question a regulator asks after a breach: "Director, what did you personally do to satisfy yourself that cyber risk was being managed?" Not what management reported to you. What you did.
+
+Most boards answer that question with a dashboard they cannot interrogate and a CISO presentation they accepted at face value. That answer does not meet the standard of care under Section 180 of the Corporations Act 2001, and it will not satisfy the Cyber Security Act 2024 obligations that move to full enforcement next year.
+
+The Federal Court's A$2.5 million penalty against FIIG Securities in ASIC v FIIG Securities Limited [2026] FCA 92 fell on the company, not on individual directors. Read that carefully. It signals what regulators are prepared to do, not the ceiling of where personal accountability ends.
+
+Delegating cyber risk to technical teams and treating their output as a fiduciary shield confuses process with governance. A board paper full of patch rates and uptime figures tells you whether the technical function is running. It does not tell you whether material cyber risk is within appetite, how it connects to strategic exposure, or whether management's assumptions have been stress-tested.
+
+The director who survives regulatory scrutiny is the one who can demonstrate independent judgement, not inherited confidence in management's metrics.
+
+https://aradvice.com.au/post/cyber-security-act-2024-australian-director-obligations/

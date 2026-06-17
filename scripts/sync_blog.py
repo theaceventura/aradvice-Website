@@ -1121,7 +1121,7 @@ FORMAT:
 - Output only the post text. No preamble, no explanation, no title."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-20250514",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 1000,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -1193,7 +1193,7 @@ Return a JSON object with exactly two keys:
 Return only the JSON. No preamble, no markdown fences."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-20250514",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -1489,7 +1489,7 @@ Hard rules: never use em dashes or en dashes. Never state a commencement date, d
 Output only the briefing. No preamble, no explanation."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-20250514",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 1500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -1545,7 +1545,7 @@ Return a JSON object with exactly two keys:
 Return only the JSON object. No preamble, no markdown fences."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-20250514",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 400,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
