@@ -1836,7 +1836,43 @@ def main() -> int:
 
     generate_post_mapping(generated_items, registry)
     print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
+
+    _git_commit_and_push(latest_item.slug)
     return 0
+
+
+def _git_commit_and_push(latest_slug: str) -> None:
+    """Stage all sync output, commit if there are changes, and push."""
+    import subprocess
+
+    def run(cmd: list[str]) -> subprocess.CompletedProcess:
+        return subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+
+    # Pull so we're up to date before pushing
+    pull = run(["git", "pull", "--rebase"])
+    if pull.returncode != 0:
+        print(f"  git pull failed — skipping commit/push:\n{pull.stderr}", file=sys.stderr)
+        return
+
+    run(["git", "add", "-A"])
+
+    status = run(["git", "status", "--porcelain"])
+    if not status.stdout.strip():
+        print("  git: nothing to commit")
+        return
+
+    msg = f"Sync blog content, update {latest_slug}"
+    commit = run(["git", "commit", "-m", msg])
+    if commit.returncode != 0:
+        print(f"  git commit failed:\n{commit.stderr}", file=sys.stderr)
+        return
+    print(f"  git commit: {msg}")
+
+    push = run(["git", "push"])
+    if push.returncode != 0:
+        print(f"  git push failed:\n{push.stderr}", file=sys.stderr)
+    else:
+        print("  git push: OK")
 
 
 if __name__ == "__main__":
