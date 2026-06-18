@@ -162,3 +162,10 @@
 - article_date: 05 Jun 2026
 - logged: 17 Jun 2026 06:42 UTC
 - status: sent
+
+## Board Cybersecurity Duties: A Director's Guide to Defensible Oversight in Australia
+- slug: board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia
+- subject: Cyber Security Act 2024: Your personal liability as a director
+- article_date: 15 Jun 2026
+- logged: 18 Jun 2026 21:52 UTC
+- status: sent

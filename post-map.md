@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 18 Jun 2026 19:04 UTC
+Generated: 18 Jun 2026 21:52 UTC
 
-Total posts: 22
+Total posts: 23
 
 
 ---
@@ -270,3 +270,15 @@ Total posts: 22
 - **LinkedIn draft:** `post/essential-eight-board-oversight-for-australian-directors/022-linkedin.txt`
 - **LinkedIn log:** see `post/essential-eight-board-oversight-for-australian-directors/posting-log.md`
 - **Advisor brief:** `post/essential-eight-board-oversight-for-australian-directors/022-advisor-brief.md`
+
+
+## [024] Board Cybersecurity Duties: A Director's Guide to Defensible Oversight in Australia
+- **ID:** 024
+- **Published:** 15 Jun 2026
+- **Slug:** `board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia`
+- **URL:** https://aradvice.com.au/post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/
+- **Article:** `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/index.html`
+- **og:image:** `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/024-og-image.png`
+- **LinkedIn draft:** `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/024-linkedin.txt`
+- **LinkedIn log:** see `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/posting-log.md`
+- **Advisor brief:** `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/024-advisor-brief.md`
