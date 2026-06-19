@@ -333,6 +333,7 @@ def replace_host_head_and_header(
     post_url: str = "",
     post_image: str = "",
     post_keywords: str = "",
+    post_id: str = "",
     article_schema: str = "",
     page_title: str = "",
     page_description: str = "",
@@ -414,9 +415,16 @@ def replace_host_head_and_header(
     # Ensure content starts below fixed header.
     out = re.sub(r'<main class="flex-1">', '<main class="flex-1 pt-36 md:pt-40">', out, count=1, flags=re.IGNORECASE)
     # Keep mirrored article readable while preserving site shell aesthetics.
+    briefing_label = ""
+    if post_slug and post_id:
+        briefing_label = (
+            f'<p style="font-size:11px; color:#94a3b8; letter-spacing:0.1em; '
+            f'text-transform:uppercase; margin:0 0 16px 0;">Briefing No. {post_id}</p>'
+        )
     out = re.sub(
         r'<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">',
-        '<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white rounded-[2rem] shadow-[0_24px_70px_rgba(15,23,42,0.08)] border border-slate-200">',
+        '<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white rounded-[2rem] shadow-[0_24px_70px_rgba(15,23,42,0.08)] border border-slate-200">'
+        + briefing_label,
         out,
         count=1,
         flags=re.IGNORECASE,
@@ -554,7 +562,8 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     if post_slug and feed_item:
         article_schema = generate_article_schema(
             feed_item,
-            f"{MAIN_DOMAIN}/post/{post_slug}/"
+            f"{MAIN_DOMAIN}/post/{post_slug}/",
+            post_id,
         )
     path.write_text(
         replace_host_head_and_header(
@@ -565,6 +574,7 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
             post_url=post_url,
             post_image=post_image,
             post_keywords=post_keywords,
+            post_id=post_id,
             article_schema=article_schema,
             page_title=page_title,
             page_description=page_description,
@@ -1000,6 +1010,13 @@ def generate_og_image(item: FeedItem, post_slug: str, post_id: str = "000") -> s
     draw.text((178, 62), "ANDREW ROBERTS ADVISORY",
               font=load_font(16), fill=CYAN)
     draw.rectangle([(178, 86), (540, 87)], fill=(0, 212, 255, 60))
+
+    # Briefing number — top-right, level with brand name
+    _br_text = f"BRIEFING NO. {post_id}"
+    _br_font = load_font(20)
+    _br_bbox = draw.textbbox((0, 0), _br_text, font=_br_font)
+    _br_w = _br_bbox[2] - _br_bbox[0]
+    draw.text((W - 80 - _br_w, 62), _br_text, font=_br_font, fill=CYAN)
 
     # Article title — max 3 lines
     wrapped = textwrap.wrap(item.title, width=34)[:3]
@@ -1608,7 +1625,7 @@ Return only the JSON object. No preamble, no markdown fences."""
         return "", ""
 
 
-def generate_article_schema(item: FeedItem, post_url: str) -> str:
+def generate_article_schema(item: FeedItem, post_url: str, post_id: str = "000") -> str:
     """Generate JSON-LD Article schema for a blog post."""
     published = item_datetime(item.pub_date).isoformat()
     escaped_title = escape(item.title)
@@ -1618,6 +1635,7 @@ def generate_article_schema(item: FeedItem, post_url: str) -> str:
         '  "@context": "https://schema.org",\n'
         '  "@type": "Article",\n'
         f'  "headline": "{escaped_title}",\n'
+        f'  "identifier": "Briefing No. {post_id}",\n'
         f'  "url": "{post_url}",\n'
         f'  "datePublished": "{published}",\n'
         '  "author": {\n'
