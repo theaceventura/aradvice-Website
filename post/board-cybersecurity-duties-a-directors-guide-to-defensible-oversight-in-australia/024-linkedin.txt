@@ -1,11 +1,11 @@
-Consider a chair asked by their insurer to demonstrate what oversight the board actually exercised before a breach occurred. Not what policies were approved. Not what management reported. What the board itself did to test, challenge, and verify. Most chairs cannot answer that question with evidence.
+Consider a chair who is asked, mid-meeting, to sign off on the board's cybersecurity risk position. The CISO has presented a dashboard. Metrics are green. The chair approves. What that chair cannot show, if ASIC comes asking, is a single piece of documented evidence that the board independently tested the assumptions behind those green lights.
 
-Section 180 of the Corporations Act has always required care and diligence. The full enforcement of the Cyber Security Act 2024 converts that general standard into a specific accountability framework, and the question shifts from whether your board received cyber briefings to whether those briefings were sufficient to discharge a legal duty of oversight.
+Section 180 of the Corporations Act 2001 does not exempt directors who relied on management assurances. It requires care and diligence, and the full enforcement of the Cyber Security Act 2024 has made that standard explicitly personal when digital risk is involved.
 
-The distinction matters because the two things are not the same. Receiving a technical dashboard is not oversight. Approving a policy is not oversight. Defensible oversight leaves a documented record of directed inquiry, substantive challenge, and evidence-based assurance that goes beyond what management chose to present.
+The practical problem is not access to information. Boards receive plenty of it. The problem is that technical dashboards are designed to summarise, not to expose the governance weaknesses that sit underneath them. A director who cannot probe the methodology behind a report is not exercising oversight. They are receiving it.
 
-ASIC has been explicit about the evidentiary standard it expects. Directors who cannot point to that record are exposed, regardless of whether a breach occurs, because the duty attaches to the process of governance, not to the outcome.
+Defensible oversight produces a record. It documents the questions asked, the assurances sought, the independent verification obtained. That record is what distinguishes a board that governed from a board that was briefed.
 
-The practical implication is this: if your board cannot reconstruct its own oversight record from board papers alone, the oversight did not happen in any legally meaningful sense.
+The article linked below sets out how to structure that record, what ASIC now expects to see, and how to read your director obligations under the 2026 mandates in plain terms.
 
 https://aradvice.com.au/post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/

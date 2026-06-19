@@ -1169,7 +1169,7 @@ BODY: 3-4 sentences maximum. No salutation — open cold with the first substant
 - Sentence 1: Describe a specific situation — a boardroom moment, a procurement decision, a model deployed without sign-off, a board paper that couldn't answer the regulator's question. Write it as if describing something that happened in a specific boardroom recently. Concrete and particular. Do NOT open with generalisations about "most boards" or "directors must" or "your board faces". Do not state a problem abstractly — place the reader in a scene.
 - Sentences 2-3: Name the concrete consequence if this is wrong. Regulatory, legal, or reputational — be specific about what actually happens to the director. Not "shifts the conversation", not "transforms risk into responsibility", not "manageable oversight protocols". What is the actual exposure? What does ASIC, APRA, or a shareholder actually do? State it directly. Only reference specific regulatory actions or enforcement if they appear verbatim in the article excerpt — otherwise name the legal mechanism (e.g. s.180 Corporations Act duty of care) and the personal consequence.
 - Final line: The article URL on its own line, nothing else before or after it — no "Read more at", no "Full article:", just the bare URL.
-- Sign off: "Andrew Roberts\\nAndrew Roberts Advisory"
+- Sign off: "Andrew"
 
 Rules:
 - The subject line must express the same core argument as the article title, in different words. A reader who clicks through must find exactly what the subject promised.
