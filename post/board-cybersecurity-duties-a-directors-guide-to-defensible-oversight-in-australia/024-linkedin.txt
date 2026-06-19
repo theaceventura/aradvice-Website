@@ -1,11 +1,11 @@
-Consider a chair who is asked, mid-meeting, to sign off on the board's cybersecurity risk position. The CISO has presented a dashboard. Metrics are green. The chair approves. What that chair cannot show, if ASIC comes asking, is a single piece of documented evidence that the board independently tested the assumptions behind those green lights.
+Consider a chair who is asked, mid-board meeting, whether the company's incident response plan has been tested against a ransomware scenario. The CISO nods. The dashboard is green. The chair moves on. That nod is not governance, and under Section 180 of the Corporations Act 2001, it will not function as a defence.
 
-Section 180 of the Corporations Act 2001 does not exempt directors who relied on management assurances. It requires care and diligence, and the full enforcement of the Cyber Security Act 2024 has made that standard explicitly personal when digital risk is involved.
+The full enforcement of the Cyber Security Act 2024 has formalised something that was previously a matter of interpretation: cybersecurity oversight is now a personal accountability question for every director on the register. Relying on management assurances without the tools to verify them is not a governance posture, it is an exposure.
 
-The practical problem is not access to information. Boards receive plenty of it. The problem is that technical dashboards are designed to summarise, not to expose the governance weaknesses that sit underneath them. A director who cannot probe the methodology behind a report is not exercising oversight. They are receiving it.
+What defensible oversight actually requires is a structured record of inquiry, not a record of attendance. ASIC's evidence-based expectations now demand that directors demonstrate they asked the right questions, tested the answers, and understood what the responses meant for material risk. A green dashboard does not satisfy that standard.
 
-Defensible oversight produces a record. It documents the questions asked, the assurances sought, the independent verification obtained. That record is what distinguishes a board that governed from a board that was briefed.
+My latest article sets out exactly what that standard looks like in practice, how to read past technical reporting, and how to structure your oversight so it holds up to the legal test that is now in force.
 
-The article linked below sets out how to structure that record, what ASIC now expects to see, and how to read your director obligations under the 2026 mandates in plain terms.
+If your board's cybersecurity record consists of minutes that say "noted", you are not governing risk, you are documenting your exposure.
 
 https://aradvice.com.au/post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/
