@@ -1222,7 +1222,7 @@ Return only the JSON. No preamble, no markdown fences."""
         return "", ""
 
 
-def send_kit_broadcast(subject: str, body: str) -> bool:
+def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0) -> bool:
     """Send a broadcast email via the Kit (ConvertKit) API v4.
     Returns True on success."""
     import urllib.request, json, os
@@ -1244,9 +1244,41 @@ def send_kit_broadcast(subject: str, body: str) -> bool:
     guard_path.parent.mkdir(parents=True, exist_ok=True)
     guard_path.write_text(today, encoding="utf-8")
 
-    # Convert plain text body to HTML paragraphs for Kit
-    paragraphs = [p.strip() for p in body.split("\n") if p.strip()]
-    html_body = "".join(f"<p>{p}</p>" for p in paragraphs)
+    # Convert plain text body to HTML for Kit.
+    # - Strips the redundant subscribe disclaimer line (now covered by the
+    #   styled template footer).
+    # - Renders the article URL as a styled button-style link instead of
+    #   plain text.
+    lines = [p.strip() for p in body.split("\n") if p.strip()]
+
+    disclaimer = "You're receiving this because you subscribed at aradvice.com.au."
+    lines = [l for l in lines if l != disclaimer]
+
+    url_pattern = re.compile(r'^https?://\S+$')
+    html_parts = []
+    for line in lines:
+        if url_pattern.match(line):
+            html_parts.append(
+                '<p style="margin:20px 0 24px 0;">'
+                f'<a href="{line}" style="display:inline-block; '
+                'font-family:Arial, Helvetica, sans-serif; font-size:14px; '
+                'font-weight:bold; color:#0a1628; text-decoration:none; '
+                'border-bottom:2px solid #00d4e8; padding-bottom:2px;">'
+                'Read the full briefing &rarr;</a></p>'
+            )
+        else:
+            html_parts.append(f"<p>{line}</p>")
+    html_body = "".join(html_parts)
+
+    # Prepend the briefing number as a styled label, matching the Kit
+    # email template's header typography (deterministic, not AI-generated)
+    if briefing_no:
+        briefing_label = (
+            '<p style="font-size:11px; color:#888888; letter-spacing:0.06em; '
+            'text-transform:uppercase; margin:0 0 8px 0;">'
+            f'Briefing No. {briefing_no}</p>'
+        )
+        html_body = briefing_label + html_body
 
     # Kit v4: flat payload, send_at set to now triggers immediate send
     send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -1340,21 +1372,10 @@ def write_email_draft(item: FeedItem, post_url: str,
     if not subject or not body:
         return
 
-    # Append the briefing number to the footer line (deterministic, not AI-generated)
     try:
         brief_no = int(post_id)
     except (TypeError, ValueError):
         brief_no = 0
-    if brief_no:
-        footer = "You're receiving this because you subscribed at aradvice.com.au."
-        if footer in body:
-            body = body.replace(
-                footer,
-                f"Briefing No. {brief_no} | {footer}",
-                1,
-            )
-        else:
-            body = body.rstrip() + f"\n\nBriefing No. {brief_no}"
 
     # Always save the draft to disk
     draft_path.write_text(
@@ -1386,7 +1407,7 @@ def write_email_draft(item: FeedItem, post_url: str,
         return "\n".join(result)
 
     broadcast_body = split_sentences(body)
-    sent = send_kit_broadcast(subject, broadcast_body)
+    sent = send_kit_broadcast(subject, broadcast_body, briefing_no=brief_no)
 
     # Patch status in log now we know the outcome
     log_path = ROOT / "log" / "email-log.md"
