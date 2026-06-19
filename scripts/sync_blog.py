@@ -1221,7 +1221,8 @@ Return only the JSON. No preamble, no markdown fences."""
         return "", ""
 
 
-def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0) -> bool:
+def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0,
+                       test_email: str = "") -> bool:
     """Send a broadcast email via the Kit (ConvertKit) API v4.
     Returns True on success."""
     import urllib.request, json, os
@@ -1234,14 +1235,17 @@ def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0) -> bool:
         return False
 
     # Guard: never send more than one subscriber broadcast per calendar day.
-    guard_path = ROOT / "log" / "last-broadcast-date.txt"
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    if guard_path.exists() and guard_path.read_text(encoding="utf-8").strip() == today:
-        print(f"  Broadcast guard: already sent today — BLOCKED: {subject}",
-              file=sys.stderr)
-        return False
-    guard_path.parent.mkdir(parents=True, exist_ok=True)
-    guard_path.write_text(today, encoding="utf-8")
+    # Skipped entirely for test sends — they never touch the real subscriber
+    # list and must not block or consume the day's live send.
+    if not test_email:
+        guard_path = ROOT / "log" / "last-broadcast-date.txt"
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        if guard_path.exists() and guard_path.read_text(encoding="utf-8").strip() == today:
+            print(f"  Broadcast guard: already sent today — BLOCKED: {subject}",
+                  file=sys.stderr)
+            return False
+        guard_path.parent.mkdir(parents=True, exist_ok=True)
+        guard_path.write_text(today, encoding="utf-8")
 
     # Convert plain text body to HTML for Kit.
     # - Strips the redundant subscribe disclaimer line (now covered by the
@@ -1281,6 +1285,11 @@ def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0) -> bool:
 
     # Kit v4: flat payload, send_at set to now triggers immediate send
     send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    if test_email:
+        subject = f"[TEST] {subject}"
+        subscriber_filter = [{"email_address": test_email}]
+    else:
+        subscriber_filter = [{"all": True}]
     payload = json.dumps({
         "subject": subject,
         "content": html_body,
@@ -1288,7 +1297,7 @@ def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0) -> bool:
         "public": False,
         "send_at": send_at,
         "preview_text": "",
-        "subscriber_filter": [{"all": True}],
+        "subscriber_filter": subscriber_filter,
     }).encode("utf-8")
 
     req = urllib.request.Request(
@@ -1356,7 +1365,8 @@ def update_email_log(item: FeedItem, subject: str,
 def write_email_draft(item: FeedItem, post_url: str,
                       post_id: str = "000",
                       dry_run: bool = False,
-                      force: bool = False) -> None:
+                      force: bool = False,
+                      test_email: str = "") -> None:
     """Generate email draft, save to disk, and send via Kit unless already sent or dry_run."""
     emailed = load_email_log()
     if item.slug in emailed and not force:
@@ -1388,8 +1398,11 @@ def write_email_draft(item: FeedItem, post_url: str,
         update_email_log(item, subject, status="dry-run")
         return
 
-    # Log before sending — prevents duplicate sends if log write fails after
-    update_email_log(item, subject, status="sending")
+    # Test sends never touch the email log — they must be repeatable and
+    # must not mark the article as "already emailed" for the real send.
+    if not test_email:
+        # Log before sending — prevents duplicate sends if log write fails after
+        update_email_log(item, subject, status="sending")
 
     # Split body into one sentence per line so send_kit_broadcast
     # wraps each sentence in its own <p> tag.
@@ -1406,18 +1419,21 @@ def write_email_draft(item: FeedItem, post_url: str,
         return "\n".join(result)
 
     broadcast_body = split_sentences(body)
-    sent = send_kit_broadcast(subject, broadcast_body, briefing_no=brief_no)
+    sent = send_kit_broadcast(subject, broadcast_body, briefing_no=brief_no,
+                              test_email=test_email)
 
-    # Patch status in log now we know the outcome
-    log_path = ROOT / "log" / "email-log.md"
-    log_text = log_path.read_text(encoding="utf-8")
-    final_status = "sent" if sent else "failed"
-    log_text = re.sub(
-        rf'(- slug: {re.escape(item.slug)}\n(?:.*\n)*?- status:) sending',
-        rf'\1 {final_status}',
-        log_text,
-    )
-    log_path.write_text(log_text, encoding="utf-8")
+    # Patch status in log now we know the outcome. Skipped for test sends,
+    # since they never wrote a "sending" entry above.
+    if not test_email:
+        log_path = ROOT / "log" / "email-log.md"
+        log_text = log_path.read_text(encoding="utf-8")
+        final_status = "sent" if sent else "failed"
+        log_text = re.sub(
+            rf'(- slug: {re.escape(item.slug)}\n(?:.*\n)*?- status:) sending',
+            rf'\1 {final_status}',
+            log_text,
+        )
+        log_path.write_text(log_text, encoding="utf-8")
 
 
 def update_linkedin_log(item: FeedItem, draft_path: Path, post_id: str = "000") -> None:
@@ -1695,10 +1711,20 @@ def main() -> int:
         "--test", metavar="SLUG", default="", dest="test_slug",
         help="Force-regenerate the email and LinkedIn drafts for SLUG (never sends, email log untouched, overwrites the LinkedIn draft file)"
     )
+    parser.add_argument(
+        "--send-test-to", metavar="EMAIL", default="", dest="test_email",
+        help="Send a real test broadcast for --test SLUG to this email address only. "
+             "Subject is prefixed [TEST]. Bypasses the daily-send guard and the "
+             "email log entirely — safe to run repeatedly without affecting the "
+             "real subscriber list or blocking the next live send. Requires --test."
+    )
     args = parser.parse_args()
     dry_run = args.dry_run
     test_slug = args.test_slug
-    if test_slug:
+    test_email = args.test_email
+    if test_email and not test_slug:
+        parser.error("--send-test-to requires --test SLUG")
+    if test_slug and not test_email:
         dry_run = True
 
     # Primary: scrape blog index pages to get all articles
@@ -1808,7 +1834,8 @@ def main() -> int:
                 write_advisor_brief(item, post_url, post_id=post_id)
                 if item_datetime(item.pub_date) <= now:
                     write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run,
-                                      force=(item.slug == test_slug))
+                                      force=(item.slug == test_slug),
+                                      test_email=(test_email if item.slug == test_slug else ""))
                 continue
             # File deleted — rebuild via full pipeline using fetched HTML
 
@@ -1819,7 +1846,8 @@ def main() -> int:
                              force=(item.slug == test_slug))
         write_advisor_brief(item, post_url, post_id=post_id)
         write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run,
-                          force=(item.slug == test_slug))
+                          force=(item.slug == test_slug),
+                          test_email=(test_email if item.slug == test_slug else ""))
 
     if not visible_items:
         print("No published articles found — skipping blog and sitemap generation.", file=sys.stderr)
