@@ -2086,11 +2086,23 @@ def _git_commit_and_push(latest_slug: str) -> None:
     def run(cmd: list[str]) -> subprocess.CompletedProcess:
         return subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
 
-    # Pull so we're up to date before pushing
+    # Stash working-tree changes so pull --rebase can proceed cleanly,
+    # then restore them on top of the updated remote state.
+    stash = run(["git", "stash", "--include-untracked", "-m", "sync pre-pull stash"])
+    stashed = stash.returncode == 0 and "No local changes to save" not in stash.stdout
+
     pull = run(["git", "pull", "--rebase"])
     if pull.returncode != 0:
+        if stashed:
+            run(["git", "stash", "pop"])
         print(f"  git pull failed — skipping commit/push:\n{pull.stderr}", file=sys.stderr)
         return
+
+    if stashed:
+        pop = run(["git", "stash", "pop"])
+        if pop.returncode != 0:
+            print(f"  git stash pop failed — skipping commit/push:\n{pop.stderr}", file=sys.stderr)
+            return
 
     run(["git", "add", "-A"])
 
