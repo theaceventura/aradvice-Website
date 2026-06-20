@@ -226,3 +226,13 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## AICD Cyber Security Governance Principles Version 2: What Australian Directors Need to Know
+- **ID:** 025
+- **Slug:** aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know
+- **Article date:** 16 Jun 2026
+- **Draft generated:** 20 Jun 2026
+- **Draft file:** post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/025-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**

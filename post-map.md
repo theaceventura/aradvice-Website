@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 20 Jun 2026 00:32 UTC
+Generated: 20 Jun 2026 00:34 UTC
 
-Total posts: 23
+Total posts: 24
 
 
 ---
@@ -282,3 +282,15 @@ Total posts: 23
 - **LinkedIn draft:** `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/024-linkedin.txt`
 - **LinkedIn log:** see `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/posting-log.md`
 - **Advisor brief:** `post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/024-advisor-brief.md`
+
+
+## [025] AICD Cyber Security Governance Principles Version 2: What Australian Directors Need to Know
+- **ID:** 025
+- **Published:** 16 Jun 2026
+- **Slug:** `aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know`
+- **URL:** https://aradvice.com.au/post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/
+- **Article:** `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/index.html`
+- **og:image:** `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/025-og-image.png`
+- **LinkedIn draft:** `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/025-linkedin.txt`
+- **LinkedIn log:** see `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/posting-log.md`
+- **Advisor brief:** `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/025-advisor-brief.md`

@@ -1,0 +1,11 @@
+Consider a chair who is asked, mid-board meeting, to confirm whether the organisation's critical systems are protected. The dashboard says green. The chair says yes. Neither of them can explain what "green" actually means.
+
+That is the accountability problem the AICD Cyber Security Governance Principles Version 2 was designed to address. Released in November 2024, the updated principles push directors past passive acceptance of technical reporting toward active, defensible oversight. The distinction matters because the Cyber Security Act 2024 is moving toward full enforcement and "management told us it was fine" is not a governance position.
+
+Two vulnerabilities sit at the centre of director exposure right now: event logging gaps and legacy IT systems. Both are routinely underreported in board packs because management metrics are built to show progress, not systemic risk. If there is no funded remediation plan on the table for either, the board has not received adequate reporting.
+
+The AICD framework, read alongside ASD standards, gives directors specific language to demand better. Not more information, better information. Reporting that names the risk, quantifies the exposure, and confirms the owner.
+
+A green dashboard is not assurance. It is the absence of a question the board has not yet learned to ask.
+
+https://aradvice.com.au/post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/

@@ -1964,6 +1964,18 @@ def main() -> int:
         if s not in feed_slugs:
             feed_items.append(manual)
 
+    # Also pick up any RSS articles not yet appearing on the blog index page
+    # (e.g. newly published posts that the index hasn't refreshed to show yet).
+    for rss_slug, rss in rss_by_slug.items():
+        if rss_slug not in feed_slugs:
+            feed_items.append({
+                "link": rss["link"],
+                "title": rss["title"],
+                "pub_date": rss.get("pub_date", ""),
+                "description": rss.get("description", ""),
+            })
+            print(f"  RSS-only article queued: {rss_slug}")
+
     generated_items: list[FeedItem] = []
     for raw_item in feed_items:
         slug = item_slug(raw_item["link"], raw_item["title"])

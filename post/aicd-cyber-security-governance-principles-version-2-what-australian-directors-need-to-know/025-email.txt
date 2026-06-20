@@ -1,0 +1,7 @@
+SUBJECT: AICD Cyber Principles v2: closing the board visibility gap
+
+The cyber dashboard came back green across every line item, and the board signed off on the annual security report without a single question about event logging coverage or the three legacy systems still running unsupported software. If that reporting later proves to have obscured material risk, a director who accepted it without challenge has a credible exposure under the duty of care and diligence in s.180 of the Corporations Act, and a shareholder or liquidator can pursue that personally. The updated AICD Cyber Security Governance Principles give you the specific questions and accountability structures to make that sign-off defensible.
+
+https://aradvice.com.au/post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/
+
+Andrew
