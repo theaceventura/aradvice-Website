@@ -121,136 +121,120 @@
 o.src="https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache="+n,o.async=!0,o.defer=!0,
 o.onload=function(){window.trackingFunctions.onLoad({appId:"69af3470339a91000df9d505"})},
 document.head.appendChild(o)}initApollo();</script>
-<!-- Page-specific styles: resource hub content -->
 <style>
-  :root{
-    --ink:#10202e;
-    --slate:#34495b;
-    --muted:#5d7081;
-    --paper:#f6f8fa;
-    --line:#dde5ec;
-    --navy:#0c1c2a;
-    --navy-2:#12283a;
-    --cyan:#10b6c8;
-    --cyan-deep:#0a8a99;
-    --white:#ffffff;
-    --amber:#c9821f;
-    --maxw:1140px;
-    --radius:10px;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    font-family:'Inter',system-ui,-apple-system,sans-serif;
-    color:var(--ink);
-    background:var(--white);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3,h4{font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.2;color:var(--ink);margin:0;}
-  a{color:var(--cyan-deep);text-decoration:none;}
-  a:hover{text-decoration:underline;}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
-  .material-symbols-outlined{font-variation-settings:'opsz' 24,'wght' 400;vertical-align:middle;}
+/* ===== Resource Hub — scoped under .rh, matched to aradvice.com.au dark theme ===== */
+.rh{
+  --bg:#0a1428; --card:#0c1a34; --accent:#00d4ff; --accent-hi:#46dcf8;
+  --text:#f1f5f9; --muted:#92a4ba; --line:rgba(255,255,255,.10); --line-soft:rgba(255,255,255,.06);
+  color:var(--text); font-family:'Inter',system-ui,-apple-system,sans-serif; line-height:1.6;
+}
+.rh *{box-sizing:border-box;}
+.rh a{color:var(--accent);text-decoration:none;}
+.rh a:hover{text-decoration:underline;}
+.rh h1,.rh h2,.rh h3,.rh h4{font-family:'Inter',sans-serif;color:#fff;margin:0;line-height:1.12;font-weight:900;}
+.rh .wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+.rh .material-symbols-outlined{vertical-align:middle;}
 
-  /* ---------- hero ---------- */
-  .hero{background:var(--navy);color:#eaf2f6;padding:62px 0 56px;border-bottom:3px solid var(--cyan);}
-  .crumbs{font-size:13px;color:#7e93a3;margin-bottom:20px;}
-  .crumbs a{color:#9fb3c2;}
-  .hero h1{color:#fff;font-size:clamp(30px,5vw,46px);font-weight:600;letter-spacing:-.5px;max-width:780px;}
-  .hero p{color:#b8c8d4;font-size:18px;max-width:620px;margin-top:18px;}
-  .hero .eyebrow{color:var(--cyan);font-family:'Inter';font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px;}
+/* hero */
+.rh .hero{background:radial-gradient(900px 460px at 28% -10%, rgba(0,135,185,.40), transparent 60%), var(--bg); padding:74px 0 60px; border-bottom:3px solid var(--accent);}
+.rh .crumbs{font-size:13px;color:#7e93a3;margin-bottom:22px;}
+.rh .crumbs a{color:#9fb3c2;}
+.rh .eyebrow,.rh .kicker{color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;}
+.rh .hero .eyebrow{display:inline-block;margin-bottom:18px;}
+.rh .hero h1{font-size:clamp(42px,7.4vw,84px);text-transform:uppercase;letter-spacing:-.035em;color:#fff;max-width:15ch;}
+.rh .hero p{color:#b8c8d4;font-size:18px;max-width:600px;margin-top:22px;font-weight:400;}
 
-  /* ---------- section frame ---------- */
-  section{padding:64px 0;}
-  section.alt{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-  .sec-head{max-width:720px;margin-bottom:40px;}
-  .sec-head .kicker{color:var(--cyan-deep);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:12px;}
-  .sec-head h2{font-size:clamp(24px,3.4vw,33px);font-weight:600;letter-spacing:-.4px;}
-  .sec-head p{color:var(--muted);font-size:16.5px;margin-top:14px;}
+/* sections */
+.rh section{padding:60px 0;}
+.rh section.alt{background:rgba(255,255,255,.018);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);}
+.rh .sec-head{max-width:720px;margin-bottom:38px;}
+.rh .sec-head .kicker{display:block;margin-bottom:12px;}
+.rh .sec-head h2{font-size:clamp(24px,3.6vw,34px);letter-spacing:-.01em;}
+.rh .sec-head p{color:var(--muted);font-size:16.5px;margin-top:14px;font-weight:400;}
 
-  /* ---------- regulatory grid ---------- */
-  .reg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
-  @media(max-width:760px){.reg-grid{grid-template-columns:1fr;}}
-  .reg-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px 26px 22px;display:flex;flex-direction:column;transition:border-color .2s,box-shadow .2s;}
-  .reg-card:hover{border-color:#bcd2dd;box-shadow:0 6px 24px rgba(16,32,46,.07);}
-  .reg-card .tag{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;background:#eef6f8;color:var(--cyan-deep);font-size:12px;font-weight:600;letter-spacing:.04em;padding:5px 11px;border-radius:30px;margin-bottom:16px;text-transform:uppercase;}
-  .reg-card h3{font-size:20px;font-weight:600;margin-bottom:4px;}
-  .reg-card .statute{font-family:'Inter';font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:13px;}
-  .reg-card p{font-size:14.5px;color:var(--slate);margin:0 0 10px;}
-  .reg-card .why{font-size:14px;color:var(--ink);background:var(--paper);border-left:3px solid var(--cyan);padding:11px 14px;border-radius:0 6px 6px 0;margin:6px 0 18px;}
-  .reg-card .why b{font-weight:600;}
-  .reg-card .src{margin-top:auto;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px;}
-  .reg-card .src .material-symbols-outlined{font-size:16px;}
+/* regulatory grid */
+.rh .reg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+@media(max-width:760px){.rh .reg-grid{grid-template-columns:1fr;}}
+.rh .reg-card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:26px;display:flex;flex-direction:column;box-shadow:0 10px 25px rgba(0,0,0,.25);transition:border-color .2s,transform .2s;}
+.rh .reg-card:hover{border-color:rgba(0,212,255,.42);transform:translateY(-2px);}
+.rh .reg-card .tag{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;background:rgba(0,212,255,.12);color:var(--accent);font-size:11.5px;font-weight:700;letter-spacing:.06em;padding:5px 11px;border-radius:30px;margin-bottom:16px;text-transform:uppercase;}
+.rh .reg-card .tag .material-symbols-outlined{font-size:15px;}
+.rh .reg-card h3{font-size:20px;font-weight:800;margin-bottom:5px;color:#fff;}
+.rh .reg-card .statute{font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:13px;}
+.rh .reg-card p{font-size:14.5px;color:#c4d2df;margin:0 0 10px;font-weight:400;}
+.rh .reg-card .why{font-size:14px;color:#dce7f0;background:rgba(255,255,255,.04);border-left:3px solid var(--accent);padding:11px 14px;border-radius:0 6px 6px 0;margin:6px 0 18px;}
+.rh .reg-card .why b{color:#fff;font-weight:700;}
+.rh .reg-card .src{margin-top:auto;font-size:13.5px;font-weight:700;color:var(--accent);display:inline-flex;align-items:center;gap:5px;}
+.rh .reg-card .src .material-symbols-outlined{font-size:16px;}
 
-  /* ---------- timeline ---------- */
-  .timeline{position:relative;margin:8px 0 0;padding-left:4px;}
-  .tl-item{position:relative;padding:0 0 30px 42px;border-left:2px solid var(--line);}
-  .tl-item:last-child{border-left-color:transparent;padding-bottom:0;}
-  .tl-dot{position:absolute;left:-9px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--cyan);}
-  .tl-item.done .tl-dot{background:var(--cyan);}
-  .tl-item.next .tl-dot{border-color:var(--amber);box-shadow:0 0 0 4px rgba(201,130,31,.16);}
-  .tl-date{font-family:'Inter';font-weight:700;font-size:14px;color:var(--ink);letter-spacing:.01em;}
-  .tl-item.next .tl-date{color:var(--amber);}
-  .tl-title{font-weight:600;font-size:16px;margin:3px 0 5px;color:var(--ink);}
-  .tl-body{font-size:14.5px;color:var(--slate);max-width:660px;}
-  .tl-status{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:20px;margin-left:10px;vertical-align:middle;}
-  .tl-status.live{background:#e4f4ec;color:#1c7a47;}
-  .tl-status.up{background:#fbeede;color:var(--amber);}
+/* timeline */
+.rh .timeline{margin-top:6px;}
+.rh .tl-item{position:relative;padding:0 0 30px 42px;border-left:2px solid var(--line);}
+.rh .tl-item:last-child{border-left-color:transparent;padding-bottom:0;}
+.rh .tl-dot{position:absolute;left:-9px;top:2px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);}
+.rh .tl-item.done .tl-dot{background:var(--accent);}
+.rh .tl-item.next .tl-dot{border-color:#f0a93a;box-shadow:0 0 0 4px rgba(240,169,58,.18);}
+.rh .tl-date{font-weight:800;font-size:14px;color:#fff;}
+.rh .tl-item.next .tl-date{color:#f0a93a;}
+.rh .tl-title{font-weight:700;font-size:16px;margin:3px 0 5px;color:#eaf2f8;}
+.rh .tl-body{font-size:14.5px;color:#aebccb;max-width:660px;font-weight:400;}
+.rh .tl-body b{color:#fff;font-weight:700;}
+.rh .tl-status{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:20px;margin-left:10px;vertical-align:middle;}
+.rh .tl-status.live{background:rgba(34,197,94,.16);color:#5fd996;}
+.rh .tl-status.up{background:rgba(240,169,58,.16);color:#f0a93a;}
 
-  /* ---------- principles ---------- */
-  .prin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
-  @media(max-width:760px){.prin-grid{grid-template-columns:1fr;}}
-  .prin{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;display:flex;gap:18px;}
-  .prin .num{flex:0 0 auto;width:42px;height:42px;border-radius:9px;background:var(--navy);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-family:'Inter';font-weight:700;font-size:19px;}
-  .prin h3{font-size:18px;font-weight:600;margin-bottom:7px;}
-  .prin p{font-size:14.5px;color:var(--slate);margin:0;}
-  .prin.full{grid-column:1/-1;}
+/* principles */
+.rh .prin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+@media(max-width:760px){.rh .prin-grid{grid-template-columns:1fr;}}
+.rh .prin{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:24px;display:flex;gap:18px;box-shadow:0 10px 25px rgba(0,0,0,.22);}
+.rh .prin .num{flex:0 0 auto;font-weight:900;font-size:30px;color:var(--accent);line-height:1;min-width:44px;}
+.rh .prin h3{font-size:18px;font-weight:800;margin-bottom:7px;color:#fff;}
+.rh .prin p{font-size:14.5px;color:#bccadb;margin:0;font-weight:400;}
+.rh .prin.full{grid-column:1/-1;}
 
-  /* ---------- two-col resource lists ---------- */
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
-  @media(max-width:760px){.cols{grid-template-columns:1fr;gap:30px;}}
-  .reslist h3{font-size:18px;font-weight:600;margin-bottom:6px;}
-  .reslist .lead{font-size:14.5px;color:var(--muted);margin:0 0 16px;}
-  .reslist ul{list-style:none;margin:0;padding:0;}
-  .reslist li{border-bottom:1px solid var(--line);}
-  .reslist li a{display:flex;align-items:center;gap:11px;padding:13px 2px;color:var(--ink);font-weight:500;font-size:15px;}
-  .reslist li a:hover{color:var(--cyan-deep);text-decoration:none;}
-  .reslist li a .material-symbols-outlined{color:var(--cyan-deep);font-size:20px;}
-  .reslist li a .ext{margin-left:auto;color:var(--muted);font-size:16px;}
-  .reslist li small{display:block;color:var(--muted);font-weight:400;font-size:12.5px;}
+/* two-col resource lists */
+.rh .cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+@media(max-width:760px){.rh .cols{grid-template-columns:1fr;gap:30px;}}
+.rh .reslist h3{font-size:18px;font-weight:800;margin-bottom:6px;color:#fff;}
+.rh .reslist .lead{font-size:14.5px;color:var(--muted);margin:0 0 14px;font-weight:400;}
+.rh .reslist ul{list-style:none;margin:0;padding:0;}
+.rh .reslist li{border-bottom:1px solid var(--line-soft);}
+.rh .reslist li a{display:flex;align-items:center;gap:11px;padding:13px 2px;color:#e6eef6;font-weight:600;font-size:15px;}
+.rh .reslist li a:hover{color:var(--accent);text-decoration:none;}
+.rh .reslist li a .material-symbols-outlined{color:var(--accent);font-size:20px;}
+.rh .reslist li a .ext{margin-left:auto;color:var(--muted);font-size:16px;}
+.rh .reslist li small{display:block;color:var(--muted);font-weight:400;font-size:12.5px;}
 
-  /* ---------- checklist callout ---------- */
-  .callout{background:var(--navy);color:#eaf2f6;border-radius:14px;padding:38px 40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;}
-  .callout h3{color:#fff;font-size:23px;font-weight:600;margin-bottom:8px;}
-  .callout p{color:#b8c8d4;font-size:15px;max-width:560px;margin:0;}
-  .callout .btn{background:var(--cyan);color:#04222a;font-weight:700;padding:14px 26px;border-radius:8px;font-size:15px;white-space:nowrap;}
-  .callout .btn:hover{background:#3fcdde;text-decoration:none;}
+/* callout */
+.rh .callout{background:linear-gradient(120deg,#0c1c3a,#0a1730);border:1px solid var(--line);border-radius:12px;padding:36px 38px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;}
+.rh .callout h3{color:#fff;font-size:22px;font-weight:800;margin-bottom:8px;}
+.rh .callout p{color:#b8c8d4;font-size:15px;max-width:560px;margin:0;font-weight:400;}
 
-  /* ---------- essential eight strip ---------- */
-  .e8{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:8px;}
-  @media(max-width:760px){.e8{grid-template-columns:repeat(2,1fr);}}
-  .e8 div{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:14px;font-weight:500;color:var(--slate);}
-  .e8 div span{display:block;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+/* buttons — sharp, cyan, uppercase (site style) */
+.rh .btn,.rh .btn-primary{display:inline-block;background:var(--accent);color:#04222a;font-weight:700;padding:15px 32px;border-radius:0;font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;}
+.rh .btn:hover,.rh .btn-primary:hover{background:var(--accent-hi);text-decoration:none;}
+.rh .btn-ghost{display:inline-block;border:1px solid #2c4763;color:#dceaf1;font-weight:700;padding:15px 32px;border-radius:0;font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;}
+.rh .btn-ghost:hover{border-color:var(--accent);text-decoration:none;}
 
-  /* ---------- disclaimer ---------- */
-  .disclaimer{font-size:13px;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px 24px;line-height:1.65;}
-  .disclaimer b{color:var(--slate);}
+/* essential eight */
+.rh .e8{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px;}
+@media(max-width:760px){.rh .e8{grid-template-columns:repeat(2,1fr);}}
+.rh .e8 div{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:13px 15px;font-size:14px;font-weight:600;color:#cdd9e6;}
+.rh .e8 div span{display:block;font-size:11px;color:var(--accent);font-weight:800;letter-spacing:.05em;margin-bottom:3px;}
 
-  /* ---------- CTA band ---------- */
-  .cta-band{background:var(--navy-2);color:#fff;text-align:center;padding:64px 0;}
-  .cta-band .kicker{color:var(--cyan);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;}
-  .cta-band h2{color:#fff;font-size:clamp(24px,3.4vw,33px);font-weight:600;margin:14px 0 12px;}
-  .cta-band p{color:#b8c8d4;max-width:560px;margin:0 auto 26px;font-size:16px;}
-  .btn-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-  .btn-primary{background:var(--cyan);color:#04222a;font-weight:700;padding:14px 28px;border-radius:8px;}
-  .btn-primary:hover{background:#3fcdde;text-decoration:none;}
-  .btn-ghost{border:1px solid #45596a;color:#dceaf1;font-weight:600;padding:14px 28px;border-radius:8px;}
-  .btn-ghost:hover{border-color:var(--cyan);text-decoration:none;}
+/* disclaimer */
+.rh .disclaimer{font-size:13px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--line-soft);border-radius:10px;padding:20px 24px;line-height:1.65;}
+.rh .disclaimer b{color:#cdd9e6;}
 
-  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;}}
-  :focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:3px;}
+/* CTA band */
+.rh .cta-band{background:radial-gradient(800px 300px at 50% -10%, rgba(0,135,185,.28), transparent 60%), #0b1830;border-top:1px solid var(--line);text-align:center;padding:62px 0;}
+.rh .cta-band .kicker{display:inline-block;}
+.rh .cta-band h2{font-size:clamp(24px,3.6vw,34px);margin:14px 0 12px;}
+.rh .cta-band p{color:#b8c8d4;max-width:560px;margin:0 auto 26px;font-size:16px;font-weight:400;}
+.rh .btn-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+@media(prefers-reduced-motion:reduce){.rh *{transition:none!important;}}
+.rh :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -315,287 +299,275 @@ document.head.appendChild(o)}initApollo();</script>
   </div>
 </header>
 
-<main style="padding-top: 7rem;">
+<main class="rh">
 
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="wrap">
-    <div class="crumbs"><a href="https://aradvice.com.au/index.html">Home</a> &nbsp;›&nbsp; Director's Resource Hub</div>
-    <div class="eyebrow">Director's Resource Hub</div>
-    <h1>The frameworks, obligations and dates a board is expected to know.</h1>
-    <p>Key Australian cyber and AI governance references — curated and contextualised for the boardroom, not the IT department. Every date and threshold below is drawn from the primary instrument.</p>
-  </div>
-</section>
-
-<!-- ============ REGULATORY SPINE ============ -->
-<section>
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="kicker">The regulatory landscape</span>
-      <h2>What governs a director's cyber and AI accountability</h2>
-      <p>Cyber and AI failures are not judged against a technical standard — they are judged against a director's duties. These are the instruments that define the boundary of that accountability in Australia.</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="crumbs"><a href="https://aradvice.com.au/index.html">Home</a> &nbsp;›&nbsp; Director's Resource Hub</div>
+      <div class="eyebrow">Director's Resource Hub</div>
+      <h1>Frameworks &amp; Obligations</h1>
+      <p>The key Australian cyber and AI governance references, regulatory commencement dates and director duties — curated for the boardroom, not the IT department. Every date and threshold is drawn from the primary instrument.</p>
     </div>
+  </section>
 
-    <div class="reg-grid">
-
-      <div class="reg-card">
-        <span class="tag"><span class="material-symbols-outlined">gavel</span> Directors' duties</span>
-        <h3>Duty of Care and Diligence</h3>
-        <div class="statute">Corporations Act 2001 (Cth) — s.180</div>
-        <p>The statutory standard of care a director must exercise. Cyber and AI risk oversight failures are increasingly tested through this lens, not as a separate technical duty.</p>
-        <div class="why"><b>For the board:</b> the question a regulator or court asks is not "did the system fail?" but "did the director exercise reasonable care in overseeing the risk?"</div>
-        <a class="src" href="https://www.legislation.gov.au/" target="_blank" rel="noopener">Federal Register of Legislation <span class="material-symbols-outlined">open_in_new</span></a>
+  <!-- REGULATORY SPINE -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">The regulatory landscape</span>
+        <h2>What governs a director's cyber and AI accountability</h2>
+        <p>Cyber and AI failures are not judged against a technical standard — they are judged against a director's duties. These are the instruments that define the boundary of that accountability in Australia.</p>
       </div>
+      <div class="reg-grid">
 
-      <div class="reg-card">
-        <span class="tag"><span class="material-symbols-outlined">security</span> Cyber — primary law</span>
-        <h3>Cyber Security Act 2024</h3>
-        <div class="statute">Cyber Security Act 2024 (Cth) — Royal Assent 29 November 2024</div>
-        <p>Australia's first standalone cyber security law. Introduces mandatory ransomware payment reporting, mandatory security standards for smart devices, and a Cyber Incident Review Board.</p>
-        <div class="why"><b>For the board:</b> reporting obligations and limited-use protections change how an incident must be managed in the first 72 hours. See the commencement timeline below.</div>
-        <a class="src" href="https://www.homeaffairs.gov.au/about-us/our-portfolios/cyber-security" target="_blank" rel="noopener">Dept. of Home Affairs <span class="material-symbols-outlined">open_in_new</span></a>
+        <div class="reg-card">
+          <span class="tag"><span class="material-symbols-outlined">gavel</span> Directors' duties</span>
+          <h3>Duty of Care and Diligence</h3>
+          <div class="statute">Corporations Act 2001 (Cth) — s.180</div>
+          <p>The statutory standard of care a director must exercise. Cyber and AI risk oversight failures are increasingly tested through this lens, not as a separate technical duty.</p>
+          <div class="why"><b>For the board:</b> the question a regulator or court asks is not "did the system fail?" but "did the director exercise reasonable care in overseeing the risk?"</div>
+          <a class="src" href="https://www.legislation.gov.au/" target="_blank" rel="noopener">Federal Register of Legislation <span class="material-symbols-outlined">open_in_new</span></a>
+        </div>
+
+        <div class="reg-card">
+          <span class="tag"><span class="material-symbols-outlined">security</span> Cyber — primary law</span>
+          <h3>Cyber Security Act 2024</h3>
+          <div class="statute">Cyber Security Act 2024 (Cth) — Royal Assent 29 November 2024</div>
+          <p>Australia's first standalone cyber security law. Introduces mandatory ransomware payment reporting, mandatory security standards for smart devices, and a Cyber Incident Review Board.</p>
+          <div class="why"><b>For the board:</b> reporting obligations and limited-use protections change how an incident must be managed in the first 72 hours. See the commencement timeline below.</div>
+          <a class="src" href="https://www.homeaffairs.gov.au/about-us/our-portfolios/cyber-security" target="_blank" rel="noopener">Dept. of Home Affairs <span class="material-symbols-outlined">open_in_new</span></a>
+        </div>
+
+        <div class="reg-card">
+          <span class="tag"><span class="material-symbols-outlined">account_balance</span> Critical infrastructure</span>
+          <h3>Security of Critical Infrastructure</h3>
+          <div class="statute">Security of Critical Infrastructure Act 2018 (Cth) — "SOCI"</div>
+          <p>Risk management program and mandatory incident reporting obligations for responsible entities of critical infrastructure assets across energy, water, health, data, finance and more.</p>
+          <div class="why"><b>For the board:</b> responsible entities must report ransomware payments regardless of turnover, and carry board-attested risk management program duties.</div>
+          <a class="src" href="https://www.cisc.gov.au/" target="_blank" rel="noopener">Cyber &amp; Infrastructure Security Centre <span class="material-symbols-outlined">open_in_new</span></a>
+        </div>
+
+        <div class="reg-card">
+          <span class="tag"><span class="material-symbols-outlined">policy</span> Privacy</span>
+          <h3>Privacy Act &amp; Data Breach Scheme</h3>
+          <div class="statute">Privacy Act 1988 (Cth) + Notifiable Data Breaches scheme</div>
+          <p>Governs handling of personal information and mandatory notification of eligible data breaches. A significant reform package is progressively amending the Act.</p>
+          <div class="why"><b>For the board:</b> data governance — what is held, where, who can access it, and retention — is now an explicit board oversight expectation under the AICD Principles.</div>
+          <a class="src" href="https://www.oaic.gov.au/" target="_blank" rel="noopener">Office of the Australian Information Commissioner <span class="material-symbols-outlined">open_in_new</span></a>
+        </div>
+
+        <div class="reg-card">
+          <span class="tag"><span class="material-symbols-outlined">verified_user</span> APRA-regulated</span>
+          <h3>CPS 234 Information Security</h3>
+          <div class="statute">APRA Prudential Standard CPS 234 (+ related CPS 230 Operational Risk)</div>
+          <p>Requires APRA-regulated entities to maintain information security capability commensurate with threats, with clear board and senior management accountability.</p>
+          <div class="why"><b>For the board:</b> for banks, insurers and superannuation trustees, information security is a board-accountable prudential obligation — not delegated assurance.</div>
+          <a class="src" href="https://www.apra.gov.au/information-security" target="_blank" rel="noopener">APRA <span class="material-symbols-outlined">open_in_new</span></a>
+        </div>
+
+        <div class="reg-card">
+          <span class="tag"><span class="material-symbols-outlined">checklist</span> Technical baseline</span>
+          <h3>The Essential Eight</h3>
+          <div class="statute">ASD / ACSC — Essential Eight Maturity Model</div>
+          <p>Eight prioritised mitigation strategies and a maturity model. The most common technical baseline a board will see referenced in management cyber reporting.</p>
+          <div class="why"><b>For the board:</b> a useful benchmark to challenge management against — "what maturity level are we at, against what target, and why?"</div>
+          <a class="src" href="https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight" target="_blank" rel="noopener">cyber.gov.au <span class="material-symbols-outlined">open_in_new</span></a>
+        </div>
+
       </div>
-
-      <div class="reg-card">
-        <span class="tag"><span class="material-symbols-outlined">account_balance</span> Critical infrastructure</span>
-        <h3>Security of Critical Infrastructure</h3>
-        <div class="statute">Security of Critical Infrastructure Act 2018 (Cth) — "SOCI"</div>
-        <p>Risk management program and mandatory incident reporting obligations for responsible entities of critical infrastructure assets across energy, water, health, data, finance and more.</p>
-        <div class="why"><b>For the board:</b> responsible entities must report ransomware payments regardless of turnover, and carry board-attested risk management program duties.</div>
-        <a class="src" href="https://www.cisc.gov.au/" target="_blank" rel="noopener">Cyber &amp; Infrastructure Security Centre <span class="material-symbols-outlined">open_in_new</span></a>
-      </div>
-
-      <div class="reg-card">
-        <span class="tag"><span class="material-symbols-outlined">policy</span> Privacy</span>
-        <h3>Privacy Act &amp; Data Breach Scheme</h3>
-        <div class="statute">Privacy Act 1988 (Cth) + Notifiable Data Breaches scheme</div>
-        <p>Governs handling of personal information and mandatory notification of eligible data breaches. A significant reform package is progressively amending the Act.</p>
-        <div class="why"><b>For the board:</b> data governance — what is held, where, who can access it, and retention — is now an explicit board oversight expectation under the AICD Principles.</div>
-        <a class="src" href="https://www.oaic.gov.au/" target="_blank" rel="noopener">Office of the Australian Information Commissioner <span class="material-symbols-outlined">open_in_new</span></a>
-      </div>
-
-      <div class="reg-card">
-        <span class="tag"><span class="material-symbols-outlined">verified_user</span> APRA-regulated</span>
-        <h3>CPS 234 Information Security</h3>
-        <div class="statute">APRA Prudential Standard CPS 234 (+ related CPS 230 Operational Risk)</div>
-        <p>Requires APRA-regulated entities to maintain information security capability commensurate with threats, with clear board and senior management accountability.</p>
-        <div class="why"><b>For the board:</b> for banks, insurers and superannuation trustees, information security is a board-accountable prudential obligation — not delegated assurance.</div>
-        <a class="src" href="https://www.apra.gov.au/information-security" target="_blank" rel="noopener">APRA <span class="material-symbols-outlined">open_in_new</span></a>
-      </div>
-
-      <div class="reg-card">
-        <span class="tag"><span class="material-symbols-outlined">checklist</span> Technical baseline</span>
-        <h3>The Essential Eight</h3>
-        <div class="statute">ASD / ACSC — Essential Eight Maturity Model</div>
-        <p>Eight prioritised mitigation strategies and a maturity model. The most common technical baseline a board will see referenced in management cyber reporting.</p>
-        <div class="why"><b>For the board:</b> a useful benchmark to challenge management against — "what maturity level are we at, against what target, and why?"</div>
-        <a class="src" href="https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight" target="_blank" rel="noopener">cyber.gov.au <span class="material-symbols-outlined">open_in_new</span></a>
-      </div>
-
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ============ COMMENCEMENT TIMELINE (signature) ============ -->
-<section class="alt">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="kicker">Cyber Security Act 2024 — rollout</span>
-      <h2>What commences, and when</h2>
-      <p>The Act commences in stages. These dates are taken verbatim from the Act, the supporting Rules and Department of Home Affairs guidance. Confirm against the source before relying on any date for a board paper.</p>
+  <!-- TIMELINE -->
+  <section class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">Cyber Security Act 2024 — rollout</span>
+        <h2>What commences, and when</h2>
+        <p>The Act commences in stages. These dates are taken verbatim from the Act, the supporting Rules and Department of Home Affairs guidance. Confirm against the source before relying on any date for a board paper.</p>
+      </div>
+      <div class="timeline">
+        <div class="tl-item done">
+          <span class="tl-dot"></span>
+          <div class="tl-date">29 November 2024</div>
+          <div class="tl-title">Cyber Security Act 2024 receives Royal Assent</div>
+          <div class="tl-body">Australia's first standalone cyber security law becomes law. Framework provisions for ransomware reporting, smart-device standards and the Cyber Incident Review Board are set in motion.</div>
+        </div>
+        <div class="tl-item done">
+          <span class="tl-dot"></span>
+          <div class="tl-date">30 May 2025 <span class="tl-status live">In force</span></div>
+          <div class="tl-title">Mandatory ransomware &amp; cyber-extortion payment reporting commences</div>
+          <div class="tl-body">Reporting business entities must report a ransomware or cyber-extortion payment to the Australian Signals Directorate within <b>72 hours</b>. Applies to entities with annual turnover of <b>$3 million or more</b>, and to responsible entities for critical infrastructure assets regardless of turnover. Failure to report carries a civil penalty of up to 60 penalty units (currently $19,800).</div>
+        </div>
+        <div class="tl-item done">
+          <span class="tl-dot"></span>
+          <div class="tl-date">30 May – 31 December 2025</div>
+          <div class="tl-title">Education-first transition period</div>
+          <div class="tl-body">The Department applied an education-first approach for the first six months, prioritising awareness and support over enforcement action except for serious non-compliance.</div>
+        </div>
+        <div class="tl-item done">
+          <span class="tl-dot"></span>
+          <div class="tl-date">1 January 2026 <span class="tl-status live">In force</span></div>
+          <div class="tl-title">Full enforcement of ransomware reporting obligations</div>
+          <div class="tl-body">The education-first period ends and the reporting obligation moves to full compliance and enforcement.</div>
+        </div>
+        <div class="tl-item next">
+          <span class="tl-dot"></span>
+          <div class="tl-date">4 March 2026 <span class="tl-status up">Commenced</span></div>
+          <div class="tl-title">Security Standards for Smart Devices Rules commence</div>
+          <div class="tl-body">The Cyber Security (Security Standards for Smart Devices) Rules 2025 introduce mandatory minimum security requirements for most consumer-grade connectable products manufactured for the Australian market, following a 12-month transition from registration.</div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="timeline">
-
-      <div class="tl-item done">
-        <span class="tl-dot"></span>
-        <div class="tl-date">29 November 2024</div>
-        <div class="tl-title">Cyber Security Act 2024 receives Royal Assent</div>
-        <div class="tl-body">Australia's first standalone cyber security law becomes law. Framework provisions for ransomware reporting, smart-device standards and the Cyber Incident Review Board are set in motion.</div>
+  <!-- AICD PRINCIPLES -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">AICD &amp; CSCRC — Version 2, November 2024</span>
+        <h2>Cyber Security Governance Principles</h2>
+        <p>The de facto standard for board cyber oversight in Australia. Version 2 strengthened guidance on digital supply-chain risk, data governance, and incident response and recovery. All five principles, in full.</p>
       </div>
-
-      <div class="tl-item done">
-        <span class="tl-dot"></span>
-        <div class="tl-date">30 May 2025 <span class="tl-status live">In force</span></div>
-        <div class="tl-title">Mandatory ransomware &amp; cyber-extortion payment reporting commences</div>
-        <div class="tl-body">Reporting business entities must report a ransomware or cyber-extortion payment to the Australian Signals Directorate within <b>72 hours</b>. Applies to entities with annual turnover of <b>$3 million or more</b>, and to responsible entities for critical infrastructure assets regardless of turnover. Failure to report carries a civil penalty of up to 60 penalty units (currently $19,800).</div>
+      <div class="prin-grid">
+        <div class="prin">
+          <div class="num">1</div>
+          <div>
+            <h3>Set clear roles and responsibilities</h3>
+            <p>Establish unambiguous accountability across board and management for how cyber risk is governed. Cyber is a whole-of-organisation strategic risk, not an IT issue, supported by appropriate delegations and board reporting.</p>
+          </div>
+        </div>
+        <div class="prin">
+          <div class="num">2</div>
+          <div>
+            <h3>Develop, implement and evolve a comprehensive cyber strategy</h3>
+            <p>A strategy that identifies the organisation's key digital assets and data, accounts for third-party and supply-chain risk, and enables business objectives rather than constraining them.</p>
+          </div>
+        </div>
+        <div class="prin">
+          <div class="num">3</div>
+          <div>
+            <h3>Embed cyber security in existing risk management practices</h3>
+            <p>Integrate cyber into the organisation's enterprise risk framework and regularly assess the effectiveness of controls against an evolving threat environment, rather than treating it as a standalone register item.</p>
+          </div>
+        </div>
+        <div class="prin">
+          <div class="num">4</div>
+          <div>
+            <h3>Promote a culture of cyber resilience</h3>
+            <p>Cultivate resilience from the board down — through regular, relevant and engaging training, and by incentivising and reinforcing strong cyber practices across the whole organisation.</p>
+          </div>
+        </div>
+        <div class="prin full">
+          <div class="num">5</div>
+          <div>
+            <h3>Plan for a significant cyber security incident</h3>
+            <p>Prepare to respond effectively — and compassionately — to a significant incident, including simulation exercises and scenario testing, response and recovery planning, and clarity on regulatory reporting obligations. This is the area most strengthened in Version 2, informed by recent major Australian incidents.</p>
+          </div>
+        </div>
       </div>
-
-      <div class="tl-item done">
-        <span class="tl-dot"></span>
-        <div class="tl-date">30 May – 31 December 2025</div>
-        <div class="tl-title">Education-first transition period</div>
-        <div class="tl-body">The Department applied an education-first approach for the first six months, prioritising awareness and support over enforcement action except for serious non-compliance.</div>
-      </div>
-
-      <div class="tl-item done">
-        <span class="tl-dot"></span>
-        <div class="tl-date">1 January 2026 <span class="tl-status live">In force</span></div>
-        <div class="tl-title">Full enforcement of ransomware reporting obligations</div>
-        <div class="tl-body">The education-first period ends and the reporting obligation moves to full compliance and enforcement.</div>
-      </div>
-
-      <div class="tl-item next">
-        <span class="tl-dot"></span>
-        <div class="tl-date">4 March 2026 <span class="tl-status up">Commenced</span></div>
-        <div class="tl-title">Security Standards for Smart Devices Rules commence</div>
-        <div class="tl-body">The Cyber Security (Security Standards for Smart Devices) Rules 2025 introduce mandatory minimum security requirements for most consumer-grade connectable products manufactured for the Australian market, following a 12-month transition from registration.</div>
-      </div>
-
+      <p style="margin-top:22px;font-size:14.5px;">
+        <a href="https://www.aicd.com.au/risk-management/framework/cyber-security/cyber-security-governance-principles.html" target="_blank" rel="noopener">Read the full Principles on the AICD site <span class="material-symbols-outlined" style="font-size:16px;">open_in_new</span></a>
+      </p>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ============ AICD PRINCIPLES (all five) ============ -->
-<section>
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="kicker">AICD &amp; CSCRC — Version 2, November 2024</span>
-      <h2>Cyber Security Governance Principles</h2>
-      <p>The de facto standard for board cyber oversight in Australia. Version 2 strengthened guidance on digital supply-chain risk, data governance, and incident response and recovery. All five principles, in full.</p>
-    </div>
-
-    <div class="prin-grid">
-      <div class="prin">
-        <div class="num">1</div>
+  <!-- AI GOVERNANCE -->
+  <section class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">AI governance</span>
+        <h2>Frameworks for board oversight of AI</h2>
+        <p>Australia's AI settings remain principally voluntary today, with mandatory guardrails for high-risk settings under government consideration. Directors are expected to oversee AI as an extension of existing data, risk and accountability duties.</p>
+      </div>
+      <div class="cols">
+        <div class="reslist">
+          <h3>Australian references</h3>
+          <p class="lead">The domestic baseline directors are expected to be conversant with.</p>
+          <ul>
+            <li><a href="https://www.industry.gov.au/publications/australias-artificial-intelligence-ethics-principles" target="_blank" rel="noopener"><span class="material-symbols-outlined">balance</span><span>Australia's AI Ethics Principles<small>Eight voluntary principles — DISR</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://www.industry.gov.au/publications/voluntary-ai-safety-standard" target="_blank" rel="noopener"><span class="material-symbols-outlined">shield</span><span>Voluntary AI Safety Standard<small>Practical guardrails for organisations deploying AI</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://www.acs.org.au/content/dam/acs/acs-documents/ACS_AI-Ethics-Framework-2019.pdf" target="_blank" rel="noopener"><span class="material-symbols-outlined">description</span><span>ACS AI Ethics Framework<small>Australian Computer Society</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+          </ul>
+        </div>
+        <div class="reslist">
+          <h3>International standards</h3>
+          <p class="lead">Increasingly referenced in Australian board and vendor due diligence.</p>
+          <ul>
+            <li><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener"><span class="material-symbols-outlined">tune</span><span>NIST AI Risk Management Framework<small>Voluntary risk framework — widely adopted</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://www.iso.org/standard/81230.html" target="_blank" rel="noopener"><span class="material-symbols-outlined">workspace_premium</span><span>ISO/IEC 42001<small>AI management system — certifiable standard</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener"><span class="material-symbols-outlined">public</span><span>EU AI Act<small>Risk-tiered regulation — relevant comparative</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:42px;">
         <div>
-          <h3>Set clear roles and responsibilities</h3>
-          <p>Establish unambiguous accountability across board and management for how cyber risk is governed. Cyber is a whole-of-organisation strategic risk, not an IT issue, supported by appropriate delegations and board reporting.</p>
+          <h3>AI Governance Checklist for Directors</h3>
+          <p>A quick-reference checklist on data privacy, ethical AI use, and vendor risk management when your organisation deploys automated systems. Built for SME and not-for-profit boards.</p>
         </div>
-      </div>
-      <div class="prin">
-        <div class="num">2</div>
-        <div>
-          <h3>Develop, implement and evolve a comprehensive cyber strategy</h3>
-          <p>A strategy that identifies the organisation's key digital assets and data, accounts for third-party and supply-chain risk, and enables business objectives rather than constraining them.</p>
-        </div>
-      </div>
-      <div class="prin">
-        <div class="num">3</div>
-        <div>
-          <h3>Embed cyber security in existing risk management practices</h3>
-          <p>Integrate cyber into the organisation's enterprise risk framework and regularly assess the effectiveness of controls against an evolving threat environment, rather than treating it as a standalone register item.</p>
-        </div>
-      </div>
-      <div class="prin">
-        <div class="num">4</div>
-        <div>
-          <h3>Promote a culture of cyber resilience</h3>
-          <p>Cultivate resilience from the board down — through regular, relevant and engaging training, and by incentivising and reinforcing strong cyber practices across the whole organisation.</p>
-        </div>
-      </div>
-      <div class="prin full">
-        <div class="num">5</div>
-        <div>
-          <h3>Plan for a significant cyber security incident</h3>
-          <p>Prepare to respond effectively — and compassionately — to a significant incident, including simulation exercises and scenario testing, response and recovery planning, and clarity on regulatory reporting obligations. This is the area most strengthened in Version 2, informed by recent major Australian incidents.</p>
-        </div>
+        <a class="btn" href="mailto:hello@aradvice.com.au?subject=AI%20Governance%20Checklist%20Request">Request the checklist</a>
       </div>
     </div>
-    <p style="margin-top:22px;font-size:14.5px;">
-      <a href="https://www.aicd.com.au/risk-management/framework/cyber-security/cyber-security-governance-principles.html" target="_blank" rel="noopener">Read the full Principles on the AICD site <span class="material-symbols-outlined" style="font-size:16px;">open_in_new</span></a>
-    </p>
-  </div>
-</section>
+  </section>
 
-<!-- ============ AI GOVERNANCE ============ -->
-<section class="alt">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="kicker">AI governance</span>
-      <h2>Frameworks for board oversight of AI</h2>
-      <p>Australia's AI settings remain principally voluntary today, with mandatory guardrails for high-risk settings under government consideration. Directors are expected to oversee AI as an extension of existing data, risk and accountability duties.</p>
-    </div>
-
-    <div class="cols">
-      <div class="reslist">
-        <h3>Australian references</h3>
-        <p class="lead">The domestic baseline directors are expected to be conversant with.</p>
-        <ul>
-          <li><a href="https://www.industry.gov.au/publications/australias-artificial-intelligence-ethics-principles" target="_blank" rel="noopener"><span class="material-symbols-outlined">balance</span><span>Australia's AI Ethics Principles<small>Eight voluntary principles — DISR</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://www.industry.gov.au/publications/voluntary-ai-safety-standard" target="_blank" rel="noopener"><span class="material-symbols-outlined">shield</span><span>Voluntary AI Safety Standard<small>Practical guardrails for organisations deploying AI</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://www.acs.org.au/content/dam/acs/acs-documents/ACS_AI-Ethics-Framework-2019.pdf" target="_blank" rel="noopener"><span class="material-symbols-outlined">description</span><span>ACS AI Ethics Framework<small>Australian Computer Society</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-        </ul>
-      </div>
-      <div class="reslist">
-        <h3>International standards</h3>
-        <p class="lead">Increasingly referenced in Australian board and vendor due diligence.</p>
-        <ul>
-          <li><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener"><span class="material-symbols-outlined">tune</span><span>NIST AI Risk Management Framework<small>Voluntary risk framework — widely adopted</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://www.iso.org/standard/81230.html" target="_blank" rel="noopener"><span class="material-symbols-outlined">workspace_premium</span><span>ISO/IEC 42001<small>AI management system — certifiable standard</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener"><span class="material-symbols-outlined">public</span><span>EU AI Act<small>Risk-tiered regulation — relevant comparative</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="callout" style="margin-top:42px;">
-      <div>
-        <h3>AI Governance Checklist for Directors</h3>
-        <p>A quick-reference checklist on data privacy, ethical AI use, and vendor risk management when your organisation deploys automated systems. Built for SME and not-for-profit boards.</p>
-      </div>
-      <a class="btn" href="mailto:hello@aradvice.com.au?subject=AI%20Governance%20Checklist%20Request">Request the checklist</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ RECOMMENDED READING + ESSENTIAL EIGHT ============ -->
-<section>
-  <div class="wrap">
-    <div class="cols">
-      <div class="reslist">
-        <div class="sec-head" style="margin-bottom:20px;">
-          <span class="kicker">Recommended reading</span>
-          <h2 style="font-size:24px;">Primary sources, directly</h2>
+  <!-- RECOMMENDED READING + ESSENTIAL EIGHT / ISM / ISO -->
+  <section>
+    <div class="wrap">
+      <div class="cols">
+        <div class="reslist">
+          <div class="sec-head" style="margin-bottom:20px;">
+            <span class="kicker">Recommended reading</span>
+            <h2 style="font-size:24px;">Primary sources, directly</h2>
+          </div>
+          <ul>
+            <li><a href="https://www.aicd.com.au/risk-management/framework/cyber-security/cyber-security-governance-principles.html" target="_blank" rel="noopener"><span class="material-symbols-outlined">menu_book</span><span>AICD Cyber Security Governance Principles<small>Version 2 — the board standard</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://asic.gov.au/regulatory-resources/corporate-governance/" target="_blank" rel="noopener"><span class="material-symbols-outlined">policy</span><span>ASIC Corporate Governance Guidance<small>Regulator expectations of directors</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://www.oaic.gov.au/" target="_blank" rel="noopener"><span class="material-symbols-outlined">security</span><span>OAIC Privacy Guidance<small>Privacy Act &amp; data breach obligations</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://www.cyber.gov.au/" target="_blank" rel="noopener"><span class="material-symbols-outlined">shield</span><span>Australian Cyber Security Centre<small>ASD — guidance &amp; incident reporting</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+          </ul>
         </div>
-        <ul>
-          <li><a href="https://www.aicd.com.au/risk-management/framework/cyber-security/cyber-security-governance-principles.html" target="_blank" rel="noopener"><span class="material-symbols-outlined">menu_book</span><span>AICD Cyber Security Governance Principles<small>Version 2 — the board standard</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://asic.gov.au/regulatory-resources/corporate-governance/" target="_blank" rel="noopener"><span class="material-symbols-outlined">policy</span><span>ASIC Corporate Governance Guidance<small>Regulator expectations of directors</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://www.oaic.gov.au/" target="_blank" rel="noopener"><span class="material-symbols-outlined">security</span><span>OAIC Privacy Guidance<small>Privacy Act &amp; data breach obligations</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://www.cyber.gov.au/" target="_blank" rel="noopener"><span class="material-symbols-outlined">shield</span><span>Australian Cyber Security Centre<small>ASD — guidance &amp; incident reporting</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-        </ul>
+        <div class="reslist">
+          <div class="sec-head" style="margin-bottom:20px;">
+            <span class="kicker">Quick reference</span>
+            <h2 style="font-size:24px;">The Essential Eight</h2>
+          </div>
+          <div class="e8">
+            <div><span>01</span>Application control</div>
+            <div><span>02</span>Patch applications</div>
+            <div><span>03</span>Configure macros</div>
+            <div><span>04</span>User app hardening</div>
+            <div><span>05</span>Restrict admin privileges</div>
+            <div><span>06</span>Patch operating systems</div>
+            <div><span>07</span>Multi-factor authentication</div>
+            <div><span>08</span>Regular backups</div>
+          </div>
+          <p style="font-size:13.5px;color:var(--muted);margin-top:14px;">Assessed against a four-level maturity model (Maturity Level Zero to Three). Ask management which level applies, against what target.</p>
+          <ul style="margin-top:16px;">
+            <li><a href="https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism" target="_blank" rel="noopener"><span class="material-symbols-outlined">menu_book</span><span>ASD Information Security Manual (ISM)<small>The full controls framework management implements</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+            <li><a href="https://www.iso.org/standard/27001" target="_blank" rel="noopener"><span class="material-symbols-outlined">workspace_premium</span><span>ISO/IEC 27001<small>International information security management standard</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
+          </ul>
+        </div>
       </div>
 
-      <div class="reslist">
-        <div class="sec-head" style="margin-bottom:20px;">
-          <span class="kicker">Quick reference</span>
-          <h2 style="font-size:24px;">The Essential Eight</h2>
-        </div>
-        <div class="e8">
-          <div><span>01</span>Application control</div>
-          <div><span>02</span>Patch applications</div>
-          <div><span>03</span>Configure macros</div>
-          <div><span>04</span>User app hardening</div>
-          <div><span>05</span>Restrict admin privileges</div>
-          <div><span>06</span>Patch operating systems</div>
-          <div><span>07</span>Multi-factor authentication</div>
-          <div><span>08</span>Regular backups</div>
-        </div>
-        <p style="font-size:13.5px;color:var(--muted);margin-top:14px;">Assessed against a four-level maturity model (Maturity Level Zero to Three). Ask management which level applies, against what target.</p>
-        <ul style="margin-top:16px;">
-          <li><a href="https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism" target="_blank" rel="noopener"><span class="material-symbols-outlined">menu_book</span><span>ASD Information Security Manual (ISM)<small>The full controls framework management implements</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-          <li><a href="https://www.iso.org/standard/27001" target="_blank" rel="noopener"><span class="material-symbols-outlined">workspace_premium</span><span>ISO/IEC 27001<small>International information security management standard</small></span><span class="material-symbols-outlined ext">open_in_new</span></a></li>
-        </ul>
+      <div class="disclaimer" style="margin-top:46px;">
+        <b>About this hub.</b> This page summarises publicly available regulatory and framework information for the convenience of company directors. Dates and thresholds are drawn from the primary instruments and were correct at the time of publication, but legislation and guidance change. Nothing here is legal advice, and it should not be relied on as a substitute for advice on your specific board, sector and circumstances. Always confirm current obligations against the primary source or qualified counsel.
       </div>
     </div>
+  </section>
 
-    <div class="disclaimer" style="margin-top:46px;">
-      <b>About this hub.</b> This page summarises publicly available regulatory and framework information for the convenience of company directors. Dates and thresholds are drawn from the primary instruments and were correct at the time of publication, but legislation and guidance change. Nothing here is legal advice, and it should not be relied on as a substitute for advice on your specific board, sector and circumstances. Always confirm current obligations against the primary source or qualified counsel.
+  <!-- CTA -->
+  <section class="cta-band">
+    <div class="wrap">
+      <div class="kicker">From frameworks to defensible governance</div>
+      <h2>Understanding the frameworks is the first step</h2>
+      <p>Applying them to your specific board, sector and regulatory context is where independent, conflict-free advisory makes the difference. Every enquiry is treated as strictly confidential.</p>
+      <div class="btn-row">
+        <a class="btn-primary" href="https://aradvice.com.au/products.html">View advisory services</a>
+        <a class="btn-ghost" href="https://aradvice.com.au/contact.html">Start a confidential conversation</a>
+      </div>
     </div>
-  </div>
-</section>
-
-<!-- ============ CTA ============ -->
-<section class="cta-band">
-  <div class="wrap">
-    <div class="kicker">From frameworks to defensible governance</div>
-    <h2>Understanding the frameworks is the first step</h2>
-    <p>Applying them to your specific board, sector and regulatory context is where independent, conflict-free advisory makes the difference. Every enquiry is treated as strictly confidential.</p>
-    <div class="btn-row">
-      <a class="btn-primary" href="https://aradvice.com.au/products.html">View advisory services</a>
-      <a class="btn-ghost" href="https://aradvice.com.au/contact.html">Start a confidential conversation</a>
-    </div>
-  </div>
-</section>
+  </section>
 
 </main>
 
