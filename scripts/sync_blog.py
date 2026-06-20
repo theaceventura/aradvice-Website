@@ -669,7 +669,6 @@ def render_category_filter_bar(
   var bar = document.querySelector('.category-filter-bar');
   if (!bar) return;
   var buttons = bar.querySelectorAll('.category-filter-btn');
-  var cards = document.querySelectorAll('[data-category]');
   function setActive(btn) {
     buttons.forEach(function(b) {
       b.classList.remove('active', 'border-cyan-400/60', 'bg-cyan-400/10', 'text-cyan-300');
@@ -682,7 +681,7 @@ def render_category_filter_bar(
     btn.addEventListener('click', function() {
       var filter = btn.getAttribute('data-filter');
       setActive(btn);
-      cards.forEach(function(card) {
+      document.querySelectorAll('[data-category]').forEach(function(card) {
         if (filter === 'all' || card.getAttribute('data-category') === filter) {
           card.style.display = '';
         } else {
