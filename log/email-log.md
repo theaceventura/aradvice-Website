@@ -176,3 +176,10 @@
 - article_date: 16 Jun 2026
 - logged: 20 Jun 2026 00:34 UTC
 - status: sent
+
+## AICD Cyber Security Governance Principles Version 2: What Australian Directors Need to Know
+- slug: aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know
+- subject: AICD Cyber Principles v2: closing the board visibility gap
+- article_date: 16 Jun 2026
+- logged: 20 Jun 2026 09:05 UTC
+- status: dry-run

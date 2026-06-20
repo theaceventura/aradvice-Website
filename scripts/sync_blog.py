@@ -1300,6 +1300,7 @@ HARD RULES:
 - Never use em dashes or en dashes anywhere. Restructure the sentence or use a comma or full stop instead.
 - No exclamation marks.
 - Never state a commencement date, deadline, or penalty figure for any legislation.
+- Do not describe any legislation or obligation as upcoming, pending, approaching, or "moving toward" enforcement. The Cyber Security Act 2024 and its obligations are current law; refer to them in the present tense as in force, never as future or impending.
 
 FORMAT:
 - 6 to 10 lines. No padding. No wasted sentences.
@@ -1353,8 +1354,8 @@ SUBJECT: A direct, specific subject line under 60 characters. Lead with the gove
 
 BODY: 3-4 sentences maximum. No salutation — open cold with the first substantive sentence.
 
-- Sentence 1: Describe a specific situation — a boardroom moment, a procurement decision, a model deployed without sign-off, a board paper that couldn't answer the regulator's question. Write it as if describing something that happened in a specific boardroom recently. Concrete and particular. Do NOT open with generalisations about "most boards" or "directors must" or "your board faces". Do not state a problem abstractly — place the reader in a scene.
-- Sentences 2-3: Name the concrete consequence if this is wrong. Regulatory, legal, or reputational — be specific about what actually happens to the director. Not "shifts the conversation", not "transforms risk into responsibility", not "manageable oversight protocols". What is the actual exposure? What does ASIC, APRA, or a shareholder actually do? State it directly. Only reference specific regulatory actions or enforcement if they appear verbatim in the article excerpt — otherwise name the legal mechanism (e.g. s.180 Corporations Act duty of care) and the personal consequence.
+- Sentence 1: Describe a specific situation — a boardroom moment, a procurement decision, a model deployed without sign-off, a board paper that couldn't answer the regulator's question. Frame it as explicitly illustrative or composite, never as a real event that occurred. Use present-tense hypothetical framing such as "Picture a board that..." or "Imagine a director who...". Do not use "recently", "last month", "this week", or past-tense narration that implies the scene actually happened. Concrete and particular, but unmistakably illustrative. Do NOT open with generalisations about "most boards" or "directors must" or "your board faces". Do not state a problem abstractly — place the reader in a scene.
+- Sentences 2-3: Name the concrete consequence if this is wrong. Regulatory, legal, or reputational — be specific about what actually happens to the director. Not "shifts the conversation", not "transforms risk into responsibility", not "manageable oversight protocols". What is the actual exposure? Name the realistic enforcer: for an s.180 duty-of-care breach that is ASIC bringing civil penalty proceedings against the director personally; a liquidator may also pursue the claim on the company's behalf if the entity later fails. Do not say a shareholder can pursue a director "personally" under s.180, that requires court leave for a derivative action brought in the company's name. State the exposure directly. Only reference specific regulatory actions or enforcement if they appear verbatim in the article excerpt — otherwise name the legal mechanism (e.g. s.180 Corporations Act duty of care) and the personal consequence.
 - Final line: The article URL on its own line, nothing else before or after it — no "Read more at", no "Full article:", just the bare URL.
 - Sign off: "Andrew"
 
@@ -1365,6 +1366,7 @@ Rules:
 - No exclamation marks
 - Never use em dashes or en dashes anywhere. Restructure the sentence or use a comma or full stop instead.
 - Never state a commencement date, deadline, or penalty figure for any legislation.
+- Do not describe any legislation or obligation as upcoming, pending, approaching, or "moving toward" enforcement. The Cyber Security Act 2024 and its obligations are current law; refer to them in the present tense as in force, never as future or impending.
 - The opening scenario must be causally coherent. Read it back as a literal sequence of events and confirm it makes sense.
 - Banned phrases — never use these: "most boards lack", "your board faces", "directors must", "shifts the conversation", "transforms X into Y", "manageable oversight protocols", "structured board responsibility", "defensible processes for overseeing", "the regulatory environment", "growing exposure", "practical frameworks", "courts are increasingly", "regulators are increasingly", "ASIC is increasingly", "increasingly scrutinising", "increasingly important"
 - Do not mention "newsletter", "blog post", or "article" — write as if delivering a direct observation, not promoting content
