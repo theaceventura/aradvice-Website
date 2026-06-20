@@ -622,8 +622,93 @@ def is_new_article(pub_date: str, days: int = 7) -> bool:
     return age.days <= days
 
 
-def render_more_articles_section(items: list[FeedItem]) -> str:
+def render_category_filter_bar(
+    categories_present: list[str], counts: "dict[str, int] | None" = None
+) -> str:
+    """Render the topic filter bar shown above the article grid on blog.html.
+    categories_present is the ordered list of category keys that have at
+    least one post, so we never show an empty filter button.
+    counts maps category key -> article count for the badge on each button."""
+    if not categories_present:
+        return ""
+    counts = counts or {}
+    total = sum(counts.values())
+
+    def count_badge(n: int, active: bool = False) -> str:
+        bg = "bg-cyan-400/20" if active else "bg-slate-700"
+        return (
+            f'<span class="ml-1.5 inline-block rounded-full {bg} '
+            f'px-1.5 py-0.5 text-[9px] font-bold leading-none">{n}</span>'
+        )
+
+    buttons = [
+        '<button type="button" data-filter="all" '
+        'class="category-filter-btn active inline-flex items-center rounded-full '
+        'border border-cyan-400/60 bg-cyan-400/10 px-4 py-1.5 text-xs font-semibold '
+        f'uppercase tracking-wider text-cyan-300 transition-colors">All{count_badge(total, active=True)}</button>'
+    ]
+    for cat_key in categories_present:
+        label = escape(CATEGORY_LABELS.get(cat_key, cat_key))
+        n = counts.get(cat_key, 0)
+        badge = count_badge(n) if n else ""
+        buttons.append(
+            f'<button type="button" data-filter="{escape(cat_key)}" '
+            'class="category-filter-btn inline-flex items-center rounded-full '
+            'border border-slate-600/70 bg-slate-800/60 px-4 py-1.5 text-xs font-semibold '
+            'uppercase tracking-wider text-slate-300 hover:border-cyan-400/60 hover:text-cyan-300 '
+            f'transition-colors">{label}{badge}</button>'
+        )
+    bar_html = (
+        '<div class="category-filter-bar flex flex-wrap gap-2 mb-8">'
+        + "".join(buttons)
+        + "</div>"
+    )
+    script = """
+<script>
+(function() {
+  var bar = document.querySelector('.category-filter-bar');
+  if (!bar) return;
+  var buttons = bar.querySelectorAll('.category-filter-btn');
+  var cards = document.querySelectorAll('[data-category]');
+  function setActive(btn) {
+    buttons.forEach(function(b) {
+      b.classList.remove('active', 'border-cyan-400/60', 'bg-cyan-400/10', 'text-cyan-300');
+      b.classList.add('border-slate-600/70', 'bg-slate-800/60', 'text-slate-300');
+    });
+    btn.classList.add('active', 'border-cyan-400/60', 'bg-cyan-400/10', 'text-cyan-300');
+    btn.classList.remove('border-slate-600/70', 'bg-slate-800/60', 'text-slate-300');
+  }
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var filter = btn.getAttribute('data-filter');
+      setActive(btn);
+      cards.forEach(function(card) {
+        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
+"""
+    return bar_html + script
+
+
+def render_more_articles_section(
+    items: list[FeedItem],
+    categories: "dict | None" = None,
+    show_filter_bar: bool = False,
+    heading: str = "More Articles",
+) -> str:
+    categories = categories or {}
     cards: list[str] = []
+    categories_present: list[str] = []
+    seen_categories: set = set()
+    category_counts: dict[str, int] = {}
+
     for item in items:
         published = item_datetime(item.pub_date).strftime("%b %d, %Y")
         new_badge = (
@@ -637,10 +722,23 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
         if item.read_time:
             meta += f" &middot; {escape(item.read_time)}"
 
+        cat_key = categories.get(item.slug, _DEFAULT_CATEGORY)
+        if cat_key not in seen_categories:
+            seen_categories.add(cat_key)
+            categories_present.append(cat_key)
+        category_counts[cat_key] = category_counts.get(cat_key, 0) + 1
+        cat_label = escape(CATEGORY_LABELS.get(cat_key, cat_key))
+        cat_badge = (
+            f'<span class="inline-block text-[10px] font-bold uppercase tracking-wider '
+            f'text-slate-500 mb-2">{cat_label}</span><br/>'
+        )
+
         cards.append(
-            f'<a href="/post/{escape(item.slug)}/" class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;">'
+            f'<a href="/post/{escape(item.slug)}/" data-category="{escape(cat_key)}" '
+            'class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] transition-all no-underline" style="text-decoration: none; cursor: pointer;">'
             + image_html
             + '<div class="p-6">'
+            + cat_badge
             + f'<h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">{escape(item.title)}{new_badge}</h3>'
             + f'<div class="text-sm text-slate-400">{meta}</div>'
             + (f'<p class="text-sm text-slate-300 mt-3 leading-relaxed line-clamp-3">{escape(item.excerpt)}</p>' if item.excerpt else "")
@@ -648,10 +746,13 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
             + "</a>"
         )
 
+    filter_bar_html = render_category_filter_bar(categories_present, counts=category_counts) if show_filter_bar else ""
+
     return (
         '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
-        '<h2 class="text-2xl font-bold text-slate-100 mb-8">More Articles</h2>'
-        '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
+        f'<h2 class="text-2xl font-bold text-slate-100 mb-8">{escape(heading)}</h2>'
+        + filter_bar_html
+        + '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
         + "".join(cards)
         + "</div>"
         "</section>"
@@ -659,8 +760,8 @@ def render_more_articles_section(items: list[FeedItem]) -> str:
 
 
 
-def inject_more_articles(html: str, items: list[FeedItem]) -> str:
-    section_html = render_more_articles_section(items)
+def inject_more_articles(html: str, items: list[FeedItem], categories: "dict | None" = None) -> str:
+    section_html = render_more_articles_section(items, categories=categories)
     replaced = re.sub(
         r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>More Articles</h2>.*?</section>',
         section_html,
@@ -774,7 +875,7 @@ def render_blog_landing_article(items: list[FeedItem]) -> str:
         '</section>'
     )
 
-def inject_blog_landing_view(html: str, items: list[FeedItem]) -> str:
+def inject_blog_landing_view(html: str, items: list[FeedItem], categories: "dict | None" = None) -> str:
     landing_article = render_blog_landing_article(items)
     # Replace the article hero
     html = re.sub(
@@ -787,9 +888,11 @@ def inject_blog_landing_view(html: str, items: list[FeedItem]) -> str:
     # Replace the articles section with all items except the latest
     remaining = items[1:] if len(items) > 1 else []
     if remaining:
-        more_section = render_more_articles_section(remaining)
+        more_section = render_more_articles_section(
+            remaining, categories=categories, show_filter_bar=True, heading="Articles"
+        )
         html = re.sub(
-            r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>Articles</h2>.*?</section>',
+            r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>(?:More )?Articles</h2>.*?</section>',
             more_section,
             html,
             count=1,
@@ -890,6 +993,74 @@ def save_post_registry(registry: dict) -> None:
         json.dumps(registry, indent=2, ensure_ascii=False),
         encoding="utf-8"
     )
+
+
+CATEGORY_LABELS: dict[str, str] = {
+    "cyber-governance": "Cyber Governance & Oversight",
+    "regulation-compliance": "Regulation & Compliance",
+    "ai-governance": "AI Governance",
+    "board-reporting": "Board Reporting & Disclosure",
+    "third-party-risk": "Third-Party & Supply Chain Risk",
+    "governance-advisory": "Governance Strategy & Advisory",
+}
+
+# Order matters — first match wins. More specific categories are
+# checked before the broad cyber-governance fallback.
+_CATEGORY_KEYWORDS: list[tuple[str, list[str]]] = [
+    ("third-party-risk", ["third-party", "third party", "supply chain", "vendor risk"]),
+    ("board-reporting", ["investor expectation", "financial impact", "risk reporting", "board reporting", "disclosure"]),
+    ("regulation-compliance", ["cyber security act", "apra", "cps-234", "cps 234", "privacy act", "crimes act", "regulatory settlement", "asic v ", " fca "]),
+    ("ai-governance", [" ai ", "-ai-", "artificial intelligence", "generative ai", "ai governance", "ai risk", "ai strategy"]),
+    ("governance-advisory", ["tech consulting", "digital strategy", "consulting"]),
+]
+
+_DEFAULT_CATEGORY = "cyber-governance"
+
+
+def load_post_categories() -> dict:
+    """Load the slug -> category-slug map. Separate file from post-registry.json
+    so the existing ID-assignment logic (which expects int values) is untouched."""
+    import json
+    path = ROOT / "post-categories.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
+
+
+def save_post_categories(categories: dict) -> None:
+    import json
+    path = ROOT / "post-categories.json"
+    path.write_text(
+        json.dumps(categories, indent=2, ensure_ascii=False, sort_keys=True),
+        encoding="utf-8",
+    )
+
+
+def guess_category(title: str, slug: str) -> str:
+    """Best-effort keyword match against title/slug. Falls back to the
+    cyber-governance default if nothing matches. Always returns a valid
+    category key from CATEGORY_LABELS."""
+    haystack = f" {title.lower()} {slug.lower().replace('-', ' ')} "
+    for category, keywords in _CATEGORY_KEYWORDS:
+        for kw in keywords:
+            if kw in haystack:
+                return category
+    return _DEFAULT_CATEGORY
+
+
+def assign_post_categories(items: list[FeedItem]) -> dict:
+    """Ensure every item has a category in post-categories.json, guessing for
+    any new slugs. Never overwrites an existing (possibly manually corrected)
+    category. Returns the full slug -> category map."""
+    categories = load_post_categories()
+    changed = False
+    for item in items:
+        if item.slug not in categories:
+            categories[item.slug] = guess_category(item.title, item.slug)
+            changed = True
+    if changed:
+        save_post_categories(categories)
+    return categories
 
 
 def assign_post_ids(items: list[FeedItem]) -> dict:
@@ -1821,6 +1992,8 @@ def main() -> int:
 
     # Assign persistent sequential IDs by publish date
     registry = assign_post_ids(generated_items)
+    # Assign topic categories (auto-guessed for new posts, preserved for existing)
+    categories = assign_post_categories(generated_items)
 
     # Only render published articles (exclude future-dated posts from blog/sitemap)
     now = datetime.now(timezone.utc)
@@ -1858,7 +2031,7 @@ def main() -> int:
             # File deleted — rebuild via full pipeline using fetched HTML
 
         other_items = [i for i in visible_items if i.slug != item.slug]
-        page_html = inject_more_articles(item.html, other_items)
+        page_html = inject_more_articles(item.html, other_items, categories=categories)
         write_page(page_path, page_html, feed_item=item, post_id=post_id)
         write_linkedin_draft(item, post_url, post_id=post_id,
                              force=(item.slug == test_slug))
@@ -1873,8 +2046,8 @@ def main() -> int:
 
     latest_item = visible_items[0]
     remaining_items = visible_items[1:] if len(visible_items) > 1 else []
-    latest_with_listing = inject_more_articles(latest_item.html, remaining_items)
-    latest_with_listing = inject_blog_landing_view(latest_with_listing, visible_items)
+    latest_with_listing = inject_more_articles(latest_item.html, remaining_items, categories=categories)
+    latest_with_listing = inject_blog_landing_view(latest_with_listing, visible_items, categories=categories)
     write_page(ROOT / "blog.html", latest_with_listing)
     (ROOT / "sitemap.xml").write_text(build_sitemap(visible_items), encoding="utf-8")
 
