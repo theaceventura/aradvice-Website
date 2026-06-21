@@ -442,5 +442,23 @@
   });
 })();
 </script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var topic = params.get('topic');
+  if (!topic) return;
+  var select = document.querySelector('select[name="enquiry_type"]');
+  var valid = ['founder','director','ai','cyber','unsure'];
+  if (select && valid.indexOf(topic) !== -1) {
+    select.value = topic;
+  } else if (topic === 'checklist') {
+    if (select) select.value = 'unsure';
+    var msg = document.querySelector('[name="message"]');
+    if (msg && !msg.value) {
+      msg.value = "I'd like to request the AI Governance Checklist for Directors.";
+    }
+  }
+})();
+</script>
 </body>
 </html>
