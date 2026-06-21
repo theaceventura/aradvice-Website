@@ -1242,6 +1242,19 @@ def sanitise_ai_text(text: str) -> str:
     return re.sub(r" {2,}", " ", text)
 
 
+def utm_url(post_url: str, source: str, slug: str) -> str:
+    """Append UTM campaign parameters to a post URL. Campaign is the post
+    slug (already lowercase) so each post is tracked individually. Source is
+    the channel ('kit' or 'linkedin'); medium is derived from it."""
+    medium = "email" if source == "kit" else "social"
+    sep = "&" if "?" in post_url else "?"
+    return (
+        f"{post_url}{sep}utm_source={source}"
+        f"&utm_medium={medium}"
+        f"&utm_campaign={slug}"
+    )
+
+
 def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
     """Generate a draft LinkedIn post for a feed item using the Anthropic API."""
     import urllib.request
@@ -1566,7 +1579,8 @@ def write_email_draft(item: FeedItem, post_url: str,
     article_dir.mkdir(parents=True, exist_ok=True)
     draft_path = article_dir / f"{post_id}-email.txt"
 
-    subject, body = generate_email_draft(item, post_url)
+    tagged_url = utm_url(post_url, "kit", item.slug)
+    subject, body = generate_email_draft(item, tagged_url)
     if not subject or not body:
         return
 
@@ -1662,7 +1676,8 @@ def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000",
         print(f"  LinkedIn: {item.slug} — draft exists, skipped")
         return
     print(f"  Generating LinkedIn draft for: {item.slug}")
-    post_text = generate_linkedin_post(item, post_url)
+    tagged_url = utm_url(post_url, "linkedin", item.slug)
+    post_text = generate_linkedin_post(item, tagged_url)
     if post_text.startswith("[LinkedIn post generation failed"):
         print(f"  LinkedIn draft generation failed for {item.slug} — skipping write.", file=sys.stderr)
         return
