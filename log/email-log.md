@@ -183,3 +183,10 @@
 - article_date: 16 Jun 2026
 - logged: 20 Jun 2026 09:05 UTC
 - status: dry-run
+
+## Third-Party Cyber Risk: A Director's Guide to Defensible Board Oversight in Australia
+- slug: third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia
+- subject: Third-party vendors: your personal liability for their breach
+- article_date: 17 Jun 2026
+- logged: 21 Jun 2026 02:03 UTC
+- status: sent

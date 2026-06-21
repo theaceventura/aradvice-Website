@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 20 Jun 2026 09:05 UTC
+Generated: 21 Jun 2026 02:03 UTC
 
-Total posts: 24
+Total posts: 25
 
 
 ---
@@ -294,3 +294,15 @@ Total posts: 24
 - **LinkedIn draft:** `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/025-linkedin.txt`
 - **LinkedIn log:** see `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/posting-log.md`
 - **Advisor brief:** `post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/025-advisor-brief.md`
+
+
+## [026] Third-Party Cyber Risk: A Director's Guide to Defensible Board Oversight in Australia
+- **ID:** 026
+- **Published:** 17 Jun 2026
+- **Slug:** `third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia`
+- **URL:** https://aradvice.com.au/post/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/
+- **Article:** `post/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/index.html`
+- **og:image:** `post/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/026-og-image.png`
+- **LinkedIn draft:** `post/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/026-linkedin.txt`
+- **LinkedIn log:** see `post/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/posting-log.md`
+- **Advisor brief:** `post/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/026-advisor-brief.md`
