@@ -920,6 +920,8 @@ def build_sitemap(items: list[FeedItem]) -> str:
         (f"{MAIN_DOMAIN}/contact.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/resource-hub.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/blog.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/aicd-cyber-principles.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/apra-ai-governance-2026.html", datetime.now(timezone.utc)),
     ]
     for item in items:
         entries.append((f"{MAIN_DOMAIN}/post/{item.slug}/", item_datetime(item.pub_date)))
