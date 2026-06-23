@@ -272,6 +272,9 @@ def clean_article_content(html: str) -> str:
     # Normalise em/en dashes in the mirrored article body to site house style.
     html = html.replace("\u2014", ", ").replace(" \u2013 ", ", ")
     html = html.replace(", ,", ",").replace(",,", ",").replace(" ,", ",")
+    # Retired-product phrasing left in generated bodies -> current product naming.
+    html = html.replace("AI Governance Readiness Review", "AI Governance Review")
+    html = html.replace("Cyber Governance Readiness Review", "Cyber Governance Review")
     return html
 
 
