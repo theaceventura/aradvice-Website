@@ -269,6 +269,9 @@ def clean_article_content(html: str) -> str:
     if len(matches) > 1:
         for m in reversed(matches[:-1]):
             html = html[:m.start()] + html[m.end():]
+    # Normalise em/en dashes in the mirrored article body to site house style.
+    html = html.replace("\u2014", ", ").replace(" \u2013 ", ", ")
+    html = html.replace(", ,", ",").replace(",,", ",").replace(" ,", ",")
     return html
 
 
@@ -301,6 +304,10 @@ def normalize_internal_links(html: str) -> str:
         "href='ai-governance-review.html'": "href='/ai-governance-review.html'",
         'href="cyber-governance-review.html"': 'href="/cyber-governance-review.html"',
         "href='cyber-governance-review.html'": "href='/cyber-governance-review.html'",
+        'href="director-readiness-assessment.html"': 'href="/director-readiness-assessment.html"',
+        "href='director-readiness-assessment.html'": "href='/director-readiness-assessment.html'",
+        'href="about.html"': 'href="/about.html"',
+        "href='about.html'": "href='/about.html'",
         'href="contact.html"': 'href="/contact.html"',
         "href='contact.html'": "href='/contact.html'",
         'href="readiness-review.html"': 'href="/cyber-governance-review.html"',
@@ -908,6 +915,8 @@ def build_sitemap(items: list[FeedItem]) -> str:
         (f"{MAIN_DOMAIN}/founder-advisory.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/ai-governance-review.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/cyber-governance-review.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/director-readiness-assessment.html", datetime.now(timezone.utc)),
+        (f"{MAIN_DOMAIN}/about.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/contact.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/resource-hub.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/blog.html", datetime.now(timezone.utc)),
