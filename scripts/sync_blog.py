@@ -260,15 +260,27 @@ def clean_article_content(html: str) -> str:
     # Strip trailing "aradvice.com.au" injected into the bio paragraph
     html = re.sub(r'\s*aradvice\.com\.au\s*(?=</p>)', '', html)
     # Remove duplicate "If this resonates" CTA — keep only the last occurrence.
-    # Each CTA block is three consecutive <p> tags.
+    # Live markup wraps the whole CTA in a single <p><a href="...">...</a></p>,
+    # not three sibling <p> tags, so match on the anchor itself.
     cta_pattern = re.compile(
-        r'<p[^>]*>\s*If this resonates[^<]*</p>\s*<p[^>]*>[^<]*</p>\s*<p[^>]*>[^<]*</p>',
-        flags=re.IGNORECASE,
+        r'<p[^>]*>\s*<a[^>]*>\s*If this resonates.*?</a>\s*</p>',
+        flags=re.IGNORECASE | re.DOTALL,
     )
     matches = list(cta_pattern.finditer(html))
     if len(matches) > 1:
         for m in reversed(matches[:-1]):
             html = html[:m.start()] + html[m.end():]
+    # Strip the redundant trailing bare-URL line GetAutoSEO appends inside the
+    # CTA anchor text (the href already carries the destination).
+    html = re.sub(
+        r'(<a[^>]*href="https://aradvice\.com\.au/contact\.html"[^>]*>'
+        r'If this resonates, I would welcome a conversation\.)'
+        r'\s*\nDirector Readiness Assessment\s*\naradvice\.com\.au/contact\.html'
+        r'(\s*</a>)',
+        r'\1 Director Readiness Assessment.\2',
+        html,
+        flags=re.IGNORECASE,
+    )
     # Normalise em/en dashes in the mirrored article body to site house style.
     html = html.replace("\u2014", ", ").replace(" \u2013 ", ", ")
     html = html.replace(", ,", ",").replace(",,", ",").replace(" ,", ",")
