@@ -2082,6 +2082,23 @@ def main() -> int:
     # Assign topic categories (auto-guessed for new posts, preserved for existing)
     categories = assign_post_categories(generated_items)
 
+    # Detect posts GetAutoSEO has silently dropped from its own feed since a
+    # previous run. These are registered slugs that no longer appear in
+    # today's feed at all. The local post/ file and sitemap entry (via the
+    # registry fallback in build_sitemap) survive regardless — this check
+    # exists purely so Andy is told immediately instead of finding out by
+    # accident later.
+    current_feed_slugs = {item.slug for item in generated_items}
+    dropped_slugs = sorted(set(registry.keys()) - current_feed_slugs)
+    if dropped_slugs:
+        print(
+            f"  WARNING: {len(dropped_slugs)} post(s) registered but missing "
+            f"from today's GetAutoSEO feed (source may have unpublished them):",
+            file=sys.stderr,
+        )
+        for slug in dropped_slugs:
+            print(f"    - {slug} (registry id {registry[slug]})", file=sys.stderr)
+
     # Only render published articles (exclude future-dated posts from blog/sitemap)
     now = datetime.now(timezone.utc)
     visible_items = [i for i in generated_items if item_datetime(i.pub_date) <= now]
