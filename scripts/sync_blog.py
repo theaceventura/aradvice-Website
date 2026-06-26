@@ -260,10 +260,14 @@ def clean_article_content(html: str) -> str:
     # Strip trailing "aradvice.com.au" injected into the bio paragraph
     html = re.sub(r'\s*aradvice\.com\.au\s*(?=</p>)', '', html)
     # Remove duplicate "If this resonates" CTA — keep only the last occurrence.
-    # Live markup wraps the whole CTA in a single <p><a href="...">...</a></p>,
-    # not three sibling <p> tags, so match on the anchor itself.
+    # GetAutoSEO renders this CTA in two different shapes depending on the
+    # article: sometimes as a single <p><a href="...">...</a></p> wrapping
+    # the whole block, sometimes as three bare sibling <p> tags with no
+    # anchor at all. Match both.
     cta_pattern = re.compile(
-        r'<p[^>]*>\s*<a[^>]*>\s*If this resonates.*?</a>\s*</p>',
+        r'<p[^>]*>\s*<a[^>]*>\s*If this resonates.*?</a>\s*</p>'
+        r'|'
+        r'<p[^>]*>\s*If this resonates[^<]*</p>\s*<p[^>]*>[^<]*</p>\s*<p[^>]*>[^<]*</p>',
         flags=re.IGNORECASE | re.DOTALL,
     )
     matches = list(cta_pattern.finditer(html))
