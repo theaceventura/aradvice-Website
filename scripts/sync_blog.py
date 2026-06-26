@@ -942,8 +942,33 @@ def build_sitemap(items: list[FeedItem]) -> str:
         (f"{MAIN_DOMAIN}/aicd-cyber-principles.html", datetime.now(timezone.utc)),
         (f"{MAIN_DOMAIN}/apra-ai-governance-2026.html", datetime.now(timezone.utc)),
     ]
+
+    # Slugs covered by this run's live GetAutoSEO feed use the feed's own
+    # pub_date for lastmod, same as before.
+    feed_slugs_seen: set[str] = set()
     for item in items:
         entries.append((f"{MAIN_DOMAIN}/post/{item.slug}/", item_datetime(item.pub_date)))
+        feed_slugs_seen.add(item.slug)
+
+    # post-registry.json is the durable source of truth for "this post
+    # exists" — independent of whether GetAutoSEO's feed still serves it
+    # today. Any registered slug with a real local file on disk gets a
+    # sitemap entry even if it has dropped out of the live feed (e.g. the
+    # source article was retired/unpublished upstream after we already
+    # published our own copy). lastmod falls back to the file's own mtime
+    # since no pub_date is available once a slug is no longer in the feed.
+    registry = load_post_registry()
+    for slug in registry:
+        if slug in feed_slugs_seen:
+            continue
+        post_path = ROOT / "post" / slug / "index.html"
+        if not post_path.exists():
+            continue
+        try:
+            mtime = datetime.fromtimestamp(post_path.stat().st_mtime, tz=timezone.utc)
+        except OSError:
+            mtime = datetime.now(timezone.utc)
+        entries.append((f"{MAIN_DOMAIN}/post/{slug}/", mtime))
 
     seen: set[str] = set()
     url_nodes: list[str] = []
