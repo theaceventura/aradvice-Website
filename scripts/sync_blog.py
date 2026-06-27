@@ -221,6 +221,22 @@ def strip_platform_widgets(html: str) -> str:
         html,
         flags=re.DOTALL | re.IGNORECASE,
     )
+    # Remove the GetAutoSEO client-side tracking/attribution script. This
+    # IIFE generates a per-browser visitor ID, posts pageview and
+    # time-on-page beacons to getautoseo.com using a hardcoded API token,
+    # and rewrites every internal link's href to append autoseo_vid /
+    # autoseo_aid / autoseo_avt / autoseo_src tracking query parameters.
+    # Anchored on the literal "TRACKING_TOKEN" variable name, which is
+    # unique to this script and stable across articles (unlike
+    # ARTICLE_ID/visitorId, which vary per post/visitor). The bounded
+    # (?:(?!</script>).)*? construct prevents the match from spanning
+    # into unrelated <script> tags elsewhere on the page.
+    html = re.sub(
+        r'<script\b[^>]*>(?:(?!</script>).)*?TRACKING_TOKEN(?:(?!</script>).)*?</script>',
+        '',
+        html,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
     # Remove the platform-generated TOC widget. Two passes handle both the case
     # where the list is still present and the case where a previous run already
     # stripped the list, leaving only the empty outer container.
