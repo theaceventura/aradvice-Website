@@ -519,9 +519,25 @@ def article_page_path(slug: str) -> Path:
     return ROOT / "post" / slug / "index.html"
 
 
-def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_id: str = "000") -> None:
+def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_id: str = "000",
+                related_html: str = "") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(clean_article_content(strip_platform_widgets(rewrite_domains(html))))
+    if related_html:
+        inserted = re.sub(
+            r'(<p[^>]*>\s*<a[^>]*>\s*If this resonates.*?</a>\s*</p>)',
+            related_html + r'\1',
+            rewritten,
+            count=1,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if inserted != rewritten:
+            rewritten = inserted
+        else:
+            # CTA shape wasn't the anchor-wrapped form (e.g. the bare
+            # three-<p> variant) — fall back to appending before </article>
+            # so the block still shows up rather than silently vanishing.
+            rewritten = rewritten.replace("</article>", related_html + "</article>", 1)
     rewritten, body_desc = extract_and_strip_meta_description(rewritten)
     local_head, local_header, local_html, _local_body, local_footer, local_nav_scripts = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
@@ -1116,6 +1132,67 @@ def guess_category(title: str, slug: str) -> str:
             if kw in haystack:
                 return category
     return _DEFAULT_CATEGORY
+
+
+def select_related_posts(
+    current_slug: str,
+    current_category: str,
+    items: list[FeedItem],
+    categories: dict,
+    limit: int = 3,
+) -> list[FeedItem]:
+    """Pick up to `limit` posts sharing the current post's category. Falls
+    back to filling remaining slots with other recent posts if there are
+    fewer than `limit` category matches. `items` should already be sorted
+    newest-first (as generated_items and visible_items are in main())."""
+    others = [i for i in items if i.slug != current_slug]
+    same_category = [
+        i for i in others
+        if categories.get(i.slug, _DEFAULT_CATEGORY) == current_category
+    ]
+    picked = same_category[:limit]
+    if len(picked) < limit:
+        picked_slugs = {i.slug for i in picked}
+        fallback = [i for i in others if i.slug not in picked_slugs]
+        picked.extend(fallback[: limit - len(picked)])
+    return picked
+
+
+def render_related_briefings(
+    current_item: FeedItem,
+    items: list[FeedItem],
+    categories: dict,
+    registry: dict,
+) -> str:
+    """Render a 'Related briefings' card grid for insertion just above the
+    CTA block on an individual post page. Returns '' if no related posts
+    are available (e.g. this is the only post)."""
+    current_category = categories.get(current_item.slug, _DEFAULT_CATEGORY)
+    related = select_related_posts(current_item.slug, current_category, items, categories)
+    if not related:
+        return ""
+    cards = []
+    for rel in related:
+        cat_key = categories.get(rel.slug, _DEFAULT_CATEGORY)
+        cat_label = escape(CATEGORY_LABELS.get(cat_key, cat_key))
+        post_id = registry.get(rel.slug, 0)
+        cards.append(
+            f'<a href="/post/{escape(rel.slug)}/" style="text-decoration:none; display:block; '
+            'background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:16px 20px;">'
+            f'<span style="font-size:12px; color:#0f6e56; background:#e1f5ee; '
+            f'padding:2px 8px; border-radius:6px;">{cat_label}</span>'
+            f'<p style="font-size:14px; font-weight:600; color:#0f172a; '
+            f'margin:10px 0 6px; line-height:1.4;">{escape(rel.title)}</p>'
+            f'<p style="font-size:12px; color:#94a3b8; margin:0;">Briefing No. {post_id:03d}</p>'
+            '</a>'
+        )
+    return (
+        '<div style="border-top:1px solid #e2e8f0; padding-top:24px; margin:32px 0;">'
+        '<h3 style="font-size:18px; font-weight:600; margin:0 0 16px 0;">Related briefings</h3>'
+        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">'
+        + "".join(cards)
+        + "</div></div>"
+    )
 
 
 def assign_post_categories(items: list[FeedItem]) -> dict:
@@ -2152,7 +2229,8 @@ def main() -> int:
 
         other_items = [i for i in visible_items if i.slug != item.slug]
         page_html = inject_more_articles(item.html, other_items, categories=categories)
-        write_page(page_path, page_html, feed_item=item, post_id=post_id)
+        related_html = render_related_briefings(item, visible_items, categories, registry)
+        write_page(page_path, page_html, feed_item=item, post_id=post_id, related_html=related_html)
         write_linkedin_draft(item, post_url, post_id=post_id,
                              force=(item.slug == test_slug))
         write_advisor_brief(item, post_url, post_id=post_id)
