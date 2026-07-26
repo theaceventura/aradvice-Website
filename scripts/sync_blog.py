@@ -2105,9 +2105,12 @@ def main() -> int:
               file=sys.stderr)
         rss_by_slug = {}
 
-    if not feed_items:
-        print("Blog index returned no articles — blog may be temporarily unavailable. Skipping sync.", file=sys.stderr)
-        return 0
+    primary_index_ok = bool(feed_items)
+    if not primary_index_ok:
+        print("Blog index returned no articles — blog may be temporarily unavailable. "
+              "Continuing with manual posts and registry-driven sitemap/link cleanup; "
+              "skipping blog.html and post-map regeneration since the article list would be incomplete.",
+              file=sys.stderr)
 
     # Merge RSS metadata into index-scraped items
     for item in feed_items:
@@ -2119,8 +2122,9 @@ def main() -> int:
             if not item["title"]:
                 item["title"] = rss.get("title", "")
 
-    print(f"  Found {len(feed_items)} articles on blog index "
-          f"({len(rss_by_slug)} in RSS feed)")
+    if primary_index_ok:
+        print(f"  Found {len(feed_items)} articles on blog index "
+              f"({len(rss_by_slug)} in RSS feed)")
 
     # Merge manually-managed posts not in the getautoseo feed.
     # Also register their slugs so the main loop treats them as manual
@@ -2181,16 +2185,17 @@ def main() -> int:
     # registry fallback in build_sitemap) survive regardless — this check
     # exists purely so Andy is told immediately instead of finding out by
     # accident later.
-    current_feed_slugs = {item.slug for item in generated_items}
-    dropped_slugs = sorted(set(registry.keys()) - current_feed_slugs)
-    if dropped_slugs:
-        print(
-            f"  WARNING: {len(dropped_slugs)} post(s) registered but missing "
-            f"from today's GetAutoSEO feed (source may have unpublished them):",
-            file=sys.stderr,
-        )
-        for slug in dropped_slugs:
-            print(f"    - {slug} (registry id {registry[slug]})", file=sys.stderr)
+    if primary_index_ok:
+        current_feed_slugs = {item.slug for item in generated_items}
+        dropped_slugs = sorted(set(registry.keys()) - current_feed_slugs)
+        if dropped_slugs:
+            print(
+                f"  WARNING: {len(dropped_slugs)} post(s) registered but missing "
+                f"from today's GetAutoSEO feed (source may have unpublished them):",
+                file=sys.stderr,
+            )
+            for slug in dropped_slugs:
+                print(f"    - {slug} (registry id {registry[slug]})", file=sys.stderr)
 
     # Only render published articles (exclude future-dated posts from blog/sitemap)
     now = datetime.now(timezone.utc)
@@ -2238,15 +2243,10 @@ def main() -> int:
                           force=(item.slug == test_slug),
                           test_email=(test_email if item.slug == test_slug else ""))
 
-    if not visible_items:
-        print("No published articles found — skipping blog and sitemap generation.", file=sys.stderr)
-        return 0
-
-    latest_item = visible_items[0]
-    remaining_items = visible_items[1:] if len(visible_items) > 1 else []
-    latest_with_listing = inject_more_articles(latest_item.html, remaining_items, categories=categories)
-    latest_with_listing = inject_blog_landing_view(latest_with_listing, visible_items, categories=categories)
-    write_page(ROOT / "blog.html", latest_with_listing)
+    # Sitemap regeneration and stale-post cleanup are registry/disk-driven
+    # (see build_sitemap's registry fallback below), so they stay safe and
+    # useful to run even when this run's fetched article list is empty or
+    # only partial (e.g. blog index down, just manual/RSS-only posts present).
     (ROOT / "sitemap.xml").write_text(build_sitemap(visible_items), encoding="utf-8")
 
     # Patch any existing post pages not in the current sync (e.g. fell off blog index):
@@ -2271,14 +2271,33 @@ def main() -> int:
         if patched != html:
             post_dir.write_text(patched, encoding="utf-8")
 
-    generate_post_mapping(generated_items, registry)
-    print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
+    # blog.html's "latest featured" article and post-map.md are only
+    # trustworthy when built from the complete article list. Regenerating
+    # them from a partial fetch would silently demote the real latest post
+    # and drop most posts from the map, so skip both when the primary index
+    # failed or nothing published is visible — sitemap/cleanup already ran above.
+    if primary_index_ok and visible_items:
+        latest_item = visible_items[0]
+        remaining_items = visible_items[1:] if len(visible_items) > 1 else []
+        latest_with_listing = inject_more_articles(latest_item.html, remaining_items, categories=categories)
+        latest_with_listing = inject_blog_landing_view(latest_with_listing, visible_items, categories=categories)
+        write_page(ROOT / "blog.html", latest_with_listing)
+        generate_post_mapping(generated_items, registry)
+        print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
+        commit_message = f"Sync blog content, update {latest_item.slug}"
+    elif not primary_index_ok:
+        print("  Blog index unavailable — skipped blog.html/post-map regeneration; "
+              "sitemap and stale-post cleanup still ran.", file=sys.stderr)
+        commit_message = "Sync maintenance: sitemap and link cleanup (blog index unavailable)"
+    else:
+        print("No published articles found — skipping blog.html and post-map regeneration.", file=sys.stderr)
+        commit_message = "Sync maintenance: sitemap and link cleanup (no published articles)"
 
-    _git_commit_and_push(latest_item.slug)
+    _git_commit_and_push(commit_message)
     return 0
 
 
-def _git_commit_and_push(latest_slug: str) -> None:
+def _git_commit_and_push(commit_message: str) -> None:
     """Stage all sync output, commit if there are changes, and push."""
     import subprocess
 
@@ -2310,12 +2329,11 @@ def _git_commit_and_push(latest_slug: str) -> None:
         print("  git: nothing to commit")
         return
 
-    msg = f"Sync blog content, update {latest_slug}"
-    commit = run(["git", "commit", "-m", msg])
+    commit = run(["git", "commit", "-m", commit_message])
     if commit.returncode != 0:
         print(f"  git commit failed:\n{commit.stderr}", file=sys.stderr)
         return
-    print(f"  git commit: {msg}")
+    print(f"  git commit: {commit_message}")
 
     push = run(["git", "push"])
     if push.returncode != 0:
