@@ -237,23 +237,10 @@ def strip_platform_widgets(html: str) -> str:
         html,
         flags=re.DOTALL | re.IGNORECASE,
     )
-    # Remove the platform-generated TOC widget. Two passes handle both the case
-    # where the list is still present and the case where a previous run already
-    # stripped the list, leaving only the empty outer container.
-    # Pass 1: strip list content if still present
-    html = re.sub(
-        r'<h2[^>]*>\s*Table of Contents\s*</h2>\s*<ul[^>]*class="[^"]*space-y-2[^"]*"[^>]*>.*?</ul>',
-        '',
-        html,
-        flags=re.DOTALL | re.IGNORECASE,
-    )
-    # Pass 2: strip the now-empty (or already-empty) container div
-    html = re.sub(
-        r'<div[^>]*class="[^"]*bg-gray-50[^"]*rounded[^"]*"[^>]*>\s*</div>',
-        '',
-        html,
-        flags=re.DOTALL | re.IGNORECASE,
-    )
+    # NOTE: the platform-generated Table of Contents is intentionally kept
+    # (decision made 27 Jul 2026). It is currently unstyled raw GetAutoSEO
+    # markup; a follow-up pass to restyle it to match the site's dark navy
+    # / cyan design system is on the list, not yet done.
     return html
 
 
@@ -556,7 +543,8 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
             post_slug = relative.parts[1]
     except (ValueError, IndexError):
         pass
-    post_title = feed_item.title if feed_item else ""
+    overrides = load_post_overrides().get(post_slug, {}) if post_slug else {}
+    post_title = overrides.get("title") or (feed_item.title if feed_item else "")
     # Generate click-optimised description and per-post keywords via API
     api_desc, post_keywords = ("", "")
     if feed_item and not path.exists():
@@ -567,7 +555,9 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     #   2. Existing local file (preserves previously generated/edited values)
     #   3. Fetched HTML meta (new articles where API failed)
     #   4. Extracted body description
-    if api_desc:
+    if overrides.get("meta_description"):
+        raw_desc = overrides["meta_description"]
+    elif api_desc:
         raw_desc = api_desc
     elif path.exists():
         # Read from the stored page so we never overwrite with inferior CMS content.
@@ -631,6 +621,8 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
             f"{MAIN_DOMAIN}/post/{post_slug}/",
             post_id,
         )
+    if overrides.get("keywords"):
+        post_keywords = overrides["keywords"]
     path.write_text(
         replace_host_head_and_header(
             rewritten, local_head, local_header, local_html,
@@ -1128,6 +1120,135 @@ def save_post_categories(categories: dict) -> None:
         json.dumps(categories, indent=2, ensure_ascii=False, sort_keys=True),
         encoding="utf-8",
     )
+
+
+def load_draft(slug: str) -> dict:
+    """Load a hand-authored draft package written by the drafting tool."""
+    import json
+    path = ROOT / "drafts" / f"{slug}.json"
+    if not path.exists():
+        raise FileNotFoundError(f"No draft found at drafts/{slug}.json")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def render_original_post_scaffold(title: str, body_html: str) -> str:
+    """Wrap hand-authored article body HTML in the minimal document shape
+    write_page()/replace_host_head_and_header() expect: the article wrapper
+    class they search for, plus head/body/header/footer tags present so the
+    real site shell gets swapped in during processing."""
+    escaped_title = escape(title)
+    return (
+        "<html><head><title>" + escaped_title + "</title></head><body>"
+        "<header></header>"
+        '<main class="flex-1">'
+        '<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">'
+        "<h1>" + escaped_title + "</h1>"
+        + body_html +
+        "</article>"
+        "</main>"
+        "<footer></footer>"
+        "</body></html>"
+    )
+
+
+def publish_original_post(slug: str) -> None:
+    """Publish a hand-authored draft from drafts/{slug}.json through the
+    same pipeline used for GetAutoSEO posts: ID and category assignment,
+    og:image generation, schema, related briefings, LinkedIn draft and
+    advisor brief. Does not touch blog.html or sitemap.xml — run a normal
+    sync afterward (or call the tail of main()) to refresh those."""
+    draft = load_draft(slug)
+    title = draft["title"]
+    body_html = draft["body_html"]
+    meta_description = draft.get("meta_description", "")
+    keywords = draft.get("keywords", "")
+    category = draft.get("category", _DEFAULT_CATEGORY)
+    pub_date_str = draft.get("pub_date") or datetime.now(timezone.utc).strftime(
+        "%a, %d %b %Y %H:%M:%S +0000"
+    )
+
+    post_url = f"{MAIN_DOMAIN}/post/{slug}/"
+    scaffold_html = render_original_post_scaffold(title, body_html)
+
+    item = FeedItem(
+        title=title, link=post_url, slug=slug, pub_date=pub_date_str,
+        html=scaffold_html, image_url="", read_time="",
+        excerpt=meta_description[:160],
+    )
+
+    registry = load_post_registry()
+    if slug not in registry:
+        valid_ids = [int(v) for v in registry.values() if str(v).isdigit()]
+        registry[slug] = max(valid_ids, default=0) + 1
+        save_post_registry(registry)
+    post_id = f"{registry[slug]:03d}"
+
+    categories = load_post_categories()
+    categories[slug] = category
+    save_post_categories(categories)
+
+    visible_items = []
+    for s, pid in registry.items():
+        if s == slug:
+            continue
+        post_file = ROOT / "post" / s / "index.html"
+        if not post_file.exists():
+            continue
+        stored = post_file.read_text(encoding="utf-8")
+        title_match = re.search(r"<title>([^<]*)\s*\|", stored)
+        visible_items.append(FeedItem(
+            title=title_match.group(1).strip() if title_match else s,
+            link=f"{MAIN_DOMAIN}/post/{s}/", slug=s, pub_date="", html="",
+            image_url="", read_time="",
+        ))
+
+    related_html = render_related_briefings(item, visible_items, categories, registry)
+    page_html = inject_more_articles(scaffold_html, visible_items, categories=categories)
+    write_page(article_page_path(slug), page_html, feed_item=item,
+               post_id=post_id, related_html=related_html)
+
+    write_linkedin_draft(item, post_url, post_id=post_id, force=True)
+    write_advisor_brief(item, post_url, post_id=post_id)
+
+    print(f"Published original post: {slug} (Briefing No. {post_id})")
+    print("Run a normal sync (no flags) next to refresh blog.html and sitemap.xml.")
+
+
+def process_pending_drafts() -> None:
+    """Automatically publish any draft sitting in drafts/ that hasn't been
+    published yet, so dropping an exported file there is the only manual
+    step. Already-published drafts are moved into drafts/published/ so
+    they are not reprocessed on a later run."""
+    drafts_dir = ROOT / "drafts"
+    if not drafts_dir.exists():
+        return
+    published_dir = drafts_dir / "published"
+    for draft_path in sorted(drafts_dir.glob("*.json")):
+        slug = draft_path.stem
+        post_path = article_page_path(slug)
+        if post_path.exists():
+            # Already published in a previous run — archive and skip.
+            published_dir.mkdir(parents=True, exist_ok=True)
+            draft_path.rename(published_dir / draft_path.name)
+            continue
+        try:
+            publish_original_post(slug)
+            published_dir.mkdir(parents=True, exist_ok=True)
+            draft_path.rename(published_dir / draft_path.name)
+        except Exception as e:
+            print(f"  Failed to auto-publish draft {slug}: {e}", file=sys.stderr)
+
+
+def load_post_overrides() -> dict:
+    """Load manual title/meta/keyword overrides, keyed by slug. Lets a
+    single post's SEO title, description, or keywords be corrected
+    without touching the GetAutoSEO source (useful while that
+    subscription is read-only) or waiting on a full content rewrite."""
+    import json
+    path = ROOT / "post-overrides.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {}
 
 
 def guess_category(title: str, slug: str) -> str:
@@ -2077,6 +2198,13 @@ def main() -> int:
         help="Force-regenerate the email and LinkedIn drafts for SLUG (never sends, email log untouched, overwrites the LinkedIn draft file)"
     )
     parser.add_argument(
+        "--publish-draft", metavar="SLUG", default="", dest="publish_slug",
+        help="Publish a hand-authored draft from drafts/SLUG.json through the "
+             "full pipeline (ID, category, images, related briefings, LinkedIn "
+             "draft, advisor brief), then exit. Follow with a normal sync run "
+             "to refresh blog.html and sitemap.xml."
+    )
+    parser.add_argument(
         "--send-test-to", metavar="EMAIL", default="", dest="test_email",
         help="Send a real test broadcast for --test SLUG to this email address only. "
              "Subject is prefixed [TEST]. Bypasses the daily-send guard and the "
@@ -2091,6 +2219,12 @@ def main() -> int:
         parser.error("--send-test-to requires --test SLUG")
     if test_slug and not test_email:
         dry_run = True
+
+    if args.publish_slug:
+        publish_original_post(args.publish_slug)
+        return 0
+
+    process_pending_drafts()
 
     # Primary: scrape blog index pages to get all articles
     feed_items = parse_blog_index()
