@@ -519,25 +519,33 @@ def article_page_path(slug: str) -> Path:
     return ROOT / "post" / slug / "index.html"
 
 
+def insert_related_briefings(html: str, related_html: str) -> str:
+    """Insert related_html directly above the 'If this resonates' CTA. That
+    CTA renders in several shapes depending on the article — anchor-wrapped,
+    three bare sibling <p> tags, or a single <p> with <br> line breaks — so
+    match just the opening tag immediately before the CTA text rather than
+    trying to enumerate every closing shape. If there are multiple CTA
+    occurrences (a pre-existing dedup gap), insert above the last one, since
+    that's the one that actually renders at the end of the article. Falls
+    back to appending before </article> if no CTA is found at all."""
+    if not related_html:
+        return html
+    matches = list(re.finditer(
+        r'<p[^>]*>(?:\s*<a[^>]*>)?\s*If this resonates',
+        html,
+        flags=re.IGNORECASE,
+    ))
+    if matches:
+        pos = matches[-1].start()
+        return html[:pos] + related_html + html[pos:]
+    return html.replace("</article>", related_html + "</article>", 1)
+
+
 def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_id: str = "000",
                 related_html: str = "") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(clean_article_content(strip_platform_widgets(rewrite_domains(html))))
-    if related_html:
-        inserted = re.sub(
-            r'(<p[^>]*>\s*<a[^>]*>\s*If this resonates.*?</a>\s*</p>)',
-            related_html + r'\1',
-            rewritten,
-            count=1,
-            flags=re.IGNORECASE | re.DOTALL,
-        )
-        if inserted != rewritten:
-            rewritten = inserted
-        else:
-            # CTA shape wasn't the anchor-wrapped form (e.g. the bare
-            # three-<p> variant) — fall back to appending before </article>
-            # so the block still shows up rather than silently vanishing.
-            rewritten = rewritten.replace("</article>", related_html + "</article>", 1)
+    rewritten = insert_related_briefings(rewritten, related_html)
     rewritten, body_desc = extract_and_strip_meta_description(rewritten)
     local_head, local_header, local_html, _local_body, local_footer, local_nav_scripts = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
