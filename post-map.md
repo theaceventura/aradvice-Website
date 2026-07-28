@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 27 Jun 2026 21:49 UTC
+Generated: 28 Jul 2026 00:35 UTC
 
-Total posts: 25
+Total posts: 26
 
 
 ---
@@ -18,6 +18,18 @@ Total posts: 25
 - **LinkedIn draft:** `post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/001-linkedin.txt`
 - **LinkedIn log:** see `post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/posting-log.md`
 - **Advisor brief:** `post/cyber-governance-for-boards-australia-moving-beyond-technical-metrics-to-defensible-oversight/001-advisor-brief.md`
+
+
+## [002] What is a Technology Consultant? A Director’s Guide to Strategic Advisory in 2026
+- **ID:** 002
+- **Published:** 30 Apr 2026
+- **Slug:** `what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026`
+- **URL:** https://aradvice.com.au/post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/
+- **Article:** `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/index.html`
+- **og:image:** `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/002-og-image.png`
+- **LinkedIn draft:** `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/002-linkedin.txt`
+- **LinkedIn log:** see `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/posting-log.md`
+- **Advisor brief:** `post/what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026/002-advisor-brief.md`
 
 
 ## [003] Digital Strategy Consulting: A Board-Level Governance Template for 2026
@@ -56,7 +68,7 @@ Total posts: 25
 - **Advisor brief:** `post/tech-consulting-for-australian-boards-bridging-the-governance-gap-in-2026/005-advisor-brief.md`
 
 
-## [006] Ethical AI Governance Framework Australia: A 2026 Guide for Board Directors
+## [006] AI Ethics Governance for Australian Boards: A Director's Framework
 - **ID:** 006
 - **Published:** 08 May 2026
 - **Slug:** `ethical-ai-governance-framework-australia-a-2026-guide-for-board-directors`
@@ -200,6 +212,18 @@ Total posts: 25
 - **Advisor brief:** `post/apra-cps-234-board-obligations-checklist-for-directors/020-advisor-brief.md`
 
 
+## [017] Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director’s Checklist
+- **ID:** 017
+- **Published:** 05 Jun 2026
+- **Slug:** `questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist`
+- **URL:** https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/
+- **Article:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/index.html`
+- **og:image:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-og-image.png`
+- **LinkedIn draft:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-linkedin.txt`
+- **LinkedIn log:** see `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/posting-log.md`
+- **Advisor brief:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-advisor-brief.md`
+
+
 ## [023] Cyber Security Act 2024: Australian Director Obligations
 - **ID:** 023
 - **Published:** 05 Jun 2026
@@ -210,18 +234,6 @@ Total posts: 25
 - **LinkedIn draft:** `post/cyber-security-act-2024-australian-director-obligations/023-linkedin.txt`
 - **LinkedIn log:** see `post/cyber-security-act-2024-australian-director-obligations/posting-log.md`
 - **Advisor brief:** `post/cyber-security-act-2024-australian-director-obligations/023-advisor-brief.md`
-
-
-## [017] Questions for Boards to Ask About Corporate AI Strategy: A 2026 Director’s Checklist
-- **ID:** 017
-- **Published:** 07 Jun 2026
-- **Slug:** `questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist`
-- **URL:** https://aradvice.com.au/post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/
-- **Article:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/index.html`
-- **og:image:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-og-image.png`
-- **LinkedIn draft:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-linkedin.txt`
-- **LinkedIn log:** see `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/posting-log.md`
-- **Advisor brief:** `post/questions-for-boards-to-ask-about-corporate-ai-strategy-a-2026-directors-checklist/017-advisor-brief.md`
 
 
 ## [018] Director's Guide to Artificial Intelligence Risks: Defensible Oversight in 2026
@@ -236,7 +248,7 @@ Total posts: 25
 - **Advisor brief:** `post/directors-guide-to-artificial-intelligence-risks-defensible-oversight-in-2026/018-advisor-brief.md`
 
 
-## [019] Linking Cyber Risk to Financial Impact: A Director's Guide to Defensible Board Reporting
+## [019] Linking Cyber Risk to Financial Impact: A Director’s Guide to Defensible Board Reporting
 - **ID:** 019
 - **Published:** 10 Jun 2026
 - **Slug:** `linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting`

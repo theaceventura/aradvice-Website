@@ -958,6 +958,59 @@ def inject_blog_landing_view(html: str, items: list[FeedItem], categories: "dict
     return html
 
 
+def build_items_from_registry() -> list[FeedItem]:
+    """Reconstruct a FeedItem for every post in post-registry.json by
+    reading its already-published HTML on disk. This is the durable,
+    feed-independent source of truth for blog.html and sitemap.xml —
+    it never depends on the GetAutoSEO feed being reachable, and it
+    correctly includes posts published via publish_original_post()
+    that the feed never knew about in the first place."""
+    registry = load_post_registry()
+    items: list[FeedItem] = []
+    for slug in registry:
+        post_file = ROOT / "post" / slug / "index.html"
+        if not post_file.exists():
+            continue
+        stored = post_file.read_text(encoding="utf-8")
+
+        title_match = re.search(r"<title>([^<]*)\s*\|", stored)
+        title = unescape(title_match.group(1).strip()) if title_match else slug
+
+        desc_match = (
+            re.search(r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']*)["\']', stored, flags=re.IGNORECASE)
+        )
+        excerpt = unescape(desc_match.group(1).strip())[:160] if desc_match else ""
+
+        pub_date_str = ""
+        date_match = re.search(r'"datePublished":\s*"([^"]+)"', stored)
+        if date_match:
+            try:
+                dt = datetime.fromisoformat(date_match.group(1).replace("Z", "+00:00"))
+                pub_date_str = dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
+            except ValueError:
+                pub_date_str = ""
+        if not pub_date_str:
+            try:
+                mtime = datetime.fromtimestamp(post_file.stat().st_mtime, tz=timezone.utc)
+                pub_date_str = mtime.strftime("%a, %d %b %Y %H:%M:%S +0000")
+            except OSError:
+                pub_date_str = datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S +0000")
+
+        items.append(FeedItem(
+            title=title,
+            link=f"{MAIN_DOMAIN}/post/{slug}/",
+            slug=slug,
+            pub_date=pub_date_str,
+            html=stored,
+            image_url="",
+            read_time=extract_read_time(stored),
+            excerpt=excerpt,
+        ))
+
+    items.sort(key=lambda i: item_datetime(i.pub_date), reverse=True)
+    return items
+
+
 def build_sitemap(items: list[FeedItem]) -> str:
     entries = [
         (f"{MAIN_DOMAIN}/", datetime.now(timezone.utc)),
@@ -2249,10 +2302,8 @@ def main() -> int:
 
     primary_index_ok = bool(feed_items)
     if not primary_index_ok:
-        print("Blog index returned no articles — blog may be temporarily unavailable. "
-              "Continuing with manual posts and registry-driven sitemap/link cleanup; "
-              "skipping blog.html and post-map regeneration since the article list would be incomplete.",
-              file=sys.stderr)
+        print("No GetAutoSEO feed items found (expected now that GetAutoSEO is "
+              "retired). Continuing with locally published posts only.", file=sys.stderr)
 
     # Merge RSS metadata into index-scraped items
     for item in feed_items:
@@ -2385,12 +2436,6 @@ def main() -> int:
                           force=(item.slug == test_slug),
                           test_email=(test_email if item.slug == test_slug else ""))
 
-    # Sitemap regeneration and stale-post cleanup are registry/disk-driven
-    # (see build_sitemap's registry fallback below), so they stay safe and
-    # useful to run even when this run's fetched article list is empty or
-    # only partial (e.g. blog index down, just manual/RSS-only posts present).
-    (ROOT / "sitemap.xml").write_text(build_sitemap(visible_items), encoding="utf-8")
-
     # Patch any existing post pages not in the current sync (e.g. fell off blog index):
     # apply content cleaning and remove stale future-article cards.
     future_slugs = {i.slug for i in generated_items if i not in visible_items}
@@ -2413,27 +2458,27 @@ def main() -> int:
         if patched != html:
             post_dir.write_text(patched, encoding="utf-8")
 
-    # blog.html's "latest featured" article and post-map.md are only
-    # trustworthy when built from the complete article list. Regenerating
-    # them from a partial fetch would silently demote the real latest post
-    # and drop most posts from the map, so skip both when the primary index
-    # failed or nothing published is visible — sitemap/cleanup already ran above.
-    if primary_index_ok and visible_items:
-        latest_item = visible_items[0]
-        remaining_items = visible_items[1:] if len(visible_items) > 1 else []
-        latest_with_listing = inject_more_articles(latest_item.html, remaining_items, categories=categories)
-        latest_with_listing = inject_blog_landing_view(latest_with_listing, visible_items, categories=categories)
-        write_page(ROOT / "blog.html", latest_with_listing)
-        generate_post_mapping(generated_items, registry)
-        print(f"Synced {len(generated_items)} article(s). Latest: {latest_item.slug}")
-        commit_message = f"Sync blog content, update {latest_item.slug}"
-    elif not primary_index_ok:
-        print("  Blog index unavailable — skipped blog.html/post-map regeneration; "
-              "sitemap and stale-post cleanup still ran.", file=sys.stderr)
-        commit_message = "Sync maintenance: sitemap and link cleanup (blog index unavailable)"
+    # blog.html and sitemap.xml are built from every locally published post
+    # (post-registry.json + files on disk), not from the GetAutoSEO feed.
+    # This is durable regardless of that feed's availability, and correctly
+    # reflects posts published via publish_original_post() as "latest" when
+    # appropriate, which the feed-derived list never did.
+    registry_items = build_items_from_registry()
+    if not registry_items:
+        print("No published articles found on disk — skipping blog and sitemap generation.", file=sys.stderr)
+        commit_message = "Sync maintenance: link cleanup (no published articles)"
     else:
-        print("No published articles found — skipping blog.html and post-map regeneration.", file=sys.stderr)
-        commit_message = "Sync maintenance: sitemap and link cleanup (no published articles)"
+        latest_item = registry_items[0]
+        remaining_items = registry_items[1:] if len(registry_items) > 1 else []
+        latest_with_listing = inject_more_articles(latest_item.html, remaining_items, categories=categories)
+        latest_with_listing = inject_blog_landing_view(latest_with_listing, registry_items, categories=categories)
+        write_page(ROOT / "blog.html", latest_with_listing)
+        (ROOT / "sitemap.xml").write_text(build_sitemap(registry_items), encoding="utf-8")
+        generate_post_mapping(registry_items, registry)
+        print(f"Synced {len(registry_items)} total published article(s) "
+              f"({len(generated_items)} contributed by the feed this run). "
+              f"Latest: {latest_item.slug}")
+        commit_message = f"Sync blog content, update {latest_item.slug}"
 
     _git_commit_and_push(commit_message)
     return 0
