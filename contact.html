@@ -431,6 +431,9 @@
         ok.style.display = 'block';
         ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
         form.reset();
+        if (typeof gtag === 'function') {
+          gtag('event', 'contact_form_submitted');
+        }
       } else {
         if (btn) { btn.disabled = false; btn.textContent = label; }
         document.getElementById('form-error').style.display = 'block';
