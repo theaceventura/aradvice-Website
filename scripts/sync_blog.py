@@ -1304,6 +1304,203 @@ def load_post_overrides() -> dict:
     return {}
 
 
+def fetch_ga4_report(property_id: str, days: int = 30) -> dict:
+    """Fetch daily sessions/users trend and top landing pages from GA4
+    via the Analytics Data API using a service account."""
+    from google.analytics.data_v1beta import BetaAnalyticsDataClient
+    from google.analytics.data_v1beta.types import (
+        RunReportRequest, DateRange, Dimension, Metric, OrderBy
+    )
+    from google.oauth2 import service_account
+    import os, json as _json
+
+    creds_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    if not creds_json or not property_id:
+        return {}
+    creds = service_account.Credentials.from_service_account_info(_json.loads(creds_json))
+    client = BetaAnalyticsDataClient(credentials=creds)
+
+    trend_request = RunReportRequest(
+        property=f"properties/{property_id}",
+        dimensions=[Dimension(name="date")],
+        metrics=[
+            Metric(name="sessions"),
+            Metric(name="activeUsers"),
+            Metric(name="engagementRate"),
+        ],
+        date_ranges=[DateRange(start_date=f"{days}daysAgo", end_date="yesterday")],
+        order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name="date"))],
+    )
+    trend_response = client.run_report(trend_request)
+    trend = [
+        {
+            "date": row.dimension_values[0].value,
+            "sessions": int(row.metric_values[0].value),
+            "activeUsers": int(row.metric_values[1].value),
+            "engagementRate": float(row.metric_values[2].value),
+        }
+        for row in trend_response.rows
+    ]
+
+    pages_request = RunReportRequest(
+        property=f"properties/{property_id}",
+        dimensions=[Dimension(name="landingPage")],
+        metrics=[Metric(name="sessions"), Metric(name="activeUsers"), Metric(name="bounceRate")],
+        date_ranges=[DateRange(start_date="7daysAgo", end_date="yesterday")],
+        order_bys=[OrderBy(metric=OrderBy.MetricOrderBy(metric_name="sessions"), desc=True)],
+        limit=10,
+    )
+    pages_response = client.run_report(pages_request)
+    top_pages = [
+        {
+            "page": row.dimension_values[0].value,
+            "sessions": int(row.metric_values[0].value),
+            "activeUsers": int(row.metric_values[1].value),
+            "bounceRate": round(float(row.metric_values[2].value), 3),
+        }
+        for row in pages_response.rows
+    ]
+
+    return {"trend": trend, "top_pages": top_pages}
+
+
+def fetch_gsc_report(site_url: str, days: int = 30) -> dict:
+    """Fetch daily clicks/impressions trend and top queries from Search
+    Console via the Search Console API using a service account."""
+    from googleapiclient.discovery import build
+    from google.oauth2 import service_account
+    from datetime import timedelta
+    import os, json as _json
+
+    creds_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    if not creds_json or not site_url:
+        return {}
+    creds = service_account.Credentials.from_service_account_info(
+        _json.loads(creds_json),
+        scopes=["https://www.googleapis.com/auth/webmasters.readonly"],
+    )
+    service = build("searchconsole", "v1", credentials=creds)
+
+    end = datetime.now(timezone.utc).date() - timedelta(days=1)
+    start = end - timedelta(days=days)
+
+    trend_response = service.searchanalytics().query(
+        siteUrl=site_url,
+        body={"startDate": start.isoformat(), "endDate": end.isoformat(), "dimensions": ["date"]},
+    ).execute()
+    trend = [
+        {"date": row["keys"][0], "clicks": row["clicks"], "impressions": row["impressions"],
+         "ctr": round(row["ctr"], 4), "position": round(row["position"], 1)}
+        for row in trend_response.get("rows", [])
+    ]
+
+    queries_response = service.searchanalytics().query(
+        siteUrl=site_url,
+        body={"startDate": start.isoformat(), "endDate": end.isoformat(),
+              "dimensions": ["query"], "rowLimit": 15},
+    ).execute()
+    top_queries = [
+        {"query": row["keys"][0], "clicks": row["clicks"], "impressions": row["impressions"],
+         "position": round(row["position"], 1)}
+        for row in queries_response.get("rows", [])
+    ]
+
+    return {"trend": trend, "top_queries": top_queries}
+
+
+def render_daily_report_html(ga4_data: dict, gsc_data: dict) -> str:
+    """Render the hidden daily report as a standalone static HTML page."""
+    import json as _json
+    generated_at = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
+    ga4_trend_json = _json.dumps(ga4_data.get("trend", []))
+    gsc_trend_json = _json.dumps(gsc_data.get("trend", []))
+
+    def render_table(rows, columns):
+        if not rows:
+            return "<p style='color:#94a3b8;'>No data available.</p>"
+        head = "".join(f"<th>{c}</th>" for c in columns)
+        body = "".join(
+            "<tr>" + "".join(f"<td>{escape(str(r.get(c, '')))}</td>" for c in columns) + "</tr>"
+            for r in rows
+        )
+        return f'<table class="report-table"><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>'
+
+    top_pages_table = render_table(ga4_data.get("top_pages", []), ["page", "sessions", "activeUsers", "bounceRate"])
+    top_queries_table = render_table(gsc_data.get("top_queries", []), ["query", "clicks", "impressions", "position"])
+
+    return f"""<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Daily Report</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {{ background:#050c1c; color:#e2e8f0; font-family:-apple-system,sans-serif; padding:32px; }}
+  h1 {{ font-size:20px; }}
+  h2 {{ font-size:15px; margin-top:32px; color:#00d4ff; }}
+  .meta {{ color:#64748b; font-size:12px; margin-bottom:24px; }}
+  .report-table {{ width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }}
+  .report-table th {{ text-align:left; color:#94a3b8; border-bottom:1px solid #24304f; padding:6px 10px; }}
+  .report-table td {{ padding:6px 10px; border-bottom:1px solid #172136; }}
+  canvas {{ max-width:100%; background:#0b1730; border-radius:12px; padding:16px; }}
+</style>
+</head><body>
+<h1>Daily Site Report</h1>
+<p class="meta">Generated {generated_at}. Not linked anywhere on the site.</p>
+<h2>Sessions &amp; users, last 30 days (GA4)</h2>
+<canvas id="ga4Chart" height="90"></canvas>
+<h2>Clicks &amp; impressions, last 30 days (Search Console)</h2>
+<canvas id="gscChart" height="90"></canvas>
+<h2>Top landing pages, last 7 days</h2>
+{top_pages_table}
+<h2>Top search queries, last 30 days</h2>
+{top_queries_table}
+<script>
+const ga4Trend = {ga4_trend_json};
+const gscTrend = {gsc_trend_json};
+new Chart(document.getElementById('ga4Chart'), {{
+  type: 'line',
+  data: {{ labels: ga4Trend.map(d => d.date), datasets: [
+    {{ label: 'Sessions', data: ga4Trend.map(d => d.sessions), borderColor: '#00d4ff', tension: 0.3 }},
+    {{ label: 'Active users', data: ga4Trend.map(d => d.activeUsers), borderColor: '#22c55e', tension: 0.3 }}
+  ]}},
+  options: {{ plugins: {{ legend: {{ labels: {{ color: '#e2e8f0' }} }} }},
+    scales: {{ x: {{ ticks: {{ color: '#94a3b8' }} }}, y: {{ ticks: {{ color: '#94a3b8' }} }} }} }}
+}});
+new Chart(document.getElementById('gscChart'), {{
+  type: 'line',
+  data: {{ labels: gscTrend.map(d => d.date), datasets: [
+    {{ label: 'Clicks', data: gscTrend.map(d => d.clicks), borderColor: '#facc15', tension: 0.3 }},
+    {{ label: 'Impressions', data: gscTrend.map(d => d.impressions), borderColor: '#a78bfa', tension: 0.3, yAxisID: 'y1' }}
+  ]}},
+  options: {{ plugins: {{ legend: {{ labels: {{ color: '#e2e8f0' }} }} }},
+    scales: {{ x: {{ ticks: {{ color: '#94a3b8' }} }}, y: {{ ticks: {{ color: '#94a3b8' }} }},
+      y1: {{ position: 'right', ticks: {{ color: '#94a3b8' }}, grid: {{ drawOnChartArea: false }} }} }} }}
+}});
+</script>
+</body></html>"""
+
+
+def generate_daily_report() -> None:
+    """Generate the hidden daily analytics report. Fails silently with a
+    stderr note if Google credentials are not configured, so a normal
+    sync never breaks because of this."""
+    import os
+    if not os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):
+        print("  GOOGLE_SERVICE_ACCOUNT_JSON not set — skipping daily report", file=sys.stderr)
+        return
+    try:
+        ga4_data = fetch_ga4_report(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
+        gsc_data = fetch_gsc_report(site_url=os.environ.get("GSC_SITE_URL", "sc-domain:aradvice.com.au"))
+        html = render_daily_report_html(ga4_data, gsc_data)
+        report_dir = ROOT / "internal-8f2k1q"
+        report_dir.mkdir(parents=True, exist_ok=True)
+        (report_dir / "daily-report.html").write_text(html, encoding="utf-8")
+        print("  Daily report generated: internal-8f2k1q/daily-report.html")
+    except Exception as e:
+        print(f"  Daily report generation failed: {e}", file=sys.stderr)
+
+
 def guess_category(title: str, slug: str) -> str:
     """Best-effort keyword match against title/slug. Falls back to the
     cyber-governance default if nothing matches. Always returns a valid
@@ -2278,6 +2475,7 @@ def main() -> int:
         return 0
 
     process_pending_drafts()
+    generate_daily_report()
 
     # Primary: scrape blog index pages to get all articles
     feed_items = parse_blog_index()
