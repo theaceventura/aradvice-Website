@@ -1348,7 +1348,7 @@ def fetch_ga4_report(property_id: str, days: int = 30) -> dict:
         metrics=[Metric(name="sessions"), Metric(name="activeUsers"), Metric(name="bounceRate")],
         date_ranges=[DateRange(start_date="7daysAgo", end_date="yesterday")],
         order_bys=[OrderBy(metric=OrderBy.MetricOrderBy(metric_name="sessions"), desc=True)],
-        limit=10,
+        limit=40,
     )
     pages_response = client.run_report(pages_request)
     top_pages = [
@@ -1425,7 +1425,12 @@ def render_daily_report_html(ga4_data: dict, gsc_data: dict) -> str:
         )
         return f'<table class="report-table"><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>'
 
-    top_pages_table = render_table(ga4_data.get("top_pages", []), ["page", "sessions", "activeUsers", "bounceRate"])
+    all_pages = ga4_data.get("top_pages", [])
+    top_briefings = [p for p in all_pages if p.get("page", "").startswith("/post/")][:10]
+    top_site_pages = [p for p in all_pages if not p.get("page", "").startswith("/post/")][:10]
+
+    top_site_pages_table = render_table(top_site_pages, ["page", "sessions", "activeUsers", "bounceRate"])
+    top_briefings_table = render_table(top_briefings, ["page", "sessions", "activeUsers", "bounceRate"])
     top_queries_table = render_table(gsc_data.get("top_queries", []), ["query", "clicks", "impressions", "position"])
 
     return f"""<!DOCTYPE html>
@@ -1451,8 +1456,10 @@ def render_daily_report_html(ga4_data: dict, gsc_data: dict) -> str:
 <canvas id="ga4Chart" height="90"></canvas>
 <h2>Clicks &amp; impressions, last 30 days (Search Console)</h2>
 <canvas id="gscChart" height="90"></canvas>
-<h2>Top landing pages, last 7 days</h2>
-{top_pages_table}
+<h2>Most popular pages, last 7 days</h2>
+{top_site_pages_table}
+<h2>Most popular briefings, last 7 days</h2>
+{top_briefings_table}
 <h2>Top search queries, last 30 days</h2>
 {top_queries_table}
 <script>
