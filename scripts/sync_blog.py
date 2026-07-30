@@ -1408,10 +1408,90 @@ def fetch_gsc_report(site_url: str, days: int = 30) -> dict:
     return {"trend": trend, "top_queries": top_queries}
 
 
-def render_daily_report_html(ga4_data: dict, gsc_data: dict) -> str:
+def generate_report_commentary(ga4_data: dict, gsc_data: dict) -> dict:
+    """Ask the Anthropic API to analyse the day's GA4/Search Console data
+    and return short, grounded commentary plus new article topic ideas.
+    Returns {} on any failure so the report still renders without it."""
+    import urllib.request, json as _json, os
+
+    payload_data = {
+        "ga4_trend_last_30_days": ga4_data.get("trend", []),
+        "top_site_pages_last_7_days": ga4_data.get("top_pages", [])[:15],
+        "gsc_trend_last_30_days": gsc_data.get("trend", []),
+        "top_search_queries_last_30_days": gsc_data.get("top_queries", []),
+    }
+
+    prompt = f"""You are analysing website performance data for aradvice.com.au,
+an independent board-level advisory practice for Australian directors on cyber
+and AI governance.
+
+Here is the raw data (JSON):
+{_json.dumps(payload_data)}
+
+Write three short sections based ONLY on what this data actually shows. Do
+not invent numbers, trends, or explanations not supported by the data given.
+
+1. "working": 2 to 4 short bullet points on what is genuinely performing
+   well (rising trends, strong CTR/position combinations, standout pages).
+   Cite the specific numbers from the data.
+2. "not_working": 2 to 4 short bullet points on what looks weak (declining
+   trends, high impressions with low clicks, pages with no search
+   visibility). Cite the specific numbers.
+3. "topic_suggestions": 2 to 4 new article topic ideas for Australian
+   directors on cyber and AI governance, based on search queries in the
+   data that show real demand but are not well served by an existing
+   strong page. If the data does not clearly suggest anything, say so
+   honestly in a single entry rather than inventing a plausible topic.
+
+Rules:
+- Every claim must be traceable to a specific number in the data provided.
+- Never use em dashes or en dashes. Use commas or full stops instead.
+- Keep each bullet to one sentence.
+- Return ONLY a JSON object with keys "working", "not_working", and
+  "topic_suggestions", each an array of strings. No markdown fences, no
+  preamble, nothing before or after the object."""
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=_json.dumps({
+            "model": "claude-sonnet-5",
+            "max_tokens": 800,
+            "messages": [{"role": "user", "content": prompt}]
+        }).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01",
+            "x-api-key": api_key,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = _json.loads(resp.read().decode("utf-8"))
+            raw = data["content"][0]["text"].strip()
+            raw = raw.replace("```json", "").replace("```", "").strip()
+            return _json.loads(raw)
+    except Exception as e:
+        print(f"  Report commentary generation failed: {e}", file=sys.stderr)
+        return {}
+
+
+def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict) -> str:
     """Render the hidden daily report as a standalone static HTML page."""
     import json as _json
     generated_at = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
+
+    def render_bullets(items):
+        if not items:
+            return "<p style='color:#94a3b8;'>No commentary available.</p>"
+        return "<ul style='margin:0; padding-left:20px; color:#cbd5e1;'>" + "".join(
+            f"<li style='margin-bottom:6px;'>{escape(str(i))}</li>" for i in items
+        ) + "</ul>"
+
+    working_html = render_bullets(commentary.get("working", []))
+    not_working_html = render_bullets(commentary.get("not_working", []))
+    topics_html = render_bullets(commentary.get("topic_suggestions", []))
     ga4_trend_json = _json.dumps(ga4_data.get("trend", []))
     gsc_trend_json = _json.dumps(gsc_data.get("trend", []))
 
@@ -1452,6 +1532,12 @@ def render_daily_report_html(ga4_data: dict, gsc_data: dict) -> str:
 </head><body>
 <h1>Daily Site Report</h1>
 <p class="meta">Generated {generated_at}. Not linked anywhere on the site.</p>
+<h2>What's working</h2>
+{working_html}
+<h2>What's not working</h2>
+{not_working_html}
+<h2>Suggested new topics</h2>
+{topics_html}
 <h2>Sessions &amp; users, last 30 days (GA4)</h2>
 <canvas id="ga4Chart" height="90"></canvas>
 <h2>Clicks &amp; impressions, last 30 days (Search Console)</h2>
@@ -1499,7 +1585,8 @@ def generate_daily_report() -> None:
     try:
         ga4_data = fetch_ga4_report(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
         gsc_data = fetch_gsc_report(site_url=os.environ.get("GSC_SITE_URL", "sc-domain:aradvice.com.au"))
-        html = render_daily_report_html(ga4_data, gsc_data)
+        commentary = generate_report_commentary(ga4_data, gsc_data)
+        html = render_daily_report_html(ga4_data, gsc_data, commentary)
         report_dir = ROOT / "internal-8f2k1q"
         report_dir.mkdir(parents=True, exist_ok=True)
         (report_dir / "daily-report.html").write_text(html, encoding="utf-8")
@@ -1856,7 +1943,7 @@ FORMAT:
 - Output only the post text. No preamble, no explanation, no title."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-6",
+        "model": "claude-sonnet-5",
         "max_tokens": 1000,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -1928,7 +2015,7 @@ Return a JSON object with exactly two keys:
 Return only the JSON. No preamble, no markdown fences."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-6",
+        "model": "claude-sonnet-5",
         "max_tokens": 500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -2263,7 +2350,7 @@ Hard rules: never use em dashes or en dashes. Never state a commencement date, d
 Output only the briefing. No preamble, no explanation."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-6",
+        "model": "claude-sonnet-5",
         "max_tokens": 1500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -2319,7 +2406,7 @@ Return a JSON object with exactly two keys:
 Return only the JSON object. No preamble, no markdown fences."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-4-6",
+        "model": "claude-sonnet-5",
         "max_tokens": 400,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
