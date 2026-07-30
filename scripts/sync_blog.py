@@ -2321,12 +2321,12 @@ def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000",
     update_linkedin_log(item, draft_path, post_id=post_id)
 
 
-def generate_advisor_brief(item: FeedItem, post_url: str) -> str:
+def generate_advisor_brief(item: FeedItem, post_url: str, override_html: str | None = None) -> str:
     """Generate an internal advisor briefing doc for a feed item using the Anthropic API."""
     import urllib.request
     import json
 
-    plain_text = extract_article_text(item.html, 4000)
+    plain_text = extract_article_text(override_html if override_html else item.html, 4000)
 
     prompt = f"""You are preparing an internal advisor briefing for Andrew Roberts, founder of Andrew Roberts Advisory (aradvice.com.au), an independent board-level advisor on cyber governance and AI governance for Australian directors.
 
@@ -2477,16 +2477,32 @@ def generate_article_schema(item: FeedItem, post_url: str, post_id: str = "000")
     )
 
 
-def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000") -> None:
+def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000", force: bool = False) -> None:
     """Write an internal advisor briefing doc to /post/{slug}/{post_id}-advisor-brief.md if it doesn't already exist."""
     article_dir = ROOT / "post" / item.slug
     article_dir.mkdir(parents=True, exist_ok=True)
     brief_path = article_dir / f"{post_id}-advisor-brief.md"
-    if brief_path.exists():
+    if brief_path.exists() and not force:
         print(f"  Brief: {item.slug} — exists, skipped")
         return
     print(f"  Generating advisor brief for: {item.slug}")
-    brief_text = generate_advisor_brief(item, post_url)
+
+    # Prefer the already-published local file over item.html, which is
+    # populated by fetching the post's own live URL — fragile if the page
+    # hadn't finished deploying, was serving a stale cache, or the fetch
+    # hit a transient error. The local file, once it exists, is the
+    # authoritative, guaranteed-complete copy.
+    override_html = None
+    local_path = article_page_path(item.slug)
+    if local_path.exists():
+        override_html = local_path.read_text(encoding="utf-8")
+
+    source_for_check = override_html if override_html else item.html
+    if len(extract_article_text(source_for_check, 4000)) < 200:
+        print(f"  Advisor brief: {item.slug} — article content too thin or unavailable, skipping rather than writing a low-quality brief", file=sys.stderr)
+        return
+
+    brief_text = generate_advisor_brief(item, post_url, override_html=override_html)
     if brief_text.startswith("[Advisor brief generation failed"):
         print(f"  Advisor brief generation failed for {item.slug} — skipping write.", file=sys.stderr)
         return
@@ -2720,7 +2736,7 @@ def main() -> int:
                 page_path.write_text(fixed, encoding="utf-8")
                 write_linkedin_draft(item, post_url, post_id=post_id,
                                      force=(item.slug == test_slug))
-                write_advisor_brief(item, post_url, post_id=post_id)
+                write_advisor_brief(item, post_url, post_id=post_id, force=(item.slug == test_slug))
                 if item_datetime(item.pub_date) <= now:
                     write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run,
                                       force=(item.slug == test_slug),
@@ -2734,7 +2750,7 @@ def main() -> int:
         write_page(page_path, page_html, feed_item=item, post_id=post_id, related_html=related_html)
         write_linkedin_draft(item, post_url, post_id=post_id,
                              force=(item.slug == test_slug))
-        write_advisor_brief(item, post_url, post_id=post_id)
+        write_advisor_brief(item, post_url, post_id=post_id, force=(item.slug == test_slug))
         write_email_draft(item, post_url, post_id=post_id, dry_run=dry_run,
                           force=(item.slug == test_slug),
                           test_email=(test_email if item.slug == test_slug else ""))
