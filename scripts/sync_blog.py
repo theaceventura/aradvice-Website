@@ -1408,6 +1408,17 @@ def fetch_gsc_report(site_url: str, days: int = 30) -> dict:
     return {"trend": trend, "top_queries": top_queries}
 
 
+def _anthropic_text(data: dict) -> str:
+    """Extract the text content block from an Anthropic API response.
+    This account has extended thinking on by default, so content[0] is
+    often a 'thinking' block rather than the actual 'text' block —
+    scan for the text block instead of assuming its position."""
+    for block in data.get("content", []):
+        if block.get("type") == "text":
+            return block["text"]
+    raise KeyError("text")
+
+
 def generate_report_commentary(ga4_data: dict, gsc_data: dict) -> dict:
     """Ask the Anthropic API to analyse the day's GA4/Search Console data
     and return short, grounded commentary plus new article topic ideas.
@@ -1456,7 +1467,7 @@ Rules:
         "https://api.anthropic.com/v1/messages",
         data=_json.dumps({
             "model": "claude-sonnet-5",
-            "max_tokens": 800,
+            "max_tokens": 2500,
             "messages": [{"role": "user", "content": prompt}]
         }).encode("utf-8"),
         headers={
@@ -1469,7 +1480,7 @@ Rules:
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = _json.loads(resp.read().decode("utf-8"))
-            raw = data["content"][0]["text"].strip()
+            raw = _anthropic_text(data).strip()
             raw = raw.replace("```json", "").replace("```", "").strip()
             return _json.loads(raw)
     except Exception as e:
@@ -1944,7 +1955,7 @@ FORMAT:
 
     payload = json.dumps({
         "model": "claude-sonnet-5",
-        "max_tokens": 1000,
+        "max_tokens": 2500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
 
@@ -1964,7 +1975,7 @@ FORMAT:
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            return sanitise_ai_text(data["content"][0]["text"].strip())
+            return sanitise_ai_text(_anthropic_text(data).strip())
     except Exception as e:
         return f"[LinkedIn post generation failed: {e}]"
 
@@ -2016,7 +2027,7 @@ Return only the JSON. No preamble, no markdown fences."""
 
     payload = json.dumps({
         "model": "claude-sonnet-5",
-        "max_tokens": 500,
+        "max_tokens": 2000,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
 
@@ -2034,7 +2045,7 @@ Return only the JSON. No preamble, no markdown fences."""
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            raw = data["content"][0]["text"].strip()
+            raw = _anthropic_text(data).strip()
             parsed = json.loads(raw)
             return (sanitise_ai_text(parsed.get("subject", "")),
                     sanitise_ai_text(parsed.get("body", "")))
@@ -2351,7 +2362,7 @@ Output only the briefing. No preamble, no explanation."""
 
     payload = json.dumps({
         "model": "claude-sonnet-5",
-        "max_tokens": 1500,
+        "max_tokens": 3500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
 
@@ -2371,7 +2382,7 @@ Output only the briefing. No preamble, no explanation."""
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            return sanitise_ai_text(data["content"][0]["text"].strip())
+            return sanitise_ai_text(_anthropic_text(data).strip())
     except Exception as e:
         return f"[Advisor brief generation failed: {e}]"
 
@@ -2407,7 +2418,7 @@ Return only the JSON object. No preamble, no markdown fences."""
 
     payload = json.dumps({
         "model": "claude-sonnet-5",
-        "max_tokens": 400,
+        "max_tokens": 1800,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
 
@@ -2425,7 +2436,7 @@ Return only the JSON object. No preamble, no markdown fences."""
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            raw = data["content"][0]["text"].strip()
+            raw = _anthropic_text(data).strip()
             parsed = json.loads(raw)
             return sanitise_ai_text(parsed.get("description", "")), parsed.get("keywords", "")
     except Exception as e:
