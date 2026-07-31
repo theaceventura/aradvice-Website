@@ -1597,7 +1597,7 @@ commentary string. No markdown fences, no preamble, nothing else."""
         "https://api.anthropic.com/v1/messages",
         data=_json.dumps({
             "model": "claude-sonnet-5",
-            "max_tokens": 3000,
+            "max_tokens": 8000,
             "messages": [{"role": "user", "content": prompt}]
         }).encode("utf-8"),
         headers={
