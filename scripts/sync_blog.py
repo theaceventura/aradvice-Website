@@ -1283,6 +1283,24 @@ def process_pending_drafts() -> None:
     published yet, so dropping an exported file there is the only manual
     step. Already-published drafts are moved into drafts/published/ so
     they are not reprocessed on a later run."""
+    import os
+    running_in_ci = bool(os.environ.get("GITHUB_ACTIONS") or os.environ.get("CI"))
+    durable_drafts_dir_set = bool(os.environ.get("INTERNAL_DRAFTS_DIR"))
+    if running_in_ci and not durable_drafts_dir_set:
+        drafts_dir = ROOT / "drafts"
+        if drafts_dir.exists() and any(drafts_dir.glob("*.json")):
+            print(
+                "  WARNING: pending draft(s) found in drafts/, but this looks "
+                "like an automated CI run with no durable INTERNAL_DRAFTS_DIR "
+                "configured. Publishing here would write the draft's public "
+                "page, but its LinkedIn draft, advisor brief, and email draft "
+                "would be written to an ephemeral path and lost. Skipping "
+                "draft publishing this run — publish it from a local run "
+                "instead, or set INTERNAL_DRAFTS_DIR as a workflow secret "
+                "pointing somewhere durable if you want this automated.",
+                file=sys.stderr,
+            )
+        return
     drafts_dir = ROOT / "drafts"
     if not drafts_dir.exists():
         return
