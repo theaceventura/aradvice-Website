@@ -2551,6 +2551,62 @@ class _Tee:
         self.stream.flush()
 
 
+def render_run_report_email_html(body: str) -> str:
+    """Turn the plain-text captured console output into readable HTML:
+    the '--- Daily Report Highlights ---' block (if present) is rendered
+    as proper headed, colour-coded bullet lists; everything else (the
+    routine sync log) stays as a smaller monospace block underneath."""
+    marker = "--- Daily Report Highlights ---"
+    if marker in body:
+        before, rest = body.split(marker, 1)
+        # The highlights block runs until the next line that doesn't start
+        # with one of the bullet prefixes or leading whitespace continuing
+        # a wrapped bullet — in practice, until "Full report:" or end of text.
+        if "Full report:" in rest:
+            highlights_block, after = rest.split("Full report:", 1)
+            after = "Full report:" + after
+        else:
+            highlights_block, after = rest, ""
+    else:
+        before, highlights_block, after = body, "", ""
+
+    def section(items, color, label):
+        if not items:
+            return ""
+        lis = "".join(f'<li style="margin-bottom:8px;">{escape(i.strip())}</li>' for i in items)
+        return (
+            f'<p style="color:{color}; font-weight:700; text-transform:uppercase; '
+            f'font-size:12px; letter-spacing:0.05em; margin:20px 0 8px 0;">{label}</p>'
+            f'<ul style="margin:0; padding-left:20px; color:#1e293b;">{lis}</ul>'
+        )
+
+    working, not_working, topics = [], [], []
+    for line in highlights_block.splitlines():
+        line = line.strip()
+        if line.startswith("[working]"):
+            working.append(line[len("[working]"):])
+        elif line.startswith("[not working]"):
+            not_working.append(line[len("[not working]"):])
+        elif line.startswith("[topic idea]"):
+            topics.append(line[len("[topic idea]"):])
+
+    highlights_html = (
+        section(working, "#16a34a", "What's working")
+        + section(not_working, "#dc2626", "What's not working")
+        + section(topics, "#2563eb", "Suggested new topics")
+    )
+
+    log_text = escape(before + after)
+    log_html = (
+        '<p style="color:#64748b; font-weight:700; text-transform:uppercase; '
+        'font-size:11px; letter-spacing:0.05em; margin:28px 0 8px 0;">Sync log</p>'
+        f'<pre style="font-family:monospace; font-size:11px; color:#475569; '
+        f'white-space:pre-wrap; line-height:1.5;">{log_text}</pre>'
+    )
+
+    return highlights_html + log_html
+
+
 def send_run_report(body: str, status: str) -> None:
     """Email the run transcript to the operator via Kit's API, targeting
     only the subscriber tagged RUN_REPORT_TAG_ID (see .env), never the
@@ -2593,11 +2649,7 @@ def send_run_report(body: str, status: str) -> None:
 
     ts = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
     subject = f"sync_blog {status} — {ts}"
-    escaped_body = escape(body)
-    html_body = (
-        '<pre style="font-family:monospace; font-size:12px; '
-        f'white-space:pre-wrap;">{escaped_body}</pre>'
-    )
+    html_body = render_run_report_email_html(body)
     base_payload = {
         "subject": subject,
         "content": html_body,
