@@ -1777,8 +1777,37 @@ def generate_daily_report() -> None:
         html = render_daily_report_html(ga4_data, gsc_data, commentary, briefing_performance, briefing_commentary)
         report_dir = ROOT / "internal-8f2k1q"
         report_dir.mkdir(parents=True, exist_ok=True)
-        (report_dir / "daily-report.html").write_text(html, encoding="utf-8")
+        archive_dir = report_dir / "archive"
+        archive_dir.mkdir(parents=True, exist_ok=True)
+        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+        # Build a history list covering every archived date plus today, so
+        # both the "latest" page and every archived copy can link back
+        # through the full history. Absolute site-root paths are used
+        # deliberately — a relative "archive/..." link would resolve
+        # incorrectly when viewed from inside the archive/ folder itself.
+        all_dates = sorted(
+            {p.stem for p in archive_dir.glob("*.html")} | {today_str},
+            reverse=True,
+        )
+        history_links = "".join(
+            f'<li style="margin-bottom:4px;">'
+            f'<a href="/internal-8f2k1q/archive/{d}.html" style="color:#00d4ff;">{d}</a></li>'
+            for d in all_dates
+        )
+        history_html = (
+            '<h2>Report history</h2>'
+            '<p style="font-size:12px; color:#64748b; margin:0 0 12px 0;">'
+            '<a href="/internal-8f2k1q/daily-report.html" style="color:#00d4ff;">Latest report</a></p>'
+            f'<ul style="list-style:none; padding:0; margin:0; columns:4; '
+            f'column-gap:20px; font-size:13px;">{history_links}</ul>'
+        )
+        html_with_history = html.replace("</body>", history_html + "</body>")
+
+        (report_dir / "daily-report.html").write_text(html_with_history, encoding="utf-8")
+        (archive_dir / f"{today_str}.html").write_text(html_with_history, encoding="utf-8")
         print("  Daily report generated: internal-8f2k1q/daily-report.html")
+        print(f"  Archived copy: internal-8f2k1q/archive/{today_str}.html")
         print("  --- Daily Report Highlights ---")
         for bullet in commentary.get("working", []):
             print(f"    [working] {bullet}")
