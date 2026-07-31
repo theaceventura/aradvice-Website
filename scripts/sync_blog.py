@@ -1499,7 +1499,151 @@ Rules:
         return {}
 
 
-def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict) -> str:
+def fetch_briefing_performance(property_id: str) -> list[dict]:
+    """Fetch per-briefing GA4 performance for the last 7 days and a longer
+    'to date' window (365 days, a practical proxy for since-inception given
+    the site's age and GA4's typical data retention), merged by page path.
+    Restricted to /post/ pages via a dimension filter so this returns every
+    briefing, not just the top few by session volume."""
+    from google.analytics.data_v1beta import BetaAnalyticsDataClient
+    from google.analytics.data_v1beta.types import (
+        RunReportRequest, DateRange, Dimension, Metric, OrderBy,
+        FilterExpression, Filter
+    )
+    from google.oauth2 import service_account
+    import os, json as _json
+
+    creds_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    if not creds_json or not property_id:
+        return []
+    creds = service_account.Credentials.from_service_account_info(_json.loads(creds_json))
+    client = BetaAnalyticsDataClient(credentials=creds)
+
+    post_filter = FilterExpression(
+        filter=Filter(
+            field_name="landingPage",
+            string_filter=Filter.StringFilter(
+                value="/post/", match_type=Filter.StringFilter.MatchType.CONTAINS
+            ),
+        )
+    )
+
+    def run(date_range):
+        request = RunReportRequest(
+            property=f"properties/{property_id}",
+            dimensions=[Dimension(name="landingPage")],
+            metrics=[Metric(name="sessions"), Metric(name="activeUsers"), Metric(name="bounceRate")],
+            date_ranges=[date_range],
+            dimension_filter=post_filter,
+            order_bys=[OrderBy(metric=OrderBy.MetricOrderBy(metric_name="sessions"), desc=True)],
+            limit=100,
+        )
+        response = client.run_report(request)
+        return {
+            row.dimension_values[0].value: {
+                "sessions": int(row.metric_values[0].value),
+                "activeUsers": int(row.metric_values[1].value),
+                "bounceRate": round(float(row.metric_values[2].value), 3),
+            }
+            for row in response.rows
+        }
+
+    week = run(DateRange(start_date="7daysAgo", end_date="yesterday"))
+    to_date = run(DateRange(start_date="365daysAgo", end_date="yesterday"))
+
+    all_pages = set(week.keys()) | set(to_date.keys())
+    merged = []
+    for page in all_pages:
+        w = week.get(page, {"sessions": 0, "activeUsers": 0, "bounceRate": 0})
+        t = to_date.get(page, {"sessions": 0, "activeUsers": 0})
+        merged.append({
+            "page": page,
+            "week_sessions": w["sessions"],
+            "week_users": w["activeUsers"],
+            "week_bounce": w["bounceRate"],
+            "to_date_sessions": t.get("sessions", 0),
+            "to_date_users": t.get("activeUsers", 0),
+        })
+    merged.sort(key=lambda r: r["to_date_sessions"], reverse=True)
+    return merged
+
+
+def generate_briefing_commentary(briefings: list[dict]) -> dict:
+    """Ask the Anthropic API for a short, grounded one-line note per
+    briefing, based only on that briefing's own week-vs-to-date numbers.
+    Returns a dict mapping page path to a one-sentence note, or {} on
+    failure so the table still renders without commentary."""
+    import urllib.request, json as _json, os
+
+    if not briefings:
+        return {}
+
+    prompt = f"""Here is per-briefing performance data for aradvice.com.au (JSON):
+{_json.dumps(briefings)}
+
+For each briefing (identified by its "page" path), write ONE short sentence
+of commentary based only on the numbers given for that specific briefing,
+comparing its week_sessions/week_users against its to_date_sessions/
+to_date_users and week_bounce. Note whether it looks like a strong, weak,
+new, or declining performer relative to its own history. Do not compare
+across different briefings and do not invent context not present in the
+numbers given.
+
+Return ONLY a JSON object mapping each "page" value to its one-sentence
+commentary string. No markdown fences, no preamble, nothing else."""
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=_json.dumps({
+            "model": "claude-sonnet-5",
+            "max_tokens": 3000,
+            "messages": [{"role": "user", "content": prompt}]
+        }).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01",
+            "x-api-key": api_key,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=45) as resp:
+            data = _json.loads(resp.read().decode("utf-8"))
+            raw = _anthropic_text(data)
+            raw = raw.replace("```json", "").replace("```", "").strip()
+            return _json.loads(raw)
+    except Exception as e:
+        print(f"  Briefing commentary generation failed: {e}", file=sys.stderr)
+        return {}
+
+
+def render_briefing_table(briefings: list[dict], commentary: dict) -> str:
+    """Render the per-briefing week-vs-to-date performance table."""
+    if not briefings:
+        return "<p style='color:#94a3b8;'>No briefing data available.</p>"
+    rows = ""
+    for b in briefings:
+        note = commentary.get(b["page"], "")
+        rows += (
+            "<tr>"
+            f"<td>{escape(b['page'])}</td>"
+            f"<td>{b['week_sessions']}</td>"
+            f"<td>{b['week_users']}</td>"
+            f"<td>{b['to_date_sessions']}</td>"
+            f"<td>{b['to_date_users']}</td>"
+            f"<td>{escape(note)}</td>"
+            "</tr>"
+        )
+    return (
+        '<table class="report-table"><thead><tr>'
+        '<th>Briefing</th><th>Sessions (7d)</th><th>Users (7d)</th>'
+        '<th>Sessions (to date)</th><th>Users (to date)</th><th>Commentary</th>'
+        f'</tr></thead><tbody>{rows}</tbody></table>'
+    )
+
+
+def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict, briefing_performance: list[dict] = None, briefing_commentary: dict = None) -> str:
     """Render the hidden daily report as a standalone static HTML page."""
     import json as _json
     generated_at = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
@@ -1568,6 +1712,8 @@ def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict) -
 {top_site_pages_table}
 <h2>Most popular briefings, last 7 days</h2>
 {top_briefings_table}
+<h2>Briefing performance, this week vs to date</h2>
+{render_briefing_table(briefing_performance or [], briefing_commentary or {})}
 <h2>Top search queries, last 30 days</h2>
 {top_queries_table}
 <script>
@@ -1608,7 +1754,9 @@ def generate_daily_report() -> None:
         ga4_data = fetch_ga4_report(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
         gsc_data = fetch_gsc_report(site_url=os.environ.get("GSC_SITE_URL", "sc-domain:aradvice.com.au"))
         commentary = generate_report_commentary(ga4_data, gsc_data)
-        html = render_daily_report_html(ga4_data, gsc_data, commentary)
+        briefing_performance = fetch_briefing_performance(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
+        briefing_commentary = generate_briefing_commentary(briefing_performance)
+        html = render_daily_report_html(ga4_data, gsc_data, commentary, briefing_performance, briefing_commentary)
         report_dir = ROOT / "internal-8f2k1q"
         report_dir.mkdir(parents=True, exist_ok=True)
         (report_dir / "daily-report.html").write_text(html, encoding="utf-8")
