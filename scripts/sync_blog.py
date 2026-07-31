@@ -2544,30 +2544,55 @@ class _Tee:
 
 
 def send_run_report(body: str, status: str) -> None:
-    """Email the run transcript to the operator via SMTP. Never raises."""
-    import smtplib
+    """Email the run transcript to the operator via Kit's API, targeting
+    only RUN_REPORT_TO directly rather than the subscriber list, so this
+    never touches or is blocked by the daily subscriber-broadcast guard
+    in send_kit_broadcast(). Never raises."""
+    import urllib.request
+    import json as _json
     import os
-    from email.mime.text import MIMEText
-    host = os.environ.get("SMTP_HOST", "smtp.office365.com")
-    user = os.environ.get("SMTP_USER", "")
-    password = os.environ.get("SMTP_PASSWORD", "")
-    to_addr = os.environ.get("RUN_REPORT_TO", user)
-    if not user or not password:
-        print("  SMTP_USER/SMTP_PASSWORD not set — skipping run report",
+
+    api_key = os.environ.get("KIT_API_KEY", "")
+    to_addr = os.environ.get("RUN_REPORT_TO", "")
+    if not api_key or not to_addr:
+        print("  KIT_API_KEY/RUN_REPORT_TO not set — skipping run report",
               file=sys.stderr)
         return
+
     ts = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
-    msg = MIMEText(body, "plain", "utf-8")
-    msg["Subject"] = f"sync_blog {status} — {ts}"
-    msg["From"] = user
-    msg["To"] = to_addr
+    subject = f"sync_blog {status} — {ts}"
+    escaped_body = escape(body)
+    html_body = (
+        '<pre style="font-family:monospace; font-size:12px; '
+        f'white-space:pre-wrap;">{escaped_body}</pre>'
+    )
+    send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    payload = _json.dumps({
+        "subject": subject,
+        "content": html_body,
+        "description": subject,
+        "public": False,
+        "send_at": send_at,
+        "preview_text": "",
+        "subscriber_filter": [{"email_address": to_addr}],
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.kit.com/v4/broadcasts",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "X-Kit-Api-Key": api_key,
+        },
+        method="POST",
+    )
     try:
-        with smtplib.SMTP(host, 587, timeout=30) as s:
-            s.starttls()
-            s.login(user, password)
-            s.send_message(msg)
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = _json.loads(resp.read().decode("utf-8"))
+            broadcast_id = data.get("broadcast", {}).get("id") or data.get("id", "")
+            sys.__stdout__.write(f"  Run report sent via Kit (id={broadcast_id})\n")
     except Exception as e:
-        sys.__stderr__.write(f"  Run report email failed: {e}\n")
+        sys.__stderr__.write(f"  Run report send via Kit failed: {e}\n")
 
 
 def main() -> int:
