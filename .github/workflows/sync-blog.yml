@@ -2,7 +2,7 @@ name: Sync Blog Content
 
 on:
   schedule:
-    - cron: "15 */6 * * *"
+    - cron: "0 20 * * *"
   workflow_dispatch:
 
 jobs:
