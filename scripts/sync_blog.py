@@ -1664,7 +1664,7 @@ def render_briefing_table(briefings: list[dict], commentary: dict) -> str:
 def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict, briefing_performance: list[dict] = None, briefing_commentary: dict = None) -> str:
     """Render the hidden daily report as a standalone static HTML page."""
     import json as _json
-    generated_at = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
+    generated_at = datetime.now(timezone.utc).strftime("%d/%m/%y %H:%M UTC")
 
     def render_bullets(items):
         if not items:
@@ -1735,11 +1735,24 @@ def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict, b
 <h2>Top search queries, last 30 days</h2>
 {top_queries_table}
 <script>
+function formatDate(d) {{
+  // Handles GA4's raw YYYYMMDD strings and GSC's ISO YYYY-MM-DD strings,
+  // returns dd/mm/yy for consistent display on the chart axes.
+  let y, m, day;
+  if (/^\\d{{8}}$/.test(d)) {{
+    y = d.slice(0,4); m = d.slice(4,6); day = d.slice(6,8);
+  }} else if (/^\\d{{4}}-\\d{{2}}-\\d{{2}}$/.test(d)) {{
+    [y, m, day] = d.split('-');
+  }} else {{
+    return d;
+  }}
+  return day + '/' + m + '/' + y.slice(2);
+}}
 const ga4Trend = {ga4_trend_json};
 const gscTrend = {gsc_trend_json};
 new Chart(document.getElementById('ga4Chart'), {{
   type: 'line',
-  data: {{ labels: ga4Trend.map(d => d.date), datasets: [
+  data: {{ labels: ga4Trend.map(d => formatDate(d.date)), datasets: [
     {{ label: 'Sessions', data: ga4Trend.map(d => d.sessions), borderColor: '#00d4ff', tension: 0.3 }},
     {{ label: 'Active users', data: ga4Trend.map(d => d.activeUsers), borderColor: '#22c55e', tension: 0.3 }}
   ]}},
@@ -1748,7 +1761,7 @@ new Chart(document.getElementById('ga4Chart'), {{
 }});
 new Chart(document.getElementById('gscChart'), {{
   type: 'line',
-  data: {{ labels: gscTrend.map(d => d.date), datasets: [
+  data: {{ labels: gscTrend.map(d => formatDate(d.date)), datasets: [
     {{ label: 'Clicks', data: gscTrend.map(d => d.clicks), borderColor: '#facc15', tension: 0.3 }},
     {{ label: 'Impressions', data: gscTrend.map(d => d.impressions), borderColor: '#a78bfa', tension: 0.3, yAxisID: 'y1' }}
   ]}},
@@ -1792,7 +1805,8 @@ def generate_daily_report() -> None:
         )
         history_links = "".join(
             f'<li style="margin-bottom:4px;">'
-            f'<a href="/internal-8f2k1q/archive/{d}.html" style="color:#00d4ff;">{d}</a></li>'
+            f'<a href="/internal-8f2k1q/archive/{d}.html" style="color:#00d4ff;">'
+            f'{d[8:10]}/{d[5:7]}/{d[2:4]}</a></li>'
             for d in all_dates
         )
         history_html = (
