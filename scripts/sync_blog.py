@@ -1477,7 +1477,7 @@ Rules:
     req = urllib.request.Request(
         "https://api.anthropic.com/v1/messages",
         data=_json.dumps({
-            "model": "claude-sonnet-5",
+            "model": "claude-sonnet-4-6",
             "max_tokens": 2500,
             "messages": [{"role": "user", "content": prompt}]
         }).encode("utf-8"),
@@ -1596,7 +1596,7 @@ commentary string. No markdown fences, no preamble, nothing else."""
     req = urllib.request.Request(
         "https://api.anthropic.com/v1/messages",
         data=_json.dumps({
-            "model": "claude-sonnet-5",
+            "model": "claude-sonnet-4-6",
             "max_tokens": 8000,
             "messages": [{"role": "user", "content": prompt}]
         }).encode("utf-8"),
@@ -2121,7 +2121,7 @@ FORMAT:
 - Output only the post text. No preamble, no explanation, no title."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-5",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 2500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -2193,7 +2193,7 @@ Return a JSON object with exactly two keys:
 Return only the JSON. No preamble, no markdown fences."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-5",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 2000,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -2530,7 +2530,7 @@ Hard rules: never use em dashes or en dashes. Never state a commencement date, d
 Output only the briefing. No preamble, no explanation."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-5",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 3500,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -2586,7 +2586,7 @@ Return a JSON object with exactly two keys:
 Return only the JSON object. No preamble, no markdown fences."""
 
     payload = json.dumps({
-        "model": "claude-sonnet-5",
+        "model": "claude-sonnet-4-6",
         "max_tokens": 1800,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
