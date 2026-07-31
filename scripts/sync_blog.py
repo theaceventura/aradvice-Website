@@ -25,6 +25,17 @@ if _env_path.exists():
             _k, _v = _line.split("=", 1)
             import os as _os; _os.environ.setdefault(_k.strip(), _v.strip())
 MAIN_DOMAIN = "https://aradvice.com.au"
+
+# Advisor briefs, LinkedIn drafts, and email drafts are internal-only and
+# must never live inside a folder GitHub Pages publishes. This defaults to
+# a sibling folder outside the git repo entirely; override with
+# INTERNAL_DRAFTS_DIR in .env if you want it somewhere else, e.g. a
+# separate private repo checked out locally.
+import os as _os_early
+INTERNAL_DRAFTS_ROOT = Path(_os_early.environ.get(
+    "INTERNAL_DRAFTS_DIR",
+    str(ROOT.parent / "aradvice-internal-drafts"),
+))
 FEED_URL = "https://blog.aradvice.com.au/feed.xml"
 MANUAL_POSTS = [
     {
@@ -1748,9 +1759,9 @@ def generate_post_mapping(items: list[FeedItem], registry: dict) -> None:
         lines.append(f"- **URL:** {post_url}")
         lines.append(f"- **Article:** `post/{item.slug}/index.html`")
         lines.append(f"- **og:image:** `post/{item.slug}/{id_str}-og-image.png`")
-        lines.append(f"- **LinkedIn draft:** `post/{item.slug}/{id_str}-linkedin.txt`")
-        lines.append(f"- **LinkedIn log:** see `post/{item.slug}/posting-log.md`")
-        lines.append(f"- **Advisor brief:** `post/{item.slug}/{id_str}-advisor-brief.md`")
+        lines.append(f"- **LinkedIn draft:** `[internal]/{item.slug}/{id_str}-linkedin.txt`")
+        lines.append(f"- **LinkedIn log:** see `log/posting-log.md`")
+        lines.append(f"- **Advisor brief:** `[internal]/{item.slug}/{id_str}-advisor-brief.md`")
         lines.append("")
 
     mapping_path = ROOT / "post-map.md"
@@ -2207,7 +2218,7 @@ def write_email_draft(item: FeedItem, post_url: str,
         print(f"  Email: {item.slug} — already sent, skipped")
         return
 
-    article_dir = ROOT / "post" / item.slug
+    article_dir = INTERNAL_DRAFTS_ROOT / item.slug
     article_dir.mkdir(parents=True, exist_ok=True)
     draft_path = article_dir / f"{post_id}-email.txt"
 
@@ -2299,9 +2310,11 @@ def update_linkedin_log(item: FeedItem, draft_path: Path, post_id: str = "000") 
 
 def write_linkedin_draft(item: FeedItem, post_url: str, post_id: str = "000",
                          force: bool = False) -> None:
-    """Write a LinkedIn draft post to /post/{slug}/{post_id}-linkedin.txt if it doesn't already exist.
-    force=True regenerates and overwrites the existing draft file."""
-    article_dir = ROOT / "post" / item.slug
+    """Write a LinkedIn draft to INTERNAL_DRAFTS_ROOT/{slug}/{post_id}-linkedin.txt
+    if it doesn't already exist. Never write this to the public post/ folder —
+    GitHub Pages publishes everything there. force=True regenerates and
+    overwrites the existing draft file."""
+    article_dir = INTERNAL_DRAFTS_ROOT / item.slug
     article_dir.mkdir(parents=True, exist_ok=True)
     draft_path = article_dir / f"{post_id}-linkedin.txt"
     if draft_path.exists() and not force:
@@ -2479,7 +2492,7 @@ def generate_article_schema(item: FeedItem, post_url: str, post_id: str = "000")
 
 def write_advisor_brief(item: FeedItem, post_url: str, post_id: str = "000", force: bool = False) -> None:
     """Write an internal advisor briefing doc to /post/{slug}/{post_id}-advisor-brief.md if it doesn't already exist."""
-    article_dir = ROOT / "post" / item.slug
+    article_dir = INTERNAL_DRAFTS_ROOT / item.slug
     article_dir.mkdir(parents=True, exist_ok=True)
     brief_path = article_dir / f"{post_id}-advisor-brief.md"
     if brief_path.exists() and not force:
