@@ -1,7 +1,0 @@
-SUBJECT: Cyber Security Act 2024: Your personal liability as a director
-
-A board recently received a one-page cybersecurity summary from management and signed off on it, with no record of what questions were asked, what assurances were tested, or what evidence was reviewed. If that describes your last board meeting, the exposure is personal. Section 180 of the Corporations Act sets a standard of care and diligence that applies to you individually, and a documented failure to probe beyond a high-level technical briefing can support a finding that you did not meet it. ASIC can pursue civil penalty proceedings against individual directors on that basis.
-
-https://aradvice.com.au/post/board-cybersecurity-duties-a-directors-guide-to-defensible-oversight-in-australia/
-
-Andrew

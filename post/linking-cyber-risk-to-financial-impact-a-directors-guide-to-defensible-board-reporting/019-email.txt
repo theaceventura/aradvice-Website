@@ -1,8 +1,0 @@
-SUBJECT: Cyber risk reporting: Board liability for inadequate metrics
-
-Directors face personal liability when cyber risk reports lack defensible financial quantification, especially under APRA CPS 234 and ASX governance principles. Most boards receive cyber briefings that focus on technical threats rather than quantified business impact, leaving directors unable to make informed decisions about risk appetite and investment priorities. This article provides a framework for linking cyber risks to specific financial metrics that satisfy regulatory expectations and support defensible board decision-making. Read the full director's guide at https://aradvice.com.au/post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/
-
-Andrew Roberts
-Andrew Roberts Advisory
-
-You're receiving this because you subscribed at aradvice.com.au.

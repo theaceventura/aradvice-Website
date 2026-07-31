@@ -1,7 +1,0 @@
-SUBJECT: Third-party vendors: your personal liability for their breach
-
-Picture a director who approves a cloud payroll provider through a standard procurement sign-off, receives quarterly security summaries from management, and assumes the contracts cover the rest. When that vendor suffers a data breach, the question is not whether the company is exposed but whether the director exercised the care and diligence required under s.180 of the Corporations Act 2001. ASIC can bring civil penalty proceedings against that director personally, and a liquidator can pursue the same claim on the company's behalf if the entity later fails. Contractual indemnities do not answer that question.
-
-https://aradvice.com.au/post/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/
-
-Andrew

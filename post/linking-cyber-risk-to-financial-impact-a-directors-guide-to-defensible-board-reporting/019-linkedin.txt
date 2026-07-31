@@ -1,9 +1,0 @@
-A board receives a cyber risk report stating "medium risk of business disruption." The same week, they approve a $50 million cloud migration. The disconnect? No one can quantify whether that medium risk could wipe out the migration investment, halt revenue for days, or trigger regulatory penalties worth millions.
-
-This reporting gap leaves directors exposed. When cyber incidents strike, boards that cannot demonstrate they understood the financial dimensions of their risk decisions face difficult questions from regulators, shareholders, and potentially courts.
-
-The solution isn't more technical detail in board papers. It's insisting that every cyber risk assessment includes three financial scenarios: operational impact, recovery costs, and regulatory exposure. Each tied to specific dollar ranges your organisation has actually modelled.
-
-Directors who cannot link cyber risk to financial impact aren't governing cyber risk at all.
-
-https://aradvice.com.au/post/linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting/

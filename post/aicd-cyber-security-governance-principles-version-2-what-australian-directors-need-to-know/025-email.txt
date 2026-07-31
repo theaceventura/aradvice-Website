@@ -1,7 +1,0 @@
-SUBJECT: AICD Cyber Principles v2: closing the board visibility gap
-
-Picture a director approving the annual cyber report, dashboard green across every metric, only to discover after a breach that event logging had never been configured and three legacy systems held unencrypted customer data the board was never told about. If that director cannot demonstrate they applied informed, active oversight, ASIC can commence civil penalty proceedings against them personally under the duty of care in s.180 of the Corporations Act, and a liquidator can pursue the same claim on the company's behalf if the entity subsequently fails. The updated AICD Cyber Security Governance Principles exist precisely to close this gap between technical reporting and director accountability.
-
-https://aradvice.com.au/post/aicd-cyber-security-governance-principles-version-2-what-australian-directors-need-to-know/
-
-Andrew
