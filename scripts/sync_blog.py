@@ -2637,7 +2637,7 @@ Output only the briefing. No preamble, no explanation."""
     )
 
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
+        with urllib.request.urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             return sanitise_ai_text(_anthropic_text(data).strip())
     except Exception as e:
