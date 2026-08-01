@@ -1195,11 +1195,43 @@ def load_draft(slug: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+AUTHOR_BIO_HTML = (
+    '<div class="author-box" style="display:flex;gap:20px;align-items:flex-start;'
+    'padding:24px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;'
+    'margin:30px 0;">'
+    '<img src="/images/andrew-roberts.jpg" alt="Andrew Roberts" '
+    'style="width:80px;height:80px;border-radius:50%;object-fit:cover;flex-shrink:0;" />'
+    '<div style="flex:1;min-width:0;">'
+    '<p style="margin:0 0 2px 0;font-size:12px;text-transform:uppercase;'
+    'letter-spacing:0.05em;color:#9ca3af;font-weight:600;">Article by</p>'
+    '<p style="margin:0 0 8px 0;font-size:18px;font-weight:700;color:#111827;">Andrew Roberts</p>'
+    '<p style="margin:0;font-size:14px;color:#4b5563;line-height:1.6;">'
+    'Founder and Principal Advisor at Andrew Roberts Advisory. I work directly with '
+    'Australian boards and non-executive directors on cyber governance, AI governance, '
+    'and IT general controls and strategy, translating complex regulatory terrain into '
+    'clear, defensible oversight frameworks that directors can own and act on. I have '
+    'founded and exited two technology companies. I founded Field Solutions Group, '
+    'served as Group CEO for a decade, and led the ASX listing in 2017. During that '
+    'time I held direct board accountability for cyber risk, ISO 27001 certification, '
+    'and governance at the listed company level. I have also served as Deputy Chairman '
+    'of a federally funded Cooperative Research Centre. I am a Member of the Australian '
+    'Institute of Company Directors (AICD) and the Australian Computer Society (ACS), '
+    'holding the ACS designation MACS (Snr) CP (Cyber), and am a Member of ISACA.</p>'
+    '<div style="display:flex;gap:12px;margin-top:8px;align-items:center;">'
+    '<a href="https://www.linkedin.com/in/andrewjakeroberts/" target="_blank" '
+    'rel="noopener noreferrer" title="LinkedIn" style="color:#6b7280;">LinkedIn</a>'
+    '</div></div></div>'
+)
+
+
 def render_original_post_scaffold(title: str, body_html: str) -> str:
     """Wrap hand-authored article body HTML in the minimal document shape
     write_page()/replace_host_head_and_header() expect: the article wrapper
     class they search for, plus head/body/header/footer tags present so the
-    real site shell gets swapped in during processing."""
+    real site shell gets swapped in during processing. Includes the standard
+    author bio, matching every other post on the site, which original
+    content published through the drafting tool was previously missing
+    entirely."""
     escaped_title = escape(title)
     return (
         "<html><head><title>" + escaped_title + "</title></head><body>"
@@ -1208,6 +1240,7 @@ def render_original_post_scaffold(title: str, body_html: str) -> str:
         '<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">'
         "<h1>" + escaped_title + "</h1>"
         + body_html +
+        AUTHOR_BIO_HTML +
         "</article>"
         "</main>"
         "<footer></footer>"
