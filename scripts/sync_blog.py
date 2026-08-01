@@ -1305,7 +1305,7 @@ def publish_original_post(slug: str) -> None:
                post_id=post_id, related_html=related_html)
 
     write_linkedin_draft(item, post_url, post_id=post_id, force=True)
-    write_advisor_brief(item, post_url, post_id=post_id)
+    write_advisor_brief(item, post_url, post_id=post_id, force=True)
 
     print(f"Published original post: {slug} (Briefing No. {post_id})")
     print("Run a normal sync (no flags) next to refresh blog.html and sitemap.xml.")
