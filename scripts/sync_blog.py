@@ -1340,12 +1340,6 @@ def process_pending_drafts() -> None:
     published_dir = drafts_dir / "published"
     for draft_path in sorted(drafts_dir.glob("*.json")):
         slug = draft_path.stem
-        post_path = article_page_path(slug)
-        if post_path.exists():
-            # Already published in a previous run — archive and skip.
-            published_dir.mkdir(parents=True, exist_ok=True)
-            draft_path.rename(published_dir / draft_path.name)
-            continue
         try:
             publish_original_post(slug)
             published_dir.mkdir(parents=True, exist_ok=True)
