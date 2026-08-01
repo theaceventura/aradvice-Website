@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 31 Jul 2026 23:34 UTC
+Generated: 01 Aug 2026 06:50 UTC
 
-Total posts: 26
+Total posts: 27
 
 
 ---
@@ -318,3 +318,15 @@ Total posts: 26
 - **LinkedIn draft:** `[internal]/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/026-linkedin.txt`
 - **LinkedIn log:** see `log/posting-log.md`
 - **Advisor brief:** `[internal]/third-party-cyber-risk-a-directors-guide-to-defensible-board-oversight-in-australia/026-advisor-brief.md`
+
+
+## [027] What an Independent AI Governance Review Actually Involves for Australian Boards
+- **ID:** 027
+- **Published:** 01 Aug 2026
+- **Slug:** `what-an-independent-ai-governance-review-actually-involves-for-australian-boards`
+- **URL:** https://aradvice.com.au/post/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/
+- **Article:** `post/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/index.html`
+- **og:image:** `post/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/027-og-image.png`
+- **LinkedIn draft:** `[internal]/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/027-linkedin.txt`
+- **LinkedIn log:** see `log/posting-log.md`
+- **Advisor brief:** `[internal]/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/027-advisor-brief.md`

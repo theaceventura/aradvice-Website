@@ -246,3 +246,13 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## What an Independent AI Governance Review Actually Involves for Australian Boards
+- **ID:** 027
+- **Slug:** what-an-independent-ai-governance-review-actually-involves-for-australian-boards
+- **Article date:** 01 Aug 2026
+- **Draft generated:** 01 Aug 2026
+- **Draft file:** post/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/027-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
