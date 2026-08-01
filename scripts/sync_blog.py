@@ -1224,23 +1224,59 @@ AUTHOR_BIO_HTML = (
 )
 
 
-def render_original_post_scaffold(title: str, body_html: str) -> str:
-    """Wrap hand-authored article body HTML in the minimal document shape
-    write_page()/replace_host_head_and_header() expect: the article wrapper
-    class they search for, plus head/body/header/footer tags present so the
-    real site shell gets swapped in during processing. Includes the standard
-    author bio, matching every other post on the site, which original
-    content published through the drafting tool was previously missing
-    entirely."""
+def render_original_post_scaffold(title: str, body_html: str, pub_date_str: str = "") -> str:
+    """Wrap hand-authored article body HTML in the shape the real site
+    template actually uses: breadcrumb, h1, the date/read-time/word-count
+    meta line, and the same prose-typography wrapper around the body that
+    every other post has, plus the standard author bio. The original
+    version of this function only produced a bare <h1> + raw body, missing
+    all of the above, which is why original content looked visibly
+    different from every other post on the site."""
     escaped_title = escape(title)
+
+    plain_text = re.sub(r"<[^>]+>", " ", body_html)
+    word_count = len(plain_text.split())
+    read_minutes = max(1, round(word_count / 200))
+
+    display_date = ""
+    if pub_date_str:
+        try:
+            dt = item_datetime(pub_date_str)
+            display_date = f"{dt.strftime('%B')} {dt.day}, {dt.year}"
+        except Exception:
+            display_date = ""
+    if not display_date:
+        now = datetime.now(timezone.utc)
+        display_date = f"{now.strftime('%B')} {now.day}, {now.year}"
+
+    breadcrumb_title = escaped_title if len(escaped_title) <= 60 else escaped_title[:57] + "..."
+
+    header_html = (
+        '<nav class="mb-6 text-sm" aria-label="Breadcrumb">'
+        '<a href="/" class="text-gray-400 hover:text-gray-600 no-underline" '
+        'style="text-decoration: none; color: #9ca3af; cursor: pointer;">Blog</a>'
+        '<span class="text-gray-300 mx-2">/</span>'
+        '<span class="text-gray-500">' + breadcrumb_title + '</span>'
+        '</nav>'
+        '<h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">'
+        + escaped_title + '</h1>'
+        '<div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-8 pb-8 border-b border-gray-200">'
+        '<time>' + display_date + '</time><span>&middot;</span>'
+        '<span>' + str(read_minutes) + ' min read</span><span>&middot;</span>'
+        '<span>' + f"{word_count:,}" + ' words</span>'
+        '</div>'
+    )
+
     return (
         "<html><head><title>" + escaped_title + "</title></head><body>"
         "<header></header>"
         '<main class="flex-1">'
         '<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">'
-        "<h1>" + escaped_title + "</h1>"
+        + header_html +
+        '<div class="article-content prose prose-lg max-w-none">'
         + body_html +
         AUTHOR_BIO_HTML +
+        '</div>'
         "</article>"
         "</main>"
         "<footer></footer>"
@@ -1265,7 +1301,7 @@ def publish_original_post(slug: str) -> None:
     )
 
     post_url = f"{MAIN_DOMAIN}/post/{slug}/"
-    scaffold_html = render_original_post_scaffold(title, body_html)
+    scaffold_html = render_original_post_scaffold(title, body_html, pub_date_str=pub_date_str)
 
     item = FeedItem(
         title=title, link=post_url, slug=slug, pub_date=pub_date_str,
