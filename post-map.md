@@ -1,6 +1,6 @@
 # Post Registry and Asset Map
 
-Generated: 01 Aug 2026 08:41 UTC
+Generated: 02 Aug 2026 09:44 UTC
 
 Total posts: 27
 
@@ -322,7 +322,7 @@ Total posts: 27
 
 ## [027] What an Independent AI Governance Review Actually Involves for Australian Boards
 - **ID:** 027
-- **Published:** 01 Aug 2026
+- **Published:** 02 Aug 2026
 - **Slug:** `what-an-independent-ai-governance-review-actually-involves-for-australian-boards`
 - **URL:** https://aradvice.com.au/post/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/
 - **Article:** `post/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/index.html`
