@@ -528,6 +528,8 @@ def insert_related_briefings(html: str, related_html: str) -> str:
     back to appending before </article> if no CTA is found at all."""
     if not related_html:
         return html
+    if "<!--RELATED_BRIEFINGS_MARKER-->" in html:
+        return html.replace("<!--RELATED_BRIEFINGS_MARKER-->", related_html, 1)
     matches = list(re.finditer(
         r'<p[^>]*>(?:\s*<a[^>]*>)?\s*If this resonates',
         html,
@@ -544,6 +546,13 @@ def write_page(path: Path, html: str, feed_item: "FeedItem | None" = None, post_
     path.parent.mkdir(parents=True, exist_ok=True)
     rewritten = normalize_internal_links(clean_article_content(strip_platform_widgets(rewrite_domains(html))))
     rewritten = insert_related_briefings(rewritten, related_html)
+
+    # Safety net: strip any marker that never got replaced (e.g.
+    # related_html was empty this run), so a literal HTML comment never
+    # ships to the live page.
+    rewritten = rewritten.replace("<!--AUTHOR_BIO_MARKER-->", "")
+    rewritten = rewritten.replace("<!--RELATED_BRIEFINGS_MARKER-->", "")
+
     rewritten, body_desc = extract_and_strip_meta_description(rewritten)
     local_head, local_header, local_html, _local_body, local_footer, local_nav_scripts = read_local_head_and_header()
     # Extract post slug from path: /post/{slug}/index.html
@@ -1267,6 +1276,11 @@ def render_original_post_scaffold(title: str, body_html: str, pub_date_str: str 
         '</div>'
     )
 
+    if "<!--AUTHOR_BIO_MARKER-->" in body_html:
+        body_with_bio = body_html.replace("<!--AUTHOR_BIO_MARKER-->", AUTHOR_BIO_HTML, 1)
+    else:
+        body_with_bio = body_html + AUTHOR_BIO_HTML
+
     return (
         "<html><head><title>" + escaped_title + "</title></head><body>"
         "<header></header>"
@@ -1274,8 +1288,7 @@ def render_original_post_scaffold(title: str, body_html: str, pub_date_str: str 
         '<article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">'
         + header_html +
         '<div class="article-content prose prose-lg max-w-none">'
-        + body_html +
-        AUTHOR_BIO_HTML +
+        + body_with_bio +
         '</div>'
         "</article>"
         "</main>"
