@@ -518,18 +518,69 @@ def article_page_path(slug: str) -> Path:
 
 
 def insert_related_briefings(html: str, related_html: str) -> str:
-    """Insert related_html directly above the 'If this resonates' CTA. That
-    CTA renders in several shapes depending on the article — anchor-wrapped,
-    three bare sibling <p> tags, or a single <p> with <br> line breaks — so
-    match just the opening tag immediately before the CTA text rather than
-    trying to enumerate every closing shape. If there are multiple CTA
-    occurrences (a pre-existing dedup gap), insert above the last one, since
-    that's the one that actually renders at the end of the article. Falls
-    back to appending before </article> if no CTA is found at all."""
+    """Insert or replace the related-briefings block, trying each of the
+    following in order:
+      1. The drafting tool's RELATED_BRIEFINGS_MARKER placeholder, if the
+         source content included one.
+      2. An already-rendered RELATED_BRIEFINGS_SECTION (the canonical path
+         on any re-run of a post that already has one) — replaced in place
+         rather than duplicated.
+      3. The old pill-badge shape (pre-dating the RELATED_BRIEFINGS_SECTION
+         marker) — a one-time transitional fallback for already-published
+         posts with the original div/badge styling.
+      4. The Change-1 <section> shape without a marker yet — a second
+         transitional fallback for posts touched between that change
+         landing and the marker being added.
+      5. Fresh insert directly above the 'If this resonates' CTA — only
+         for posts with no related-briefings section at all. That CTA
+         renders in several shapes depending on the article — anchor-
+         wrapped, three bare sibling <p> tags, or a single <p> with <br>
+         line breaks — so match just the opening tag immediately before
+         the CTA text rather than enumerating every closing shape. If
+         there are multiple CTA occurrences (a pre-existing dedup gap),
+         insert above the last one, since that's the one that actually
+         renders at the end of the article. Falls back to appending
+         before </article> if no CTA is found at all.
+    Every regex tier uses subn's match count, not string inequality, to
+    detect a match — a replacement that happens to render identically to
+    what's already there must not be misread as "no match found"."""
     if not related_html:
         return html
+
     if "<!--RELATED_BRIEFINGS_MARKER-->" in html:
         return html.replace("<!--RELATED_BRIEFINGS_MARKER-->", related_html, 1)
+
+    replaced, n = re.subn(
+        r'<section class="max-w-5xl\b[^>]*>\s*<!--RELATED_BRIEFINGS_SECTION-->.*?</section>',
+        related_html,
+        html,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if n:
+        return replaced
+
+    replaced, n = re.subn(
+        r'<div style="border-top:1px solid #e2e8f0; padding-top:24px; margin:32px 0;">'
+        r'\s*<h3[^>]*>Related briefings</h3>.*?</div></div>',
+        related_html,
+        html,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if n:
+        return replaced
+
+    replaced, n = re.subn(
+        r'<section class="max-w-5xl\b[^>]*>\s*<h2[^>]*>Related briefings</h2>.*?</section>',
+        related_html,
+        html,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if n:
+        return replaced
+
     matches = list(re.finditer(
         r'<p[^>]*>(?:\s*<a[^>]*>)?\s*If this resonates',
         html,
@@ -2004,6 +2055,7 @@ def render_related_briefings(
         )
     return (
         '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
+        '<!--RELATED_BRIEFINGS_SECTION-->'
         '<h2 class="text-2xl font-bold text-slate-100 mb-8">Related briefings</h2>'
         '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
         + "".join(cards)
