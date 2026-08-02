@@ -2347,6 +2347,12 @@ VOICE:
   below. Before finalising your response, check each paragraph
   individually; if a paragraph has no first-person language in it,
   rewrite that paragraph before returning your answer.
+- The opening paragraph and the closing paragraph are the two most likely
+  to slip into third-person scene-setting or a standalone aphorism with
+  no personal voice at all — check both of these specifically, even after
+  checking every paragraph generally. An opening scenario framed as
+  "Picture the question a chair is asked..." with no "I" anywhere in it
+  fails this rule just as much as a paragraph of pure commentary would.
 - Do not write as an outside commentator describing what boards or
   directors are expected to do in general. Write as Andrew Roberts,
   stating what you personally expect, have seen, or would do.
@@ -2363,16 +2369,11 @@ REGULATORY REFERENCES:
 - ASIC, AICD, Corporations Act, Cyber Security Act 2024 may be referenced accurately and specifically.
 - Keep the distinction clear: AICD and ACS are professional/member bodies whose material is industry guidance, not law. ASIC, APRA, OAIC, and primary legislation carry actual legal force. Do not blur a guidance reference into something that sounds like a binding legal requirement.
 
-BANNED PHRASES — never use these:
-- "The regulatory environment is tightening"
-- "The gap between X and Y"
-- "Cannot meaningfully interrogate" (maximum once per post, prefer alternatives)
-- "Governing blind"
-- "Translation layer"
-- "I am pleased to share", "Let's dive in", "Game changer", "Wake-up call"
-- "This matters now because", "This is why"
-- "Most Australian boards" or "Most Australian directors" as an opening — find a more specific entry point
-- Opening a paragraph with "Most Australian boards" more than once per post
+BANNED PHRASES — never use any of these: {", ".join(f'"{p}"' for p in SHARED_BANNED_PHRASES)}.
+Also:
+- "Cannot meaningfully interrogate" — maximum once per post if used at all, prefer alternatives.
+- "Most Australian boards" or "Most Australian directors" as an opening — find a more specific entry point.
+- Do not open a paragraph with "Most Australian boards" more than once per post.
 
 HARD RULES:
 - The opening must express the same core argument as the article title, in different words. A reader who clicks through must find exactly what the opening promised.
@@ -2444,6 +2445,9 @@ Rules:
   "my", "I've seen", "I would"). Before returning your answer, check the
   body sentence by sentence — if any sentence has no first-person
   language, rewrite it. Do not write as an outside commentator.
+- The opening scenario sentence and the closing sentence are the two most
+  likely to slip into pure scene-setting with no personal voice — check
+  both of these specifically, even after checking every sentence generally.
 - The subject line must express the same core argument as the article title, in different words. A reader who clicks through must find exactly what the subject promised.
 - No salutation of any kind — no "Hi", no "Dear", no "Hello"
 - No "I hope this finds you well" or similar openers
@@ -2452,7 +2456,7 @@ Rules:
 - Never state a commencement date, deadline, or penalty figure for any legislation.
 - Do not describe any legislation or obligation as upcoming, pending, approaching, or "moving toward" enforcement. The Cyber Security Act 2024 and its obligations are current law; refer to them in the present tense as in force, never as future or impending.
 - The opening scenario must be causally coherent. Read it back as a literal sequence of events and confirm it makes sense.
-- Banned phrases — never use these: "most boards lack", "your board faces", "directors must", "shifts the conversation", "transforms X into Y", "manageable oversight protocols", "structured board responsibility", "defensible processes for overseeing", "the regulatory environment", "growing exposure", "practical frameworks", "courts are increasingly", "regulators are increasingly", "ASIC is increasingly", "increasingly scrutinising", "increasingly important"
+- Banned phrases — never use any of these: {", ".join(f'"{p}"' for p in SHARED_BANNED_PHRASES)}.
 - Do not mention "newsletter", "blog post", or "article" — write as if delivering a direct observation, not promoting content
 - Under 110 words total for the body
 - Tone: the same register as a brief note from a trusted advisor who has just seen something relevant — not a marketing email, not a warning, not a sales pitch
