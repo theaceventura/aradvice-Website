@@ -1347,10 +1347,23 @@ def render_original_post_scaffold(title: str, body_html: str, pub_date_str: str 
         '</div>'
     )
 
-    if "<!--AUTHOR_BIO_MARKER-->" in body_html:
-        body_with_bio = body_html.replace("<!--AUTHOR_BIO_MARKER-->", AUTHOR_BIO_HTML, 1)
+    # Split off the related-briefings marker so it ends up OUTSIDE the
+    # .prose wrapper. Tailwind Typography's prose plugin restyles links
+    # and headings nested inside .prose, which was making Related
+    # briefings cards render with prose's own link color instead of the
+    # plain slate/white styling — More Briefings never had this problem
+    # because it's inserted later, outside .prose entirely.
+    if "<!--RELATED_BRIEFINGS_MARKER-->" in body_html:
+        prose_body, _, _ = body_html.partition("<!--RELATED_BRIEFINGS_MARKER-->")
+        trailing_marker = "<!--RELATED_BRIEFINGS_MARKER-->"
     else:
-        body_with_bio = body_html + AUTHOR_BIO_HTML
+        prose_body = body_html
+        trailing_marker = ""
+
+    if "<!--AUTHOR_BIO_MARKER-->" in prose_body:
+        body_with_bio = prose_body.replace("<!--AUTHOR_BIO_MARKER-->", AUTHOR_BIO_HTML, 1)
+    else:
+        body_with_bio = prose_body + AUTHOR_BIO_HTML
 
     return (
         "<html><head><title>" + escaped_title + "</title></head><body>"
@@ -1361,6 +1374,7 @@ def render_original_post_scaffold(title: str, body_html: str, pub_date_str: str 
         '<div class="article-content prose prose-lg max-w-none">'
         + body_with_bio +
         '</div>'
+        + trailing_marker +
         "</article>"
         "</main>"
         "<footer></footer>"
@@ -1430,7 +1444,7 @@ def publish_original_post(slug: str) -> None:
                 pub_date_str = ""
 
         visible_items.append(FeedItem(
-            title=title_match.group(1).strip() if title_match else s,
+            title=unescape(title_match.group(1).strip()) if title_match else s,
             link=f"{MAIN_DOMAIN}/post/{s}/", slug=s, pub_date=pub_date_str, html="",
             image_url="", read_time="",
         ))
