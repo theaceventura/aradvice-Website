@@ -36,6 +36,23 @@ INTERNAL_DRAFTS_ROOT = Path(_os_early.environ.get(
     "INTERNAL_DRAFTS_DIR",
     str(ROOT.parent / "aradvice-internal-drafts"),
 ))
+
+# Shared across the article, LinkedIn, and email generators, so a phrase
+# banned in one context can't silently slip through in another. Each
+# generator's prompt still lists these explicitly (models follow inline
+# instructions more reliably than a referenced constant), but this is the
+# single source of truth to check when adding or auditing a ban.
+SHARED_BANNED_PHRASES = [
+    "increasingly", "the regulatory environment is tightening", "governing blind",
+    "translation layer", "game changer", "wake-up call", "I am pleased to share",
+    "let's dive in", "the gap between", "cannot meaningfully interrogate",
+    "this matters now because", "this is why", "most boards lack", "your board faces",
+    "directors must", "shifts the conversation", "transforms X into Y",
+    "manageable oversight protocols", "structured board responsibility",
+    "defensible processes for overseeing", "growing exposure", "practical frameworks",
+    "courts are increasingly", "regulators are increasingly", "ASIC is increasingly",
+    "increasingly scrutinising", "increasingly important",
+]
 FEED_URL = "https://blog.aradvice.com.au/feed.xml"
 MANUAL_POSTS = [
     {
@@ -2324,7 +2341,17 @@ WHAT MAKES A GREAT POST:
 - The best posts make a director stop and think "that's exactly my situation" or "I hadn't thought of it that way"
 
 VOICE:
-- First person as Andrew Roberts — a practitioner, not a commentator
+- Every single paragraph must contain first-person language ("I", "my",
+  "I've seen", "I would", "I expect"), WITHOUT using "In my experience"
+  or "I've seen boards struggle" specifically — those are already banned
+  below. Before finalising your response, check each paragraph
+  individually; if a paragraph has no first-person language in it,
+  rewrite that paragraph before returning your answer.
+- Do not write as an outside commentator describing what boards or
+  directors are expected to do in general. Write as Andrew Roberts,
+  stating what you personally expect, have seen, or would do.
+  "Directors are expected to..." must become "I expect directors to..."
+  or similar.
 - Authoritative without being academic. Direct without being blunt.
 - Specific and concrete. Vague generalisations undermine credibility with this audience.
 - Never frame content as a product: never use "I've developed", "I've written", "I've created", "I've seen boards struggle", "In my experience"
@@ -2334,6 +2361,7 @@ VOICE:
 REGULATORY REFERENCES:
 - Only reference real, specific regulatory events, inquiries, or enforcement actions if they appear verbatim in the article excerpt. Do not invent or imply regulatory events.
 - ASIC, AICD, Corporations Act, Cyber Security Act 2024 may be referenced accurately and specifically.
+- Keep the distinction clear: AICD and ACS are professional/member bodies whose material is industry guidance, not law. ASIC, APRA, OAIC, and primary legislation carry actual legal force. Do not blur a guidance reference into something that sounds like a binding legal requirement.
 
 BANNED PHRASES — never use these:
 - "The regulatory environment is tightening"
@@ -2407,10 +2435,15 @@ BODY: 3-4 sentences maximum. No salutation — open cold with the first substant
 
 - Sentence 1: Describe a specific situation — a boardroom moment, a procurement decision, a model deployed without sign-off, a board paper that couldn't answer the regulator's question. Frame it as explicitly illustrative or composite, never as a real event that occurred. Use present-tense hypothetical framing such as "Picture a board that..." or "Imagine a director who...". Do not use "recently", "last month", "this week", or past-tense narration that implies the scene actually happened. Concrete and particular, but unmistakably illustrative. Do NOT open with generalisations about "most boards" or "directors must" or "your board faces". Do not state a problem abstractly — place the reader in a scene.
 - Sentences 2-3: Name the concrete consequence if this is wrong. Regulatory, legal, or reputational — be specific about what actually happens to the director. Not "shifts the conversation", not "transforms risk into responsibility", not "manageable oversight protocols". What is the actual exposure? Name the realistic enforcer: for an s.180 duty-of-care breach that is ASIC bringing civil penalty proceedings against the director personally; a liquidator may also pursue the claim on the company's behalf if the entity later fails. Do not say a shareholder can pursue a director "personally" under s.180, that requires court leave for a derivative action brought in the company's name. State the exposure directly. Only reference specific regulatory actions or enforcement if they appear verbatim in the article excerpt — otherwise name the legal mechanism (e.g. s.180 Corporations Act duty of care) and the personal consequence.
+- Keep the distinction clear: AICD and ACS are professional/member bodies whose material is industry guidance, not law. ASIC, APRA, OAIC, and primary legislation carry actual legal force. Do not blur a guidance reference into something that sounds like a binding legal requirement.
 - Final line: The article URL on its own line, nothing else before or after it — no "Read more at", no "Full article:", just the bare URL.
 - Sign off: "Andrew"
 
 Rules:
+- Every sentence in the body must contain first-person language ("I",
+  "my", "I've seen", "I would"). Before returning your answer, check the
+  body sentence by sentence — if any sentence has no first-person
+  language, rewrite it. Do not write as an outside commentator.
 - The subject line must express the same core argument as the article title, in different words. A reader who clicks through must find exactly what the subject promised.
 - No salutation of any kind — no "Hi", no "Dear", no "Hello"
 - No "I hope this finds you well" or similar openers
