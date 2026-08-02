@@ -778,7 +778,7 @@ def render_more_articles_section(
     items: list[FeedItem],
     categories: "dict | None" = None,
     show_filter_bar: bool = False,
-    heading: str = "More Articles",
+    heading: str = "More Briefings",
 ) -> str:
     categories = categories or {}
     cards: list[str] = []
@@ -827,6 +827,7 @@ def render_more_articles_section(
 
     return (
         '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
+        '<!--MORE_BRIEFINGS_SECTION-->'
         f'<h2 class="text-2xl font-bold text-slate-100 mb-8">{escape(heading)}</h2>'
         + filter_bar_html
         + '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
@@ -839,14 +840,37 @@ def render_more_articles_section(
 
 def inject_more_articles(html: str, items: list[FeedItem], categories: "dict | None" = None) -> str:
     section_html = render_more_articles_section(items, categories=categories)
-    replaced = re.sub(
+    # Matches on the explicit MORE_BRIEFINGS_SECTION marker, not heading
+    # text, so this survives any future rename and stays unambiguous even
+    # though "Related briefings" now shares identical wrapper markup.
+    # Use subn's match count, not string inequality, to detect whether a
+    # match happened — if section_html renders byte-identical to what's
+    # already there (the common case: nothing changed since the last run),
+    # a valid replacement would leave replaced == html and be wrongly
+    # read as "no match found", cascading into the fallbacks below and
+    # producing a duplicate section on every run that changes nothing.
+    replaced, n = re.subn(
+        r'<section class="max-w-5xl\b[^>]*>\s*<!--MORE_BRIEFINGS_SECTION-->.*?</section>',
+        section_html,
+        html,
+        count=1,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if n:
+        return replaced
+    # One-time transitional fallback: existing pages written before the
+    # marker existed still have the old literal "More Articles" heading.
+    # Match on that so they get cleanly replaced instead of duplicated —
+    # without this, every already-published post would end up with both
+    # the stale old section and a freshly-appended new one side by side.
+    replaced, n = re.subn(
         r'<section class="max-w-5xl\b[^>]*>\s*<h2\b[^>]*>More Articles</h2>.*?</section>',
         section_html,
         html,
         count=1,
         flags=re.DOTALL | re.IGNORECASE,
     )
-    if replaced != html:
+    if n:
         return replaced
     return html.replace("</main>", section_html + "\n    </main>", 1)
 
@@ -1123,14 +1147,18 @@ def inject_recent_articles(html: str, items: list[FeedItem]) -> str:
         return html
 
     block = render_recent_articles(items)
-    injected = re.sub(
+    # Use subn's match count, not string inequality, to detect whether a
+    # match happened — same reasoning as inject_more_articles(): if block
+    # ever renders identically to content already at the insertion point,
+    # a valid match would be wrongly read as "no match found".
+    injected, n = re.subn(
         r'(<div class="article-content\b[^>]*>)',
         block + r"\1",
         html,
         count=1,
         flags=re.IGNORECASE,
     )
-    if injected != html:
+    if n:
         return injected
     return html.replace("</article>", block + "</article>", 1)
 
@@ -1952,9 +1980,6 @@ def render_related_briefings(
     categories: dict,
     registry: dict,
 ) -> str:
-    """Render a 'Related briefings' card grid for insertion just above the
-    CTA block on an individual post page. Returns '' if no related posts
-    are available (e.g. this is the only post)."""
     current_category = categories.get(current_item.slug, _DEFAULT_CATEGORY)
     related = select_related_posts(current_item.slug, current_category, items, categories)
     if not related:
@@ -1965,21 +1990,24 @@ def render_related_briefings(
         cat_label = escape(CATEGORY_LABELS.get(cat_key, cat_key))
         post_id = registry.get(rel.slug, 0)
         cards.append(
-            f'<a href="/post/{escape(rel.slug)}/" style="text-decoration:none; display:block; '
-            'background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:16px 20px;">'
-            f'<span style="font-size:12px; color:#0f6e56; background:#e1f5ee; '
-            f'padding:2px 8px; border-radius:6px;">{cat_label}</span>'
-            f'<p style="font-size:14px; font-weight:600; color:#0f172a; '
-            f'margin:10px 0 6px; line-height:1.4;">{escape(rel.title)}</p>'
-            f'<p style="font-size:12px; color:#94a3b8; margin:0;">Briefing No. {post_id:03d}</p>'
+            f'<a href="/post/{escape(rel.slug)}/" '
+            'class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 '
+            'hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] '
+            'transition-all no-underline" style="text-decoration: none; cursor: pointer;">'
+            '<div class="p-6">'
+            f'<span class="inline-block text-[10px] font-bold uppercase tracking-wider '
+            f'text-slate-500 mb-2">{cat_label}</span><br/>'
+            f'<h3 class="text-lg font-semibold text-slate-100 leading-snug mb-2">{escape(rel.title)}</h3>'
+            f'<div class="text-sm text-slate-400">Briefing No. {post_id:03d}</div>'
+            '</div>'
             '</a>'
         )
     return (
-        '<div style="border-top:1px solid #e2e8f0; padding-top:24px; margin:32px 0;">'
-        '<h3 style="font-size:18px; font-weight:600; margin:0 0 16px 0;">Related briefings</h3>'
-        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">'
+        '<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-slate-700/70">'
+        '<h2 class="text-2xl font-bold text-slate-100 mb-8">Related briefings</h2>'
+        '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">'
         + "".join(cards)
-        + "</div></div>"
+        + "</div></section>"
     )
 
 
