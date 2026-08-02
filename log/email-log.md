@@ -204,3 +204,10 @@
 - article_date: 10 Jun 2026
 - logged: 02 Aug 2026 21:00 UTC
 - status: dry-run
+
+## Linking Cyber Risk to Financial Impact: A Director's Guide to Defensible Board Reporting
+- slug: linking-cyber-risk-to-financial-impact-a-directors-guide-to-defensible-board-reporting
+- subject: Cyber risk in dollars: your s.180 exposure explained
+- article_date: 10 Jun 2026
+- logged: 02 Aug 2026 21:05 UTC
+- status: dry-run
