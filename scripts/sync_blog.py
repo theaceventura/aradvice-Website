@@ -1413,9 +1413,25 @@ def publish_original_post(slug: str) -> None:
             continue
         stored = post_file.read_text(encoding="utf-8")
         title_match = re.search(r"<title>([^<]*)\s*\|", stored)
+
+        # Pull the real publish date from the post's own JSON-LD schema
+        # (already present on every post via generate_article_schema()),
+        # rather than leaving pub_date empty — an empty pub_date silently
+        # falls back to *today's* date in item_datetime(), which is what
+        # was making every "More Briefings" / "Related briefings" card
+        # show today's date instead of the post's actual one.
+        date_match = re.search(r'"datePublished":\s*"([^"]+)"', stored)
+        pub_date_str = ""
+        if date_match:
+            try:
+                dt = datetime.fromisoformat(date_match.group(1).replace("Z", "+00:00"))
+                pub_date_str = dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
+            except ValueError:
+                pub_date_str = ""
+
         visible_items.append(FeedItem(
             title=title_match.group(1).strip() if title_match else s,
-            link=f"{MAIN_DOMAIN}/post/{s}/", slug=s, pub_date="", html="",
+            link=f"{MAIN_DOMAIN}/post/{s}/", slug=s, pub_date=pub_date_str, html="",
             image_url="", read_time="",
         ))
 
@@ -2033,7 +2049,7 @@ def render_related_briefings(
         cat_label = escape(CATEGORY_LABELS.get(cat_key, cat_key))
         post_id = registry.get(rel.slug, 0)
         cards.append(
-            f'<a href="/post/{escape(rel.slug)}/" '
+            f'<a href="/post/{escape(rel.slug)}/" data-category="{escape(cat_key)}" '
             'class="group block rounded-2xl border border-slate-700/70 bg-slate-900/70 '
             'hover:border-cyan-400/60 hover:shadow-[0_18px_60px_rgba(6,182,212,0.2)] '
             'transition-all no-underline" style="text-decoration: none; cursor: pointer;">'
