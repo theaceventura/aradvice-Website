@@ -2310,6 +2310,78 @@ def utm_url(post_url: str, source: str, slug: str) -> str:
     )
 
 
+_FIRST_PERSON_RE = re.compile(r"\b(i|i'm|i've|i'd|i'll|my|me)\b", re.IGNORECASE)
+
+
+def _paragraphs_missing_first_person(text: str) -> list[str]:
+    """Return every non-URL paragraph that has no first-person marker at
+    all. This checks the model's own self-check programmatically — two
+    real test runs showed the prompt-only instruction reliably catches
+    opening/closing slips but still lets a middle "general scope or
+    principle" paragraph through untouched."""
+    paras = [p.strip() for p in text.split("\n") if p.strip()]
+    paras = [p for p in paras if not re.match(r"^https?://", p)]
+    return [p for p in paras if not _FIRST_PERSON_RE.search(p)]
+
+
+def _retry_missing_first_person(post_text: str, api_key: str) -> str:
+    """If any paragraph has no first-person language, send one targeted
+    retry asking only for those paragraphs to be rewritten, keeping
+    everything else — including the sharpness of the point — unchanged.
+    Falls back to the original text if the retry fails or doesn't
+    actually improve things."""
+    import urllib.request
+    import json
+
+    missing = _paragraphs_missing_first_person(post_text)
+    if not missing:
+        return post_text
+
+    retry_prompt = f"""Here is a LinkedIn post draft:
+
+{post_text}
+
+The following paragraph(s) contain no first-person language ("I", "my",
+"me", "I've", "I'd", "I'll") and must be rewritten to include it, while
+staying exactly as sharp and specific as they currently are. Do not
+soften the point or add hedging — convert the voice from impersonal or
+universal to personal, the way "A board that cannot X is not Y" becomes
+"I have never seen a board do X and call that Y."
+
+Paragraph(s) needing rewrite:
+{chr(10).join('- ' + m for m in missing)}
+
+Return the FULL corrected post, every paragraph, not just the fixed
+ones, with the URL on its own final line, unchanged. Output only the
+post text, no preamble."""
+
+    try:
+        payload = json.dumps({
+            "model": "claude-sonnet-4-6",
+            "max_tokens": 2500,
+            "messages": [{"role": "user", "content": retry_prompt}]
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            "https://api.anthropic.com/v1/messages",
+            data=payload,
+            headers={
+                "Content-Type": "application/json",
+                "anthropic-version": "2023-06-01",
+                "x-api-key": api_key,
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            retried = sanitise_ai_text(_anthropic_text(data).strip())
+            if len(_paragraphs_missing_first_person(retried)) < len(missing):
+                return retried
+    except Exception as e:
+        print(f"  LinkedIn first-person retry failed: {e}", file=sys.stderr)
+
+    return post_text
+
+
 def generate_linkedin_post(item: FeedItem, post_url: str) -> str:
     """Generate a draft LinkedIn post for a feed item using the Anthropic API."""
     import urllib.request
@@ -2422,9 +2494,11 @@ FORMAT:
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-            return sanitise_ai_text(_anthropic_text(data).strip())
+            post_text = sanitise_ai_text(_anthropic_text(data).strip())
     except Exception as e:
         return f"[LinkedIn post generation failed: {e}]"
+
+    return _retry_missing_first_person(post_text, api_key)
 
 
 def generate_email_draft(item: FeedItem, post_url: str) -> tuple[str, str]:
@@ -3276,6 +3350,32 @@ def main() -> int:
             )
             for slug in dropped_slugs:
                 print(f"    - {slug} (registry id {registry[slug]})", file=sys.stderr)
+
+    # --test SLUG only ever matched slugs inside generated_items, which
+    # comes entirely from the GetAutoSEO feed and blog-index scrape. A
+    # drafting-tool-published post was never a member of that list at
+    # all, so force=(item.slug == test_slug) never got evaluated for it —
+    # the flag silently no-op'd instead of testing anything. Look the
+    # slug up directly via the registry (the same on-disk reconstruction
+    # build_items_from_registry() already does for every post) before
+    # falling through to the feed-based loop below.
+    if test_slug and test_slug not in {i.slug for i in generated_items}:
+        registry_items = build_items_from_registry()
+        match = next((i for i in registry_items if i.slug == test_slug), None)
+        if match:
+            print(f"  --test target '{test_slug}' is not in the GetAutoSEO "
+                  f"feed/blog index — found on disk via the registry, "
+                  f"testing it directly instead.")
+            test_post_url = f"{MAIN_DOMAIN}/post/{match.slug}/"
+            test_post_id = f"{registry.get(match.slug, 0):03d}"
+            write_linkedin_draft(match, test_post_url, post_id=test_post_id, force=True)
+            write_advisor_brief(match, test_post_url, post_id=test_post_id, force=True)
+            write_email_draft(match, test_post_url, post_id=test_post_id,
+                              dry_run=dry_run, force=True, test_email=test_email)
+        else:
+            print(f"  --test target '{test_slug}' not found anywhere — "
+                  f"no post exists with this slug, on disk or in the feed.",
+                  file=sys.stderr)
 
     # Only render published articles (exclude future-dated posts from blog/sitemap)
     now = datetime.now(timezone.utc)
