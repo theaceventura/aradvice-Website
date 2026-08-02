@@ -53,6 +53,17 @@ SHARED_BANNED_PHRASES = [
     "courts are increasingly", "regulators are increasingly", "ASIC is increasingly",
     "increasingly scrutinising", "increasingly important",
 ]
+# Structured record of each pipeline step's actual outcome, built up as
+# main() runs, rather than parsed back out of freeform console output
+# afterward (fragile — the same category of bug this file has hit more
+# than once today). status is one of "ran", "error", "skipped".
+_RUN_STEPS: list[dict] = []
+
+
+def _record_step(name: str, status: str, detail: str = "") -> None:
+    _RUN_STEPS.append({"name": name, "status": status, "detail": detail})
+
+
 FEED_URL = "https://blog.aradvice.com.au/feed.xml"
 MANUAL_POSTS = [
     {
@@ -1503,16 +1514,28 @@ def process_pending_drafts() -> None:
         return
     drafts_dir = ROOT / "drafts"
     if not drafts_dir.exists():
+        _record_step("Process pending drafts", "skipped", "no drafts/ folder")
         return
     published_dir = drafts_dir / "published"
-    for draft_path in sorted(drafts_dir.glob("*.json")):
+    pending = sorted(drafts_dir.glob("*.json"))
+    if not pending:
+        _record_step("Process pending drafts", "skipped", "none pending")
+        return
+    published_count, failed = 0, []
+    for draft_path in pending:
         slug = draft_path.stem
         try:
             publish_original_post(slug)
             published_dir.mkdir(parents=True, exist_ok=True)
             draft_path.rename(published_dir / draft_path.name)
+            published_count += 1
         except Exception as e:
             print(f"  Failed to auto-publish draft {slug}: {e}", file=sys.stderr)
+            failed.append(slug)
+    if failed:
+        _record_step("Process pending drafts", "error", f"{published_count} published, failed: {', '.join(failed)}")
+    else:
+        _record_step("Process pending drafts", "ran", f"published {published_count}")
 
 
 def load_post_overrides() -> dict:
@@ -1983,9 +2006,11 @@ def generate_daily_report(force: bool = False) -> None:
     if not force and (archive_dir / f"{today_str}.html").exists():
         print(f"  Daily report already generated today ({today_str}) — "
               f"skipping regeneration. Use --force-report to override.")
+        _record_step("Daily analytics report", "skipped", f"already generated {today_str}")
         return
     if not os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):
         print("  GOOGLE_SERVICE_ACCOUNT_JSON not set — skipping daily report", file=sys.stderr)
+        _record_step("Daily analytics report", "skipped", "no Google credentials configured")
         return
     try:
         ga4_data = fetch_ga4_report(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
@@ -2033,8 +2058,10 @@ def generate_daily_report(force: bool = False) -> None:
         for bullet in commentary.get("topic_suggestions", []):
             print(f"    [topic idea] {bullet}")
         print(f"  Full report: {MAIN_DOMAIN}/internal-8f2k1q/daily-report.html")
+        _record_step("Daily analytics report", "ran", f"archived as {today_str}.html")
     except Exception as e:
         print(f"  Daily report generation failed: {e}", file=sys.stderr)
+        _record_step("Daily analytics report", "error", str(e)[:300])
 
 
 def guess_category(title: str, slug: str) -> str:
@@ -3070,6 +3097,38 @@ class _Tee:
         self.stream.flush()
 
 
+def render_step_report_html(steps: list[dict]) -> str:
+    """Render the run's recorded steps as a numbered, colour-coded table:
+    green for ran, red for error, yellow for skipped."""
+    if not steps:
+        return ""
+    colors = {"ran": "#16a34a", "error": "#dc2626", "skipped": "#d97706"}
+    labels = {"ran": "RAN", "error": "ERROR", "skipped": "SKIPPED"}
+    rows = ""
+    for i, step in enumerate(steps, start=1):
+        color = colors.get(step["status"], "#64748b")
+        label = labels.get(step["status"], step["status"].upper())
+        detail = escape(step.get("detail", ""))
+        rows += (
+            f'<tr style="background:{color}1a; border-left:4px solid {color};">'
+            f'<td style="padding:8px 12px; font-weight:700; color:#334155;">{i}</td>'
+            f'<td style="padding:8px 12px; color:#0f172a;">{escape(step["name"])}</td>'
+            f'<td style="padding:8px 12px; font-weight:700; color:{color};">{label}</td>'
+            f'<td style="padding:8px 12px; color:#64748b; font-size:12px;">{detail}</td>'
+            '</tr>'
+        )
+    return (
+        '<p style="font-weight:700; text-transform:uppercase; font-size:12px; '
+        'letter-spacing:0.05em; color:#334155; margin:0 0 8px 0;">Run steps</p>'
+        '<table style="width:100%; border-collapse:collapse; margin-bottom:20px;">'
+        '<thead><tr style="text-align:left; font-size:11px; color:#94a3b8; '
+        'text-transform:uppercase;">'
+        '<th style="padding:6px 12px;">#</th><th style="padding:6px 12px;">Step</th>'
+        '<th style="padding:6px 12px;">Status</th><th style="padding:6px 12px;">Detail</th>'
+        '</tr></thead><tbody>' + rows + '</tbody></table>'
+    )
+
+
 def render_run_report_email_html(body: str) -> str:
     """Turn the plain-text captured console output into readable HTML:
     the '--- Daily Report Highlights ---' block (if present) is rendered
@@ -3118,12 +3177,13 @@ def render_run_report_email_html(body: str) -> str:
     log_text = escape(before + after)
     log_html = (
         '<p style="color:#64748b; font-weight:700; text-transform:uppercase; '
-        'font-size:11px; letter-spacing:0.05em; margin:28px 0 8px 0;">Sync log</p>'
-        f'<pre style="font-family:monospace; font-size:11px; color:#475569; '
-        f'white-space:pre-wrap; line-height:1.5;">{log_text}</pre>'
+        'font-size:11px; letter-spacing:0.05em; margin:28px 0 8px 0;">Full console output (reference)</p>'
+        f'<pre style="font-family:monospace; font-size:10px; color:#94a3b8; '
+        f'white-space:pre-wrap; line-height:1.4;">{log_text}</pre>'
     )
 
-    return highlights_html + log_html
+    step_report_html = render_step_report_html(_RUN_STEPS)
+    return step_report_html + highlights_html + log_html
 
 
 def send_run_report(body: str, status: str) -> None:
@@ -3275,11 +3335,17 @@ def main() -> int:
         print(f"  RSS feed fetch failed, continuing without: {e}",
               file=sys.stderr)
         rss_by_slug = {}
+        _record_step("Fetch RSS feed", "error", str(e)[:300])
+    else:
+        _record_step("Fetch RSS feed", "ran", f"{len(rss_by_slug)} items")
 
     primary_index_ok = bool(feed_items)
     if not primary_index_ok:
         print("No GetAutoSEO feed items found (expected now that GetAutoSEO is "
               "retired). Continuing with locally published posts only.", file=sys.stderr)
+        _record_step("Scrape blog index (GetAutoSEO)", "skipped", "no items found, retired feed")
+    else:
+        _record_step("Scrape blog index (GetAutoSEO)", "ran", f"{len(feed_items)} items")
 
     # Merge RSS metadata into index-scraped items
     for item in feed_items:
@@ -3482,6 +3548,16 @@ def main() -> int:
               f"Latest: {latest_item.slug}")
         commit_message = f"Sync blog content, update {latest_item.slug}"
 
+    _record_step(
+        "Process feed items (pages, LinkedIn, briefs, emails)",
+        "ran" if generated_items else "skipped",
+        f"{len(generated_items)} item(s)",
+    )
+    _record_step(
+        "Build blog.html, sitemap.xml, post-map.md",
+        "ran" if registry_items else "skipped",
+        f"{len(registry_items)} total published" if registry_items else "no published articles found",
+    )
     _git_commit_and_push(commit_message)
     return 0
 
@@ -3503,7 +3579,9 @@ def _git_commit_and_push(commit_message: str) -> None:
         if stashed:
             run(["git", "stash", "pop"])
         print(f"  git pull failed — skipping commit/push:\n{pull.stderr}", file=sys.stderr)
+        _record_step("Git pull (rebase)", "error", pull.stderr.strip()[:300])
         return
+    _record_step("Git pull (rebase)", "ran")
 
     if stashed:
         pop = run(["git", "stash", "pop"])
@@ -3516,19 +3594,24 @@ def _git_commit_and_push(commit_message: str) -> None:
     status = run(["git", "status", "--porcelain"])
     if not status.stdout.strip():
         print("  git: nothing to commit")
+        _record_step("Git commit", "skipped", "nothing to commit")
         return
 
     commit = run(["git", "commit", "-m", commit_message])
     if commit.returncode != 0:
         print(f"  git commit failed:\n{commit.stderr}", file=sys.stderr)
+        _record_step("Git commit", "error", commit.stderr.strip()[:300])
         return
     print(f"  git commit: {commit_message}")
+    _record_step("Git commit", "ran", commit_message)
 
     push = run(["git", "push"])
     if push.returncode != 0:
         print(f"  git push failed:\n{push.stderr}", file=sys.stderr)
+        _record_step("Git push", "error", push.stderr.strip()[:300])
     else:
         print("  git push: OK")
+        _record_step("Git push", "ran")
 
 
 if __name__ == "__main__":
