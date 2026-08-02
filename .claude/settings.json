@@ -6,7 +6,9 @@
       "Bash(.venv/bin/python scripts/sync_blog.py)",
       "Bash(git -C /Users/andewroberts/Projects/andrew-roberts-advisory add scripts/sync_blog.py)",
       "Bash(git commit *)",
-      "Bash(echo \"exit code: $?\")"
+      "Bash(echo \"exit code: $?\")",
+      "Bash(awk -F: '$1 >= 2313 && $1 <= 2429')",
+      "Bash(grep -n \"^import sys$\\\\|^def sanitise_ai_text\\\\|^def _anthropic_text\" scripts/sync_blog.py)"
     ]
   }
 }

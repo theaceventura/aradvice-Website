@@ -211,3 +211,10 @@
 - article_date: 10 Jun 2026
 - logged: 02 Aug 2026 21:05 UTC
 - status: dry-run
+
+## What an Independent AI Governance Review Actually Involves for Australian Boards
+- slug: what-an-independent-ai-governance-review-actually-involves-for-australian-boards
+- subject: ASIC REP 798: what boards must show about AI oversight
+- article_date: 02 Aug 2026
+- logged: 02 Aug 2026 21:28 UTC
+- status: dry-run
