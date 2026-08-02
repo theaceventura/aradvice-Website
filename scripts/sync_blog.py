@@ -1967,11 +1967,23 @@ new Chart(document.getElementById('gscChart'), {{
 </body></html>"""
 
 
-def generate_daily_report() -> None:
+def generate_daily_report(force: bool = False) -> None:
     """Generate the hidden daily analytics report. Fails silently with a
     stderr note if Google credentials are not configured, so a normal
-    sync never breaks because of this."""
+    sync never breaks because of this. Skips entirely if today's report
+    already exists (checked before any API calls, not just before the
+    file write) unless force=True — sync_blog.py gets run many times in
+    a single day during active work, and this was previously firing two
+    of the most expensive API calls in the file on every single one of
+    those runs regardless of whether anything had actually changed."""
     import os
+    report_dir = ROOT / "internal-8f2k1q"
+    archive_dir = report_dir / "archive"
+    today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if not force and (archive_dir / f"{today_str}.html").exists():
+        print(f"  Daily report already generated today ({today_str}) — "
+              f"skipping regeneration. Use --force-report to override.")
+        return
     if not os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):
         print("  GOOGLE_SERVICE_ACCOUNT_JSON not set — skipping daily report", file=sys.stderr)
         return
@@ -1982,11 +1994,8 @@ def generate_daily_report() -> None:
         briefing_performance = fetch_briefing_performance(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
         briefing_commentary = generate_briefing_commentary(briefing_performance)
         html = render_daily_report_html(ga4_data, gsc_data, commentary, briefing_performance, briefing_commentary)
-        report_dir = ROOT / "internal-8f2k1q"
         report_dir.mkdir(parents=True, exist_ok=True)
-        archive_dir = report_dir / "archive"
         archive_dir.mkdir(parents=True, exist_ok=True)
-        today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
         # Build a history list covering every archived date plus today, so
         # both the "latest" page and every archived copy can link back
@@ -3211,6 +3220,12 @@ def main() -> int:
         help="Force-regenerate the email and LinkedIn drafts for SLUG (never sends, email log untouched, overwrites the LinkedIn draft file)"
     )
     parser.add_argument(
+        "--force-report", action="store_true", dest="force_report",
+        help="Regenerate the daily report even if one was already "
+             "generated today. Normally skipped on repeat same-day runs "
+             "to avoid redundant API cost."
+    )
+    parser.add_argument(
         "--publish-draft", metavar="SLUG", default="", dest="publish_slug",
         help="Publish a hand-authored draft from drafts/SLUG.json through the "
              "full pipeline (ID, category, images, related briefings, LinkedIn "
@@ -3238,7 +3253,7 @@ def main() -> int:
         return 0
 
     process_pending_drafts()
-    generate_daily_report()
+    generate_daily_report(force=args.force_report)
 
     # Primary: scrape blog index pages to get all articles
     feed_items = parse_blog_index()
