@@ -2614,7 +2614,7 @@ SUBJECT: A direct, specific subject line under 60 characters. Lead with the gove
 BODY: 3-4 sentences maximum. No salutation — open cold with the first substantive sentence.
 
 - Sentence 1: Describe a specific situation — a boardroom moment, a procurement decision, a model deployed without sign-off, a board paper that couldn't answer the regulator's question. Frame it as explicitly illustrative or composite, never as a real event that occurred. Use present-tense hypothetical framing such as "Picture a board that..." or "Imagine a director who...". Do not use "recently", "last month", "this week", or past-tense narration that implies the scene actually happened. Concrete and particular, but unmistakably illustrative. Do NOT open with generalisations about "most boards" or "directors must" or "your board faces". Do not state a problem abstractly — place the reader in a scene.
-- Sentences 2-3: Name the concrete consequence if this is wrong. Regulatory, legal, or reputational — be specific about what actually happens to the director. Not "shifts the conversation", not "transforms risk into responsibility", not "manageable oversight protocols". What is the actual exposure? Name the realistic enforcer: for an s.180 duty-of-care breach that is ASIC bringing civil penalty proceedings against the director personally; a liquidator may also pursue the claim on the company's behalf if the entity later fails. Do not say a shareholder can pursue a director "personally" under s.180, that requires court leave for a derivative action brought in the company's name. State the exposure directly. Only reference specific regulatory actions or enforcement if they appear verbatim in the article excerpt — otherwise name the legal mechanism (e.g. s.180 Corporations Act duty of care) and the personal consequence.
+- Sentences 2-3: Name the concrete consequence if this is wrong, but first identify what this specific article's core argument actually is (e.g. data governance failure, review scope, policy gap, disclosure obligation, enforcement exposure). If the article's core argument is itself about duty-of-care enforcement, name the realistic enforcer: for an s.180 duty-of-care breach that is ASIC bringing civil penalty proceedings against the director personally, and a liquidator may also pursue the claim on the company's behalf if the entity later fails. Do not say a shareholder can pursue a director "personally" under s.180, that requires court leave for a derivative action brought in the company's name. If the article's core argument is something else, the consequence in sentences 2-3 must reflect that specific mechanism instead. The s.180/ASIC/liquidator frame is not a default opener for every article, it is reserved for articles whose actual subject is director duty enforcement. State the exposure directly, grounded in what this specific article discusses, not a generic duty-of-care template.
 - Keep the distinction clear: AICD and ACS are professional/member bodies whose material is industry guidance, not law. ASIC, APRA, OAIC, and primary legislation carry actual legal force. Do not blur a guidance reference into something that sounds like a binding legal requirement.
 - Final line: The article URL on its own line, nothing else before or after it — no "Read more at", no "Full article:", just the bare URL.
 - Sign off: "Andrew"
@@ -2640,6 +2640,7 @@ Rules:
 - Under 110 words total for the body
 - Tone: the same register as a brief note from a trusted advisor who has just seen something relevant — not a marketing email, not a warning, not a sales pitch
 - CRITICAL: Do not reference specific regulatory requirements, deadlines, or enforcement actions unless they appear verbatim in the article excerpt provided. If unsure, omit the regulatory reference entirely and focus on the director's personal legal exposure instead.
+- CRITICAL: Before writing sentences 2-3, state in one phrase what this specific article's core argument is. The consequence you write must follow from that core argument. If the consequence and the article's core argument do not obviously connect when read back together, rewrite the consequence, do not fall back to the stock s.180/ASIC/liquidator language.
 
 Return a JSON object with exactly two keys:
 "subject": the subject line
@@ -2726,7 +2727,7 @@ def _send_kit_broadcast_to_tag(api_key: str, tag_id: int, base_payload: dict) ->
 
 
 def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0,
-                       test_email: str = "") -> bool:
+                       headline: str = "", test_email: str = "") -> bool:
     """Send a broadcast email via the Kit (ConvertKit) API v4.
     Returns True on success. Test sends (test_email set) are routed to
     the internal-ops-reports tag (RUN_REPORT_TAG_ID) via the verify-
@@ -2785,11 +2786,22 @@ def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0,
     # email template's header typography (deterministic, not AI-generated)
     if briefing_no:
         briefing_label = (
-            '<p style="font-size:11px; color:#888888; letter-spacing:0.06em; '
+            '<p style="font-size:12px; color:#888888; letter-spacing:0.06em; '
             'text-transform:uppercase; margin:0 0 8px 0;">'
             f'Briefing No. {briefing_no}</p>'
         )
         html_body = briefing_label + html_body
+
+    # Prepend the real post title as a styled headline, deterministic,
+    # sourced from item.title at the call site (not AI-generated, no new
+    # fabrication surface)
+    if headline:
+        headline_label = (
+            '<p style="font-size:21px; font-weight:bold; color:#0a1628; '
+            'line-height:1.3; margin:0 0 18px 0;">'
+            f'{headline}</p>'
+        )
+        html_body = headline_label + html_body
 
     if test_email:
         tag_id_raw = os.environ.get("RUN_REPORT_TAG_ID", "")
@@ -2956,7 +2968,7 @@ def write_email_draft(item: FeedItem, post_url: str,
 
     broadcast_body = split_sentences(body)
     sent = send_kit_broadcast(subject, broadcast_body, briefing_no=brief_no,
-                              test_email=test_email)
+                              headline=item.title, test_email=test_email)
 
     # Patch status in log now we know the outcome. Skipped for test sends,
     # since they never wrote a "sending" entry above.
