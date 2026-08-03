@@ -1901,7 +1901,7 @@ def render_briefing_table(briefings: list[dict], commentary: dict) -> str:
     )
 
 
-def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict, briefing_performance: list[dict] = None, briefing_commentary: dict = None) -> str:
+def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict, briefing_performance: list[dict] = None, briefing_commentary: dict = None, commentary_note: str = "") -> str:
     """Render the hidden daily report as a standalone static HTML page."""
     import json as _json
     generated_at = datetime.now(timezone.utc).strftime("%d/%m/%y %H:%M UTC")
@@ -1956,6 +1956,7 @@ def render_daily_report_html(ga4_data: dict, gsc_data: dict, commentary: dict, b
 </head><body>
 <h1>Daily Site Report</h1>
 <p class="meta">Generated {generated_at}. Not linked anywhere on the site.</p>
+<p class="meta" style="color:#94a3b8;">{escape(commentary_note)}</p>
 <h2>What's working</h2>
 {working_html}
 <h2>What's not working</h2>
@@ -2036,12 +2037,43 @@ def generate_daily_report(force: bool = False) -> None:
         _record_step("Daily analytics report", "skipped", "no Google credentials configured")
         return
     try:
+        import json as _json2
+
         ga4_data = fetch_ga4_report(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
         gsc_data = fetch_gsc_report(site_url=os.environ.get("GSC_SITE_URL", "sc-domain:aradvice.com.au"))
-        commentary = generate_report_commentary(ga4_data, gsc_data)
         briefing_performance = fetch_briefing_performance(property_id=os.environ.get("GA4_PROPERTY_ID", ""))
-        briefing_commentary = generate_briefing_commentary(briefing_performance)
-        html = render_daily_report_html(ga4_data, gsc_data, commentary, briefing_performance, briefing_commentary)
+
+        cache_path = report_dir / "commentary-cache.json"
+        cached = None
+        if cache_path.exists():
+            try:
+                cached = _json2.loads(cache_path.read_text(encoding="utf-8"))
+            except Exception:
+                cached = None
+
+        cache_is_fresh = False
+        if cached and not force:
+            try:
+                cached_date = datetime.fromisoformat(cached["date"]).date()
+                cache_is_fresh = (datetime.now(timezone.utc).date() - cached_date).days < 7
+            except Exception:
+                cache_is_fresh = False
+
+        if cache_is_fresh:
+            commentary = cached["commentary"]
+            briefing_commentary = cached["briefing_commentary"]
+            commentary_note = f"AI commentary last refreshed {cached['date']} (weekly cadence — use --force-report for a fresh take now)."
+        else:
+            commentary = generate_report_commentary(ga4_data, gsc_data)
+            briefing_commentary = generate_briefing_commentary(briefing_performance)
+            cache_path.write_text(_json2.dumps({
+                "date": today_str,
+                "commentary": commentary,
+                "briefing_commentary": briefing_commentary,
+            }, ensure_ascii=False), encoding="utf-8")
+            commentary_note = f"AI commentary freshly generated {today_str}."
+
+        html = render_daily_report_html(ga4_data, gsc_data, commentary, briefing_performance, briefing_commentary, commentary_note=commentary_note)
         report_dir.mkdir(parents=True, exist_ok=True)
         archive_dir.mkdir(parents=True, exist_ok=True)
 
@@ -2081,7 +2113,7 @@ def generate_daily_report(force: bool = False) -> None:
         for bullet in commentary.get("topic_suggestions", []):
             print(f"    [topic idea] {bullet}")
         print(f"  Full report: {MAIN_DOMAIN}/internal-8f2k1q/daily-report.html")
-        _record_step("Daily analytics report", "ran", f"archived as {today_str}.html")
+        _record_step("Daily analytics report", "ran", f"archived as {today_str}.html — {commentary_note}")
     except Exception as e:
         print(f"  Daily report generation failed: {e}", file=sys.stderr)
         _record_step("Daily analytics report", "error", str(e)[:300])
