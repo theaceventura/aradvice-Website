@@ -58,10 +58,31 @@ SHARED_BANNED_PHRASES = [
 # afterward (fragile — the same category of bug this file has hit more
 # than once today). status is one of "ran", "error", "skipped".
 _RUN_STEPS: list[dict] = []
+_CURRENT_STEP_TOKENS = {"input_tokens": 0, "output_tokens": 0, "calls": 0}
+
+
+def _track_api_usage(data: dict) -> None:
+    """Accumulate token usage from an Anthropic API response into a
+    running total for whichever step is currently in progress — read
+    and reset by the next _record_step() call, whatever step that
+    turns out to be."""
+    usage = data.get("usage", {}) if isinstance(data, dict) else {}
+    _CURRENT_STEP_TOKENS["input_tokens"] += usage.get("input_tokens", 0)
+    _CURRENT_STEP_TOKENS["output_tokens"] += usage.get("output_tokens", 0)
+    _CURRENT_STEP_TOKENS["calls"] += 1
 
 
 def _record_step(name: str, status: str, detail: str = "") -> None:
-    _RUN_STEPS.append({"name": name, "status": status, "detail": detail})
+    calls = _CURRENT_STEP_TOKENS["calls"]
+    input_tokens = _CURRENT_STEP_TOKENS["input_tokens"]
+    output_tokens = _CURRENT_STEP_TOKENS["output_tokens"]
+    _CURRENT_STEP_TOKENS["input_tokens"] = 0
+    _CURRENT_STEP_TOKENS["output_tokens"] = 0
+    _CURRENT_STEP_TOKENS["calls"] = 0
+    _RUN_STEPS.append({
+        "name": name, "status": status, "detail": detail,
+        "api_calls": calls, "input_tokens": input_tokens, "output_tokens": output_tokens,
+    })
 
 
 FEED_URL = "https://blog.aradvice.com.au/feed.xml"
@@ -1726,6 +1747,7 @@ Rules:
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = _json.loads(resp.read().decode("utf-8"))
+            _track_api_usage(data)
             raw = _anthropic_text(data).strip()
             raw = raw.replace("```json", "").replace("```", "").strip()
             return _json.loads(raw)
@@ -1845,6 +1867,7 @@ commentary string. No markdown fences, no preamble, nothing else."""
     try:
         with urllib.request.urlopen(req, timeout=45) as resp:
             data = _json.loads(resp.read().decode("utf-8"))
+            _track_api_usage(data)
             raw = _anthropic_text(data)
             raw = raw.replace("```json", "").replace("```", "").strip()
             return _json.loads(raw)
@@ -2409,6 +2432,7 @@ post text, no preamble."""
         )
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
+            _track_api_usage(data)
             retried = sanitise_ai_text(_anthropic_text(data).strip())
             if len(_paragraphs_missing_first_person(retried)) < len(missing):
                 return retried
@@ -2530,6 +2554,7 @@ FORMAT:
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
+            _track_api_usage(data)
             post_text = sanitise_ai_text(_anthropic_text(data).strip())
     except Exception as e:
         return f"[LinkedIn post generation failed: {e}]"
@@ -2610,6 +2635,7 @@ Return only the JSON. No preamble, no markdown fences."""
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
+            _track_api_usage(data)
             raw = _anthropic_text(data).strip()
             parsed = json.loads(raw)
             return (sanitise_ai_text(parsed.get("subject", "")),
@@ -2949,6 +2975,7 @@ Output only the briefing. No preamble, no explanation."""
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode("utf-8"))
+            _track_api_usage(data)
             return sanitise_ai_text(_anthropic_text(data).strip())
     except Exception as e:
         return f"[Advisor brief generation failed: {e}]"
@@ -3003,6 +3030,7 @@ Return only the JSON object. No preamble, no markdown fences."""
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
+            _track_api_usage(data)
             raw = _anthropic_text(data).strip()
             parsed = json.loads(raw)
             return sanitise_ai_text(parsed.get("description", "")), parsed.get("keywords", "")
@@ -3109,12 +3137,24 @@ def render_step_report_html(steps: list[dict]) -> str:
         color = colors.get(step["status"], "#64748b")
         label = labels.get(step["status"], step["status"].upper())
         detail = escape(step.get("detail", ""))
+        api_calls = step.get("api_calls", 0)
+        if api_calls:
+            in_tok = step.get("input_tokens", 0)
+            out_tok = step.get("output_tokens", 0)
+            cost_html = (
+                f'<span style="color:#7c3aed; font-weight:700;">&#9679; API</span><br/>'
+                f'<span style="color:#94a3b8; font-size:11px;">{api_calls} call'
+                f'{"s" if api_calls != 1 else ""}, {in_tok:,} in / {out_tok:,} out</span>'
+            )
+        else:
+            cost_html = '<span style="color:#cbd5e1;">&mdash;</span>'
         rows += (
             f'<tr style="background:{color}1a; border-left:4px solid {color};">'
             f'<td style="padding:8px 12px; font-weight:700; color:#334155;">{i}</td>'
             f'<td style="padding:8px 12px; color:#0f172a;">{escape(step["name"])}</td>'
             f'<td style="padding:8px 12px; font-weight:700; color:{color};">{label}</td>'
             f'<td style="padding:8px 12px; color:#64748b; font-size:12px;">{detail}</td>'
+            f'<td style="padding:8px 12px;">{cost_html}</td>'
             '</tr>'
         )
     return (
@@ -3125,6 +3165,7 @@ def render_step_report_html(steps: list[dict]) -> str:
         'text-transform:uppercase;">'
         '<th style="padding:6px 12px;">#</th><th style="padding:6px 12px;">Step</th>'
         '<th style="padding:6px 12px;">Status</th><th style="padding:6px 12px;">Detail</th>'
+        '<th style="padding:6px 12px;">Claude API cost</th>'
         '</tr></thead><tbody>' + rows + '</tbody></table>'
     )
 
