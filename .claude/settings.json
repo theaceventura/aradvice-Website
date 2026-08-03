@@ -13,7 +13,11 @@
       "Read(//tmp/**)",
       "Read(//private/tmp/**)",
       "Bash(awk ' *)",
-      "Bash(grep -n 'Full report: {MAIN_DOMAIN}\\\\|_record_step\\(\"Daily analytics report\", \"ran\"' scripts/sync_blog.py)"
+      "Bash(grep -n 'Full report: {MAIN_DOMAIN}\\\\|_record_step\\(\"Daily analytics report\", \"ran\"' scripts/sync_blog.py)",
+      "Bash(rm -f /tmp/2026-08-03.html.bak *)"
+    ],
+    "additionalDirectories": [
+      "/private/tmp"
     ]
   }
 }
