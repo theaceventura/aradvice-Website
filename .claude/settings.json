@@ -12,7 +12,8 @@
       "Bash(python3 -c ' *)",
       "Read(//tmp/**)",
       "Read(//private/tmp/**)",
-      "Bash(awk ' *)"
+      "Bash(awk ' *)",
+      "Bash(grep -n 'Full report: {MAIN_DOMAIN}\\\\|_record_step\\(\"Daily analytics report\", \"ran\"' scripts/sync_blog.py)"
     ]
   }
 }
