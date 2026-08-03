@@ -2678,10 +2678,61 @@ Return only the JSON. No preamble, no markdown fences."""
         return "", ""
 
 
+def _kit_api_request(api_key: str, path: str, body: dict | None, method: str) -> dict:
+    """Shared helper for authenticated Kit (ConvertKit) v4 API calls."""
+    import urllib.request
+    import json
+
+    req = urllib.request.Request(
+        f"https://api.kit.com/v4{path}",
+        data=json.dumps(body).encode("utf-8") if body is not None else None,
+        headers={"Content-Type": "application/json", "X-Kit-Api-Key": api_key},
+        method=method,
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def _send_kit_broadcast_to_tag(api_key: str, tag_id: int, base_payload: dict) -> str | None:
+    """Create a broadcast as an unsent draft, verify Kit actually stored
+    the exact tag-only subscriber_filter requested, and only then trigger
+    the send. Returns the broadcast id on success, None if aborted (left
+    as an unsent draft) rather than risk sending to the wrong audience.
+    Guards against Kit's silent fallback to ALL subscribers on an
+    unrecognised filter shape — the same defaulting that previously sent
+    a real broadcast to the entire subscriber list."""
+    created = _kit_api_request(api_key, "/broadcasts", {**base_payload, "send_at": None}, "POST")
+    broadcast_id = created.get("broadcast", {}).get("id")
+
+    fetched = _kit_api_request(api_key, f"/broadcasts/{broadcast_id}", None, "GET")
+    stored_filter = fetched.get("broadcast", {}).get("subscriber_filter")
+    stored_tag_ids = set()
+    for group in (stored_filter or []):
+        for clause in (group.get("all") or []):
+            if clause.get("type") == "tag":
+                stored_tag_ids.update(clause.get("ids", []))
+    if stored_tag_ids != {tag_id}:
+        sys.__stderr__.write(
+            f"  Broadcast ABORTED: Kit stored an unexpected subscriber_filter "
+            f"({stored_filter!r}) instead of tag id {tag_id} — leaving broadcast "
+            f"{broadcast_id} as an unsent draft rather than risk sending to the "
+            f"wrong audience. Check the Kit dashboard.\n"
+        )
+        return None
+
+    send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    _kit_api_request(api_key, f"/broadcasts/{broadcast_id}", {**base_payload, "send_at": send_at}, "PUT")
+    return broadcast_id
+
+
 def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0,
                        test_email: str = "") -> bool:
     """Send a broadcast email via the Kit (ConvertKit) API v4.
-    Returns True on success."""
+    Returns True on success. Test sends (test_email set) are routed to
+    the internal-ops-reports tag (RUN_REPORT_TAG_ID) via the verify-
+    before-send pattern in _send_kit_broadcast_to_tag(), never to a raw
+    email_address filter — Kit doesn't support targeting by email address
+    and silently falls back to ALL subscribers when given that shape."""
     import urllib.request, json, os
     from datetime import datetime, timezone
 
@@ -2740,13 +2791,40 @@ def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0,
         )
         html_body = briefing_label + html_body
 
+    if test_email:
+        tag_id_raw = os.environ.get("RUN_REPORT_TAG_ID", "")
+        if not tag_id_raw:
+            print("  RUN_REPORT_TAG_ID not set — cannot send a safely-scoped "
+                  "test broadcast", file=sys.stderr)
+            return False
+        try:
+            tag_id = int(tag_id_raw)
+        except ValueError:
+            print(f"  RUN_REPORT_TAG_ID is not a valid integer: {tag_id_raw!r}",
+                  file=sys.stderr)
+            return False
+        subject = f"[TEST] {subject}"
+        base_payload = {
+            "subject": subject,
+            "content": html_body,
+            "description": subject,
+            "public": False,
+            "preview_text": "",
+            "subscriber_filter": [{"all": [{"type": "tag", "ids": [tag_id]}]}],
+        }
+        try:
+            broadcast_id = _send_kit_broadcast_to_tag(api_key, tag_id, base_payload)
+        except Exception as e:
+            print(f"  Kit test broadcast failed: {e}", file=sys.stderr)
+            return False
+        if broadcast_id is None:
+            return False
+        print(f"  Test email broadcast sent to internal-ops-reports tag: "
+              f"{subject} (id={broadcast_id})")
+        return True
+
     # Kit v4: flat payload, send_at set to now triggers immediate send
     send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    if test_email:
-        subject = f"[TEST] {subject}"
-        subscriber_filter = [{"email_address": test_email}]
-    else:
-        subscriber_filter = [{"all": True}]
     payload = json.dumps({
         "subject": subject,
         "content": html_body,
@@ -2754,7 +2832,7 @@ def send_kit_broadcast(subject: str, body: str, briefing_no: int = 0,
         "public": False,
         "send_at": send_at,
         "preview_text": "",
-        "subscriber_filter": subscriber_filter,
+        "subscriber_filter": [{"all": True}],
     }).encode("utf-8")
 
     req = urllib.request.Request(
@@ -3273,8 +3351,6 @@ def send_run_report(body: str, status: str) -> None:
     and confirm it matches exactly what was requested before triggering
     the send, aborting (leaving an unsent draft) on any mismatch. Never
     raises."""
-    import urllib.request
-    import json as _json
     import os
 
     api_key = os.environ.get("KIT_API_KEY", "")
@@ -3289,16 +3365,6 @@ def send_run_report(body: str, status: str) -> None:
         sys.__stderr__.write(f"  RUN_REPORT_TAG_ID is not a valid integer: {tag_id_raw!r} — skipping run report\n")
         return
 
-    def _kit_request(path: str, body: dict | None, method: str) -> dict:
-        req = urllib.request.Request(
-            f"https://api.kit.com/v4{path}",
-            data=_json.dumps(body).encode("utf-8") if body is not None else None,
-            headers={"Content-Type": "application/json", "X-Kit-Api-Key": api_key},
-            method=method,
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            return _json.loads(resp.read().decode("utf-8"))
-
     ts = datetime.now(timezone.utc).strftime("%d %b %Y %H:%M UTC")
     subject = f"sync_blog {status} — {ts}"
     html_body = render_run_report_email_html(body)
@@ -3312,30 +3378,9 @@ def send_run_report(body: str, status: str) -> None:
     }
 
     try:
-        # Step 1: create as an unsent draft (no send_at).
-        created = _kit_request("/broadcasts", {**base_payload, "send_at": None}, "POST")
-        broadcast_id = created.get("broadcast", {}).get("id")
-
-        # Step 2: read back what Kit actually stored for subscriber_filter.
-        fetched = _kit_request(f"/broadcasts/{broadcast_id}", None, "GET")
-        stored_filter = fetched.get("broadcast", {}).get("subscriber_filter")
-        stored_tag_ids = set()
-        for group in (stored_filter or []):
-            for clause in (group.get("all") or []):
-                if clause.get("type") == "tag":
-                    stored_tag_ids.update(clause.get("ids", []))
-        if stored_tag_ids != {tag_id}:
-            sys.__stderr__.write(
-                f"  Run report ABORTED: Kit stored an unexpected subscriber_filter "
-                f"({stored_filter!r}) instead of tag id {tag_id} — leaving broadcast "
-                f"{broadcast_id} as an unsent draft rather than risk sending to the "
-                f"wrong audience. Check the Kit dashboard.\n"
-            )
+        broadcast_id = _send_kit_broadcast_to_tag(api_key, tag_id, base_payload)
+        if broadcast_id is None:
             return
-
-        # Step 3: filter confirmed correct — trigger the actual send.
-        send_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        _kit_request(f"/broadcasts/{broadcast_id}", {**base_payload, "send_at": send_at}, "PUT")
         sys.__stdout__.write(f"  Run report sent via Kit (id={broadcast_id}, tag_id={tag_id})\n")
     except Exception as e:
         sys.__stderr__.write(f"  Run report send via Kit failed: {e}\n")
