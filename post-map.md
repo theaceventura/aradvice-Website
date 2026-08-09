@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 03 Aug 2026 10:25 UTC
+Generated: 09 Aug 2026 10:40 UTC
 
-Total posts: 27
+Total posts: 28
 
 
 ---
@@ -330,3 +330,15 @@ Total posts: 27
 - **LinkedIn draft:** `[internal]/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/027-linkedin.txt`
 - **LinkedIn log:** see `log/posting-log.md`
 - **Advisor brief:** `[internal]/what-an-independent-ai-governance-review-actually-involves-for-australian-boards/027-advisor-brief.md`
+
+
+## [028] The Origin Hack: What Directors Need to Do Now
+- **ID:** 028
+- **Published:** 09 Aug 2026
+- **Slug:** `the-origin-hack-what-directors-need-to-do-now`
+- **URL:** https://aradvice.com.au/post/the-origin-hack-what-directors-need-to-do-now/
+- **Article:** `post/the-origin-hack-what-directors-need-to-do-now/index.html`
+- **og:image:** `post/the-origin-hack-what-directors-need-to-do-now/028-og-image.png`
+- **LinkedIn draft:** `[internal]/the-origin-hack-what-directors-need-to-do-now/028-linkedin.txt`
+- **LinkedIn log:** see `log/posting-log.md`
+- **Advisor brief:** `[internal]/the-origin-hack-what-directors-need-to-do-now/028-advisor-brief.md`

@@ -256,3 +256,13 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## The Origin Hack: What Directors Need to Do Now
+- **ID:** 028
+- **Slug:** the-origin-hack-what-directors-need-to-do-now
+- **Article date:** 09 Aug 2026
+- **Draft generated:** 09 Aug 2026
+- **Draft file:** post/the-origin-hack-what-directors-need-to-do-now/028-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
