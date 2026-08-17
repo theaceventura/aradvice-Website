@@ -232,3 +232,17 @@
 - article_date: 09 Aug 2026
 - logged: 09 Aug 2026 20:49 UTC
 - status: sent
+
+## Does the board need to hire a CISO?
+- slug: does-the-board-need-to-hire-a-ciso
+- subject: CISO or not: who owns cyber risk at your board table?
+- article_date: 17 Aug 2026
+- logged: 17 Aug 2026 04:10 UTC
+- status: sent
+
+## What is a Technology Consultant? A Director’s Guide to Strategic Advisory in 2026
+- slug: what-is-a-technology-consultant-a-directors-guide-to-strategic-advisory-in-2026
+- subject: [excluded by request — never send]
+- article_date: 30 Apr 2026
+- logged: 17 Aug 2026 04:14 UTC
+- status: excluded
