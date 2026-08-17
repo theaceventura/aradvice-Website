@@ -1,8 +1,8 @@
 # Post Registry and Asset Map
 
-Generated: 09 Aug 2026 10:40 UTC
+Generated: 17 Aug 2026 02:39 UTC
 
-Total posts: 28
+Total posts: 29
 
 
 ---
@@ -342,3 +342,15 @@ Total posts: 28
 - **LinkedIn draft:** `[internal]/the-origin-hack-what-directors-need-to-do-now/028-linkedin.txt`
 - **LinkedIn log:** see `log/posting-log.md`
 - **Advisor brief:** `[internal]/the-origin-hack-what-directors-need-to-do-now/028-advisor-brief.md`
+
+
+## [029] Does the board need to hire a CISO?
+- **ID:** 029
+- **Published:** 17 Aug 2026
+- **Slug:** `does-the-board-need-to-hire-a-ciso`
+- **URL:** https://aradvice.com.au/post/does-the-board-need-to-hire-a-ciso/
+- **Article:** `post/does-the-board-need-to-hire-a-ciso/index.html`
+- **og:image:** `post/does-the-board-need-to-hire-a-ciso/029-og-image.png`
+- **LinkedIn draft:** `[internal]/does-the-board-need-to-hire-a-ciso/029-linkedin.txt`
+- **LinkedIn log:** see `log/posting-log.md`
+- **Advisor brief:** `[internal]/does-the-board-need-to-hire-a-ciso/029-advisor-brief.md`

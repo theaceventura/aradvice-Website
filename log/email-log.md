@@ -225,3 +225,10 @@
 - article_date: 02 Aug 2026
 - logged: 03 Aug 2026 10:35 UTC
 - status: sent
+
+## The Origin Hack: What Directors Need to Do Now
+- slug: the-origin-hack-what-directors-need-to-do-now
+- subject: Origin breach: what your board minutes need to show
+- article_date: 09 Aug 2026
+- logged: 09 Aug 2026 20:49 UTC
+- status: sent

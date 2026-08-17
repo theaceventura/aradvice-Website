@@ -266,3 +266,13 @@ Track draft status and posting history.
 - **Status:** [ ] Draft [ ] Edited [ ] Posted
 - **Posted date:**
 - **Notes:**
+
+## Does the board need to hire a CISO?
+- **ID:** 029
+- **Slug:** does-the-board-need-to-hire-a-ciso
+- **Article date:** 17 Aug 2026
+- **Draft generated:** 17 Aug 2026
+- **Draft file:** post/does-the-board-need-to-hire-a-ciso/029-linkedin.txt
+- **Status:** [ ] Draft [ ] Edited [ ] Posted
+- **Posted date:**
+- **Notes:**
